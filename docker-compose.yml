@@ -1,0 +1,149 @@
+version: '3.8'
+services:
+  #  backend:
+  #    image: openjdk:17-jdk
+  #    volumes:
+  #      - .:/app  # 현재 디렉토리를 /app으로 마운트
+  #    working_dir: /app  # 작업 디렉토리 설정
+  #    command: ./gradlew bootJar  # Gradle을 사용하여 JAR 파일 생성
+  #    restart: always
+  #    ports:
+  #      - "8080:8080"
+  #    networks:
+  #      - app-tier
+  mysqldb:
+    image: mysql:latest
+    env_file:
+      - .env
+    ports:
+      - '3306:3306'
+    restart: always
+    volumes:
+      - 'mysqldb-data:/var/lib/mysql'
+    networks:
+      - app-tier
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysqldb
+      PMA_PORT: 3306
+    networks:
+      - app-tier
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    env_file:
+      - .env
+    ports:
+      - "5672:5672"  # AMQP 포트
+      - "61613:61613"  # STOMP 포트
+      - "15672:15672"  # 관리 UI 포트
+    restart: always
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    expose:
+      - "3100"
+    volumes:
+      - ./lokiconfig.yml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - app-tier
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:3100/metrics"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+  promtail:
+    image: grafana/promtail:latest
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./promtail.yml:/etc/promtail/config.yml
+      - ./log/app:/var/log/app
+      - ./log/system:/var/log/system
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - app-tier
+
+  grafana:
+    build:
+      context: .
+      dockerfile: grafana.Dockerfile
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    entrypoint: ["/bin/sh", "-c", "chmod +x /grafana_setup.sh && /grafana_setup.sh"]
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./dashBoard:/var/lib
+      - ./scripts/grafana_setup.sh:/grafana_setup.sh
+    networks:
+      - app-tier
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    networks:
+      - app-tier
+
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+#    expose:
+#      - "9090"
+    networks:
+      - app-tier
+
+volumes:
+  mysqldb-data:
+    driver: local  # 로컬 드라이버 사용
+  elasticsearch-data:
+    driver: local  # 로컬 드라이버 사용
+  prometheus_data:
+    driver: local  # 로컬 드라이버 사용
+
+networks:
+  app-tier:
+    driver: bridge

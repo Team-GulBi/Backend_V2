@@ -1,0 +1,52 @@
+<configuration scan="true" scanPeriod="5 seconds">
+    <!-- 날짜 변수 정의 -->
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+
+    <!-- appender 파일들 포함 -->
+        <!-- console Appender -->
+    <include resource="console-appender.xml"/>
+        <!-- app Appender -->
+    <include resource="./appAppender/app-file-error-appender.xml"/>
+    <include resource="./appAppender/app-file-warn-appender.xml"/>
+    <include resource="./appAppender/app-file-info-appender.xml"/>
+        <!-- system Appender -->
+    <include resource="./systemAppender/file-info-appender.xml"/>
+    <include resource="./systemAppender/file-warn-appender.xml"/>
+    <include resource="./systemAppender/file-error-appender.xml"/>
+        <!-- service Appender -->
+    <include resource="./serviceAppender/input-productid-appender.xml"/>
+    <include resource="./serviceAppender/returned-product-appender.xml"/>
+
+    <!-- 패턴 파일 포함 -->
+    <include resource="logback-pattern.xml"/>
+
+    <!-- 비즈니스 로깅 패턴 -->
+    <include resource="logback-search-event-pattern.xml"/>
+
+    <!-- 비즈니스 로깅 -->
+    <logger name="com.gulbi.Backend.domain.rental.product.service.product.logging.LokiLoggingHandler.loggingProductIdData">
+        <appender-ref ref="SERVICE-PRODUCT-SEARCHED-PRODUCTID"/>
+    </logger>
+
+    <logger name="com.gulbi.Backend.domain.rental.product.service.product.logging.LokiLoggingHandler.loggingReturnedProductData">
+        <appender-ref ref="SERVICE-PRODUCT-RETURNED-PRODUCT"/>
+    </logger>
+
+    <!-- app 로깅-->
+    <logger name="com.gulbi.Backend.global.error" level="ERROR" additivity="false">
+        <appender-ref ref="APP-ERROR"/>
+    </logger>
+    <logger name="com.gulbi.Backend.global.error" level="WARN" additivity="false">
+        <appender-ref ref="APP-WARN"/>
+    </logger>
+    <logger name="com.gulbi.Backend.global.util.logging" level="INFO" additivity="false">
+        <appender-ref ref="APP-INFO"/>
+    </logger>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SYSTEM-INFO"/>
+        <appender-ref ref="SYSTEM-WARN"/>
+        <appender-ref ref="SYSTEM-ERROR"/>
+    </root>
+
+</configuration>

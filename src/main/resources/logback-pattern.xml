@@ -1,0 +1,22 @@
+<configuration>
+
+    <!-- 콘솔 로그 패턴 -->
+    <property name="NOT_PROD_LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss}] %green([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) - %msg%n"/>
+
+    <!-- 시스템 인포 로그 패턴 -->
+    <property name="PROD_SYSTEM_INFO_LOG_PATTERN"
+              value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd HH}&quot;, &quot;level&quot;:&quot;%-5level&quot;, &quot;className&quot;:&quot;%class&quot;, &quot;method&quot;:&quot;%method&quot;}, &quot;message&quot;:&quot;%replace(%msg{full}){'\n','|'}&quot;}%n"/>
+    <!-- 시스템 경고,에러 로그 패턴 -->
+    <property name="PROD_SYSTEM_WARN_LOG_PATTERN"
+              value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd HH}&quot;, &quot;level&quot;:&quot;%-5level&quot;, &quot;exceptionClass&quot;:&quot;%class&quot;, &quot;exceptionMethod&quot;:&quot;%method&quot;}, &quot;message&quot;:&quot;%replace(%msg{full}){'\n','|'}&quot;, &quot;stackTrace&quot;:&quot;%replace(%ex{full}){'\n','|'}&quot;}%n"/>
+
+    <!-- 서비스 에러 패턴 -->
+    <property name="PROD_APP_ERROR_LOG_PATTERN"
+              value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd HH}&quot;, &quot;level&quot;:&quot;%-5level&quot;, &quot;exceptionClass&quot;:&quot;%X{exceptionClass}&quot;, &quot;exceptionMethod&quot;:&quot;%method&quot;}, &quot;message&quot;:&quot;%msg&quot;, &quot;exceptionCauseArgs&quot;:&quot;%X{exceptionCauseArgs}&quot;, &quot;stackTrace&quot;:&quot;%X{stackTrace}&quot;, &quot;stackTrace2&quot;:&quot;%replace(%ex{full}){'\n','|'}&quot;}%n"/>
+    <property name="PROD_APP_WARN_LOG_PATTERN"
+              value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd HH}&quot;, &quot;level&quot;:&quot;%-5level&quot;, &quot;exceptionClass&quot;:&quot;%X{exceptionClass}&quot;, &quot;exceptionMethod&quot;:&quot;%method&quot;}, &quot;message&quot;:&quot;%msg&quot;, &quot;exceptionCauseArgs&quot;:&quot;%X{exceptionCauseArgs}&quot;}%n"/>
+    <!-- 서비스 인포 패턴 -->
+    <property name="PROD_INFO_LOG_PATTERN"
+              value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd HH}&quot;, &quot;level&quot;:&quot;%-5level&quot;, &quot;className&quot;:&quot;%X{className}&quot;, &quot;userEmail&quot;:&quot;%X{userEmail}&quot;}, &quot;executionTime&quot;:&quot;%X{executionTime}&quot;, &quot;message&quot;:&quot;%msg&quot;}%n"/>
+</configuration>

@@ -1,0 +1,15 @@
+<configuration>
+    <appender name="SERVICE-PRODUCT-RETURNED-PRODUCT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./log/app/service/product/returnedProduct/yazoba-service-${BY_DATE}.log</file>
+        <encoder>
+            <pattern>${RETURNED_PRODUCT_INFORMATION_LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./backup/service/product/returnedProduct/yazoba-service-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+</configuration>

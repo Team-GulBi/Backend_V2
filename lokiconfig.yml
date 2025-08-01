@@ -1,0 +1,42 @@
+# local-config.yaml
+# 사용자 인증 활성화 여부
+auth_enabled: false
+
+# Loki 서버의 포트번호
+server:
+  http_listen_port: 3100
+
+# Loki 인스턴스의 주소
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /loki
+  storage:
+    filesystem:  # 파일시스템 기반 저장소를 사용
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+# 쿼리 범위에 대한 설정
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+# Loki의 스키마 설정
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+ruler:
+  alertmanager_url: http://localhost:9093

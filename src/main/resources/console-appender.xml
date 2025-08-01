@@ -1,0 +1,7 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${NOT_PROD_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+</configuration>

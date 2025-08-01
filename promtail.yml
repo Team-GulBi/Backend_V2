@@ -1,0 +1,60 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    batchwait: 1s
+
+scrape_configs:
+  # System Logs
+  - job_name: 'systemLog'
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: sysInfo
+          __path__: /var/log/system/info/*.log
+      - targets:
+          - localhost
+        labels:
+          job: sysWarn
+          __path__: /var/log/system/warn/*.log
+      - targets:
+          - localhost
+        labels:
+          job: sysError
+          __path__: /var/log/system/error/*.log
+
+  # Application Logs
+  - job_name: 'appLog'
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: appError
+          __path__: /var/log/app/error/*.log
+      - targets:
+          - localhost
+        labels:
+          job: appInfo
+          __path__: /var/log/app/info/*.log
+      - targets:
+          - localhost
+        labels:
+          job: appWarn
+          __path__: /var/log/app/warn/*.log
+      - targets:
+          - localhost
+        labels:
+          job: popularProduct
+          __path__: /var/log/app/service/product/searchedProductId/*.log
+      - targets:
+          - localhost
+        labels:
+          job: personalRecommandationProduct
+          __path__: /var/log/app/service/product/returnedProduct/*.log
+          

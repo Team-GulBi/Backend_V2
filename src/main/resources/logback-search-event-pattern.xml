@@ -1,0 +1,14 @@
+<configuration>
+
+        <property name="SEARCHED_PRODUCT_ID_LOG_PATTERN"
+                  value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd HH:mm:ss}&quot;},&quot;productId&quot;:&quot;%X{productId}&quot;,&quot;message&quot;:&quot;%msg&quot;}%n" />
+
+        <property name="SEARCHED_QUERY_LOG_PATTERN"
+                  value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd HH:mm:ss}}&quot;},&quot;query&quot;:&quot;%X{query}&quot;,&quot;detail&quot;:&quot;%X{detail}&quot;,&quot;location&quot;:&quot;%X{location}&quot;,&quot;message&quot;:&quot;%msg&quot;}%n"
+        />
+
+        <property name="RETURNED_PRODUCT_INFORMATION_LOG_PATTERN"
+                  value="{&quot;metadata&quot;:{&quot;timestamp&quot;:&quot;%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'}&quot;,&quot;userId&quot;:&quot;%X{userId}&quot;},&quot;bCategoryId&quot;:&quot;%X{bCategoryId}&quot;,&quot;mCategoryId&quot;:&quot;%X{mCategoryId}&quot;,&quot;sCategoryId&quot;:&quot;%X{sCategoryId}&quot;,&quot;message&quot;:&quot;%msg&quot;}%n"
+        />
+
+</configuration>
