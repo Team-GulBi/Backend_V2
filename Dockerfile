@@ -1,35 +1,33 @@
-#Bellsoft Liberica OpenJDK 17 이미지를 기반으로 설정
-FROM bellsoft/liberica-openjdk-alpine:17 AS builder
+# 빌드 스테이지
+FROM gradle:7.6-jdk17 AS builder
 
-#gradlew 복사
-COPY gradlew .
+# 작업 디렉터리 설정 (필요 시)
+WORKDIR /home/gradle/project
 
-#gradle 복사
+# gradle 디렉터리 복사
 COPY gradle gradle
 
-#build.gradle 복사
+# 빌드 스크립트 복사
 COPY build.gradle .
-
-#settings.gradle 복사
 COPY settings.gradle .
 
-#웹어플리케이션 소스 복사
+# 소스 복사
 COPY src src
 
-#gradlew 실행 권한 부여
+# gradlew 권한 부여
 RUN chmod +x ./gradlew
 
-#gradlew를 통해 실행 가능한 jar파일 생성
-RUN ./gradlew bootJar
+# 클린 빌드 수행
+RUN ./gradlew clean bootJar
 
-#최종 이미지
+# 최종 이미지
 FROM bellsoft/liberica-openjdk-alpine:17
 
-#build이미지에서 build/libs/*.jar 파일을 app.jar로 복사
-COPY --from=builder build/libs/*.jar app.jar
+# 빌드 결과물 복사
+COPY --from=builder /home/gradle/project/build/libs/*.jar /app.jar
 
-#jar 파일 실행
+# jar 실행
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-#볼륨 지정
+# 임시 볼륨 설정
 VOLUME /tmp
