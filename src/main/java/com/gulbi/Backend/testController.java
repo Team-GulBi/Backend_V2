@@ -1,6 +1,6 @@
 package com.gulbi.Backend;
 
-import com.gulbi.Backend.global.util.FileSender;
+// import com.gulbi.Backend.global.util.FileSender;
 import com.gulbi.Backend.global.util.S3Uploader;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 public class testController {
-    private final FileSender fileSender;
+    // private final FileSender fileSender;
     private final S3Uploader s3Uploader;
 
 
