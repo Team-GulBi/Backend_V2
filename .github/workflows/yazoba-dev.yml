@@ -46,6 +46,5 @@ jobs:
             sed -i '/^YAZOBA_DEV_BE_IMAGE_TAG=/d' /home/${{ secrets.YAZOBA_DEV_WAS_USER }}/.env
             echo "YAZOBA_DEV_BE_IMAGE_TAG=$VERSION" >> /home/${{ secrets.YAZOBA_DEV_WAS_USER }}/.env
             cd /home/${{ secrets.YAZOBA_DEV_WAS_USER }}/yazoba-dev/
-            docker-compose pull backend
-            docker-compose up -d backend
+            docker-compose -f docker-compose-dev.yaml up -d
           EOF
