@@ -1,33 +1,32 @@
-# 빌드 스테이지
+# 1. 빌드 스테이지
 FROM gradle:7.6-jdk17 AS builder
 
-# 작업 디렉터리 설정 (필요 시)
 WORKDIR /home/gradle/project
 
-# gradle 디렉터리 복사
+# gradlew 복사
+COPY gradlew .
+# gradle 설정 복사
 COPY gradle gradle
-
 # 빌드 스크립트 복사
 COPY build.gradle .
 COPY settings.gradle .
-
-# 소스 복사
+# 소스코드 복사
 COPY src src
 
-# gradlew 권한 부여
+# gradlew 실행 권한 부여
 RUN chmod +x ./gradlew
 
-# 클린 빌드 수행
+# 클린 빌드 및 jar 생성
 RUN ./gradlew clean bootJar
 
-# 최종 이미지
+# 2. 실행 스테이지
 FROM bellsoft/liberica-openjdk-alpine:17
 
-# 빌드 결과물 복사
-COPY --from=builder /home/gradle/project/build/libs/*.jar /app.jar
+# 빌드된 jar 파일을 복사
+COPY --from=builder /home/gradle/project/build/libs/*.jar app.jar
 
-# jar 실행
+# 컨테이너 시작 시 jar 실행
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-# 임시 볼륨 설정
+# 임시 디렉터리 마운트용 볼륨 (선택 사항)
 VOLUME /tmp
