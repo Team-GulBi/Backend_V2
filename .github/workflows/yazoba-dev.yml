@@ -33,7 +33,7 @@ jobs:
         run: |
           VERSION=$GITHUB_RUN_NUMBER
           IMAGE_URI=${{ secrets.YAZOBA_DEV_BE_ECR }}/yazoba-dev-backend:$VERSION
-          docker build -f Dockerfile -t $IMAGE_URI .
+          docker build -f backend/Dockerfile -t $IMAGE_URI backend
           docker push $IMAGE_URI
       - name: CD
         run: |
