@@ -1,0 +1,48 @@
+name: yazoba-dev-CI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+jobs:
+  cd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      - name: Configure AWS
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ap-northeast-2
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.YAZOBA_DEV_BE_ECR }}
+
+      - name: Build and Push to ECR
+        run: |
+          VERSION=$GITHUB_RUN_NUMBER
+          IMAGE_URI=${{ secrets.YAZOBA_DEV_BE_ECR }}/yazoba-dev-backend:$VERSION
+          docker build -f Dockerfile -t $IMAGE_URI .
+          docker push $IMAGE_URI
+      - name: CD
+        run: |
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > yazoba-dev.pem
+          chmod 400 yazoba-dev.pem
+
+          VERSION=$GITHUB_RUN_NUMBER
+          ssh -o StrictHostKeyChecking=no -i yazoba-dev.pem ${{ secrets.YAZOBA_DEV_WAS_USER }}@${{ secrets.YAZOBA_DEV_WAS_HOST }} << EOF
+            sed -i '/^YAZOBA_DEV_BE_IMAGE_TAG=/d' /home/${{ secrets.YAZOBA_DEV_WAS_USER }}/.env
+            echo "YAZOBA_DEV_BE_IMAGE_TAG=$VERSION" >> /home/${{ secrets.YAZOBA_DEV_WAS_USER }}/.env
+            cd /home/${{ secrets.YAZOBA_DEV_WAS_USER }}/yazoba-dev/
+            docker-compose pull backend
+            docker-compose up -d backend
+          EOF
