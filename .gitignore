@@ -139,8 +139,13 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/macos,java,gradle
 
 # properties
+application-dev.properties
 application-private.properties
 application-s3.properties
+
+dashBoard/
+./dashBoard
+./dashBoard/
 
 
 
