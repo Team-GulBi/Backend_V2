@@ -1,16 +1,16 @@
 package com.gulbi.Backend.domain.rental.product.controller;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductSuccessCode;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageInfoUpdateDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductInfoUpdateDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.update.MainImageUrlUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductContentUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.dto.product.request.*;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductImageCreateRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.register.NewProductImageRequest;
 import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductMainImageCreateRequestDto;
 import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductRegisterRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.update.ProductCategoryUpdateRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.update.ProductExistingMainImageUpdateRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.update.ProductUpdateRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.update.ProductCategoryUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.update.productTextUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.dto.product.response.ProductDetailResponseDto;
 import com.gulbi.Backend.domain.rental.product.service.product.ProductService;
 import com.gulbi.Backend.global.response.RestApiResponse;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -45,7 +46,7 @@ public class ProductController {
             @RequestPart("images") List<MultipartFile> productImages,
             @RequestPart("mainImage") List<MultipartFile> productMainImage)
     {
-            Long savedProductId=productService.registrationProduct(productInfo, ProductImageCreateRequestDto.of(productImages), ProductMainImageCreateRequestDto.of(productMainImage));
+            Long savedProductId=productService.registrationProduct(productInfo, NewProductImageRequest.of(productImages), ProductMainImageCreateRequestDto.of(productMainImage));
             RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,savedProductId);
         return ResponseEntity.ok(response);
     }
@@ -93,65 +94,66 @@ public class ProductController {
             summary = "상품정보 수정",
             description = "1.상품정보중 텍스트만 수정 2.상품의 이미지 추가 3.카테고리 변경 4.이미지 삭제 위 4가지 케이스 중 적어도 1개는 들어가야함."
     )
-    public ResponseEntity<RestApiResponse> updateProduct(@Parameter(description = "업데이트 할 상품의 텍스트 정보(json)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "productInfo",required = false) ProductUpdateRequestDto toBeUpdatedProductInfo,
-                                                         @Parameter(description = "업데이트 할 상품의 카테고리 아이디",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "category", required = false) ProductCategoryUpdateRequestDto toBeUpdatedCategories,
-                                                         @Parameter(description = "추가되는 상품 사진(file)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "addingImages",required = false) List<MultipartFile> toBeAddedImages, //=> ProductImageCreateRequestDto
-                                                         @Parameter(description = "교체 할 메인이미지 파일(file)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "toBeUpdatedMainImageFile",required = false) List<MultipartFile> toBeUpdatedMainImageFile, //=> ProductImageCreateRequestDto
-                                                         @Parameter(description = "교체 할 메인이미지 Url(string)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "toBeUpdatedMainimageUrl",required = false)ProductExistingMainImageUpdateRequestDto toBeUpdatedMainImageWithUrl,
-                                                         @Parameter(description = "지울 상품 이미지의 아이디",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "deletedImageId", required = false)ProductImageDeleteRequestDto toBeDeletedImages,
+    public ResponseEntity<RestApiResponse> updateProduct(@Parameter(description = "업데이트 할 상품의 텍스트 정보(json)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "productInfo",required = false) productTextUpdateRequest toBeUpdatedProductInfo,
+                                                         @Parameter(description = "업데이트 할 상품의 카테고리 아이디",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "category", required = false) ProductCategoryUpdateRequest toBeUpdatedCategories,
+                                                         @Parameter(description = "추가되는 상품 사진(file)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "addingImages",required = false) List<MultipartFile> toBeAddedImages, //=> NewProductImageRequest
+                                                         @Parameter(description = "교체 할 메인이미지 파일(file)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "toBeUpdatedMainImageFile",required = false) List<MultipartFile> toBeUpdatedMainImageFile, //=> NewProductImageRequest
+                                                         @Parameter(description = "교체 할 메인이미지 Url(string)",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "toBeUpdatedMainimageUrl",required = false) MainImageUrlUpdateRequest toBeUpdatedMainImageWithUrl,
+                                                         @Parameter(description = "지울 상품 이미지의 아이디",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))@RequestPart(value = "deletedImageId", required = false) ProductImageDeleteRequest toBeDeletedImages,
                                                          @PathVariable("productId")Long productId){
-        ProductInfoUpdateDto productInfoUpdateDto;
-        ProductImageInfoUpdateDto productImageInfoUpdateDto;
+        //상품정보 업데이트 요청
+        productTextUpdateRequest productTextUpdateRequest =
+            Optional
+                .ofNullable(toBeUpdatedProductInfo)
+                .orElse(null);
 
-        ProductUpdateRequestDto productUpdateRequestDto;
-        ProductCategoryUpdateRequestDto productCategoryUpdateRequestDto;
-        ProductImageCreateRequestDto productImageCreateRequestDto;
-        ProductImageCreateRequestDto productImageCreateRequestDto1;
-        ProductExistingMainImageUpdateRequestDto productExistingMainImageUpdateRequestDto;
-        ProductImageDeleteRequestDto productImageDeleteRequestDto;
+        //상품정보(카테고리) 업데이트 요청
+        ProductCategoryUpdateRequest productCategoryUpdateRequest =
+            Optional
+                .ofNullable(toBeUpdatedCategories)
+                .orElse(null);
 
-        if(toBeUpdatedProductInfo == null){
-            productUpdateRequestDto =null;
-        }else{
-            productUpdateRequestDto = toBeUpdatedProductInfo;
-        }
+        //새로운 상품이미지 추가 요청
+        NewProductImageRequest newProductImageRequest =
+            Optional
+                .ofNullable(toBeAddedImages)
+                .map(NewProductImageRequest::of)
+                .orElse(null);
 
-        if(toBeUpdatedCategories == null){
-            productCategoryUpdateRequestDto =null;
-        }else{
-            productCategoryUpdateRequestDto = toBeUpdatedCategories;
-        }
+        //새로운 상품 메인이미지 추가 요청
+        NewProductImageRequest newProductMainImageRequest =
+            Optional
+                .ofNullable(toBeUpdatedMainImageFile)
+                .map(NewProductImageRequest::of)
+                .orElse(null);
 
-        if(toBeAddedImages == null){
-            productImageCreateRequestDto =null;
-        }else{
-            productImageCreateRequestDto = ProductImageCreateRequestDto.of(toBeAddedImages);
-        }
+        //새로운 상품 메인이미지 추가 요청
+        MainImageUrlUpdateRequest mainImageUrlUpdateRequest =
+            Optional
+                .ofNullable(toBeUpdatedMainImageWithUrl)
+                .orElse(null);
 
-        if(toBeUpdatedMainImageFile == null){
-            productImageCreateRequestDto1 =null;
-        }else{
-            productImageCreateRequestDto1 = ProductImageCreateRequestDto.of(toBeUpdatedMainImageFile);
-        }
+        //상품 이미지 삭제 요청
+        ProductImageDeleteRequest productImageDeleteRequest =
+            Optional
+                .ofNullable(toBeDeletedImages)
+                .orElse(null);
 
-        if(toBeUpdatedMainImageWithUrl == null){
-            productExistingMainImageUpdateRequestDto =null;
-        }else{
-            productExistingMainImageUpdateRequestDto = toBeUpdatedMainImageWithUrl;
-        }
+        //이미지를 제외 한 상품 삭제 정보를 담는 DTO
+        ProductContentUpdateCommand productContentUpdateCommand =
+            ProductContentUpdateCommand
+                .of(productTextUpdateRequest, productCategoryUpdateRequest, productId);
 
-        if(toBeDeletedImages ==null){
-            productImageDeleteRequestDto =null;
-        }else{
-            productImageDeleteRequestDto = toBeDeletedImages;
-        }
+        //상품 이미지에 관련 된 정보를 담는 DTO
+        ProductImageUpdateCommand productImageUpdateCommand =
+            ProductImageUpdateCommand
+                .of(newProductImageRequest, newProductMainImageRequest, mainImageUrlUpdateRequest,
+                    productImageDeleteRequest, productId);
 
-        productInfoUpdateDto = ProductInfoUpdateDto.of(productUpdateRequestDto, productCategoryUpdateRequestDto, productId);
-        productImageInfoUpdateDto = ProductImageInfoUpdateDto.of(productImageCreateRequestDto, productImageCreateRequestDto1, productExistingMainImageUpdateRequestDto, productImageDeleteRequestDto,productId);
-        productService.updateProduct(productInfoUpdateDto, productImageInfoUpdateDto);
-
+        productService.updateProduct(productContentUpdateCommand, productImageUpdateCommand);
         RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_INFO_UPDATED_SUCCESS);
         return ResponseEntity.ok(response);
+
     }
 
     @DeleteMapping("/{productId}")
