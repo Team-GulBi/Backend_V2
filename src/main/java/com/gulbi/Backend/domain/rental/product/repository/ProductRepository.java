@@ -70,17 +70,14 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("UPDATE Product p SET p.views = p.views + 1 WHERE p.id = :id ")
     Integer updateProductViews(@Param("id") Long id);
 
-    @Transactional
     @Modifying
-    @Query("UPDATE Product p " +
-            "SET p.bCategory = :bCategory, " +
-            "p.mCategory = :mCategory, " +
-            "p.sCategory = :sCategory " +
-            "WHERE p.id = :productId")
+    @Transactional
+    @Query(value = "UPDATE products p SET p.b_category_id = :bCategoryId, p.m_category_id = :mCategoryId, p.s_category_id = :sCategoryId WHERE p.id = :productId", nativeQuery = true)
     void updateProductCategories(@Param("productId") Long productId,
-                                 @Param("bCategory") Category bCategory,
-                                 @Param("mCategory") Category mCategory,
-                                 @Param("sCategory") Category sCategory);
+        @Param("bCategoryId") Long bCategoryId,
+        @Param("mCategoryId") Long mCategoryId,
+        @Param("sCategoryId") Long sCategoryId);
+
     @Transactional
     @Modifying
     @Query("UPDATE Product p " +

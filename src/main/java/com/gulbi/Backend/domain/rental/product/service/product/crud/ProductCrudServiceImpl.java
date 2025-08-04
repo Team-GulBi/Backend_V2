@@ -3,7 +3,8 @@ package com.gulbi.Backend.domain.rental.product.service.product.crud;
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
 import com.gulbi.Backend.domain.rental.product.dto.product.ProductDto;
 import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.update.ProductUpdateRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.update.productTextUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductContentUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductMainImageUpdateDto;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
@@ -112,25 +113,46 @@ public class ProductCrudServiceImpl implements ProductCrudService {
 
 
     @Override
-    public void updateProductInfo(ProductUpdateRequestDto dto) {
+    public void updateProductInfo(productTextUpdateRequest dto) {
+        // productRepository.updateProductInfo(
+        //         dto.getProductId(),
+        //         dto.getTag(),
+        //         dto.getTitle(),
+        //         dto.getName(),
+        //         dto.getPrice(),
+        //         dto.getSido(),
+        //         dto.getSigungu(),
+        //         dto.getBname(),
+        //         dto.getDescription()
+        // );
+        //
+        // if (dto.getCategoryInProduct() != null) {
+        //     productRepository.updateProductCategories(dto.getProductId(),
+        //             dto.getCategoryInProduct().getBCategory(),
+        //             dto.getCategoryInProduct().getMCategory(),
+        //             dto.getCategoryInProduct().getSCategory());
+        // }
+    }
+    @Override
+    public void updateProductTextOnly(ProductContentUpdateCommand dto){
         productRepository.updateProductInfo(
-                dto.getProductId(),
-                dto.getTag(),
-                dto.getTitle(),
-                dto.getName(),
-                dto.getPrice(),
-                dto.getSido(),
-                dto.getSigungu(),
-                dto.getBname(),
-                dto.getDescription()
+            dto.getProductId(),
+            dto.getProductTextUpdateRequest().getTag(),
+            dto.getProductTextUpdateRequest().getTitle(),
+            dto.getProductTextUpdateRequest().getName(),
+            dto.getProductTextUpdateRequest().getPrice(),
+            dto.getProductTextUpdateRequest().getSido(),
+            dto.getProductTextUpdateRequest().getSigungu(),
+            dto.getProductTextUpdateRequest().getBname(),
+            dto.getProductTextUpdateRequest().getDescription()
         );
-
-        if (dto.getCategoryInProduct() != null) {
-            productRepository.updateProductCategories(dto.getProductId(),
-                    dto.getCategoryInProduct().getBCategory(),
-                    dto.getCategoryInProduct().getMCategory(),
-                    dto.getCategoryInProduct().getSCategory());
-        }
+    }
+    @Override
+    public void updateProductCategories(ProductContentUpdateCommand dto){
+        productRepository.updateProductCategories(dto.getProductId(),
+            dto.getProductCategoryUpdateRequest().getBCategoryId(),
+            dto.getProductCategoryUpdateRequest().getMCategoryId(),
+            dto.getProductCategoryUpdateRequest().getSCategoryId());
     }
 
     @Override

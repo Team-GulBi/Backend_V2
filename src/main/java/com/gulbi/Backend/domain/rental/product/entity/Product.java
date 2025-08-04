@@ -63,7 +63,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 500)
     private String description;  // 상품 설명
 
-    @Column(nullable = true)
+    @Column(nullable = false, length = 2000)
     private String mainImage;
 
     // 생성자

@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
-public class ProductImageCreateRequestDto {
+public class NewProductImageRequest {
     @Valid
     private final ProductImageCollection productImageCollection;
 
@@ -18,17 +18,13 @@ public class ProductImageCreateRequestDto {
     @Schema(hidden = true)
     private Long productId;
 
-    @Setter
-    @Getter
-    @Schema(hidden = true)
-    private Product product;
 
-    private ProductImageCreateRequestDto(List<MultipartFile> images) {
+    private NewProductImageRequest(List<MultipartFile> images) {
         this.productImageCollection = ProductImageCollection.of(images);
     }
 
-    public static ProductImageCreateRequestDto of(List<MultipartFile> images){
-        return new ProductImageCreateRequestDto(images);
+    public static NewProductImageRequest of(List<MultipartFile> images){
+        return new NewProductImageRequest(images);
     }
 
     public ProductImageCollection getProductImageCollection(){
