@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ContractCreateDto {
+public class ContractCreateRequest {
     private String itemName;              // 물품명
     private String specifications;        // 형식 및 규격
     private Integer quantity;             // 수량

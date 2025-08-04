@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.contract.controller;
 
 import com.gulbi.Backend.domain.contract.code.ContractSuccessCode;
-import com.gulbi.Backend.domain.contract.dto.ContractCreateDto;
+import com.gulbi.Backend.domain.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.dto.ContractResponseDto;
 import com.gulbi.Backend.domain.contract.dto.ContractSummaryDto;
 import com.gulbi.Backend.domain.contract.service.ContractService;
@@ -32,9 +32,9 @@ public class ContractController {
     @PostMapping
     public ResponseEntity<RestApiResponse> createContract(
             @PathVariable Long applicationId,
-            @RequestBody ContractCreateDto contractCreateDto) {
+            @RequestBody ContractCreateRequest contractCreateRequest) {
 
-        contractService.createContract(applicationId, contractCreateDto);
+        contractService.createContract(applicationId, contractCreateRequest);
         RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_CREATE_SUCCESS);
         return ResponseEntity.ok(response);
     }

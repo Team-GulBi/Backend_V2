@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import lombok.Getter;
 
 @Getter
-public class ApplicationCreateDto {
+public class ApplicationCreateRequest {
     private LocalDate startDate;
     private LocalDate endDate;
 }

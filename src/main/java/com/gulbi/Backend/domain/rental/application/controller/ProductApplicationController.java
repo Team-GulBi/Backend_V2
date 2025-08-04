@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.application.controller;
 
 import com.gulbi.Backend.domain.rental.application.code.ApplicationSuccessCode;
-import com.gulbi.Backend.domain.rental.application.dto.ApplicationCreateDto;
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationCreateRequest;
 import com.gulbi.Backend.domain.rental.application.service.ApplicationService;
 import com.gulbi.Backend.global.response.RestApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class ProductApplicationController {
 
     @PostMapping
     public ResponseEntity<RestApiResponse> createApplication(@PathVariable("productId") Long productId,
-                                                             @RequestBody ApplicationCreateDto dto) {
+                                                             @RequestBody ApplicationCreateRequest dto) {
         applicationService.createApplication(productId, dto);
         RestApiResponse response = new RestApiResponse(ApplicationSuccessCode.APPLICATION_CREATE_SUCCESS);
         return ResponseEntity.ok(response);

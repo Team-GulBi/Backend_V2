@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.contract.service;
 
-import com.gulbi.Backend.domain.contract.dto.ContractCreateDto;
+import com.gulbi.Backend.domain.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.dto.ContractResponseDto;
 import com.gulbi.Backend.domain.contract.dto.ContractSummaryDto;
 import com.gulbi.Backend.domain.contract.entity.Contract;
@@ -41,7 +41,7 @@ public class ContractService {
     }
 
     // 계약 생성
-    public void createContract(Long applicationId, ContractCreateDto dto) {
+    public void createContract(Long applicationId, ContractCreateRequest dto) {
         // 요청을 보낸 사용자 (lender)
         User lender = getAuthenticatedUser();
 
