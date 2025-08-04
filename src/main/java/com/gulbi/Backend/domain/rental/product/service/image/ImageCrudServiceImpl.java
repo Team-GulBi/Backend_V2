@@ -3,7 +3,7 @@ package com.gulbi.Backend.domain.rental.product.service.image;
 import com.gulbi.Backend.domain.rental.product.code.ImageErrorCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageDto;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageDtoCollection;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequest;
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductMainImageUpdateDto;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ImageException;
@@ -89,21 +89,21 @@ public class ImageCrudServiceImpl implements ImageCrudService {
     }
 
     @Override
-    public void deleteImages(ProductImageDeleteRequestDto productImageDeleteRequestDto) {
-        if (productImageDeleteRequestDto.getImagesId() == null) {
-            throw createImageDeleteValidationException(productImageDeleteRequestDto);
+    public void deleteImages(ProductImageDeleteRequest productImageDeleteRequest) {
+        if (productImageDeleteRequest.getImagesId() == null) {
+            throw createImageDeleteValidationException(productImageDeleteRequest);
         }
 
         try {
-            imageRepository.deleteImages(productImageDeleteRequestDto);
+            imageRepository.deleteImages(productImageDeleteRequest);
         } catch (DataIntegrityViolationException e) {
-            throw createImageDeleteValidationException(productImageDeleteRequestDto, e);
+            throw createImageDeleteValidationException(productImageDeleteRequest, e);
         } catch (JpaSystemException | PersistenceException e) {
-            throw createImageDatabaseErrorException(productImageDeleteRequestDto, e);
+            throw createImageDatabaseErrorException(productImageDeleteRequest, e);
         } catch (IllegalArgumentException e) {
-            throw createInvalidProductImageIdException(productImageDeleteRequestDto, e);
+            throw createInvalidProductImageIdException(productImageDeleteRequest, e);
         } catch (Exception e) {
-            throw createImageDeleteFailedException(productImageDeleteRequestDto, e);
+            throw createImageDeleteFailedException(productImageDeleteRequest, e);
         }
     }
 

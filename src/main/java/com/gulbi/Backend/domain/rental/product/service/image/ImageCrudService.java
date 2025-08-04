@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.service.image;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequest;
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductMainImageUpdateDto;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
@@ -15,7 +15,7 @@ public interface ImageCrudService {
     void saveMainImage(ImageUrl mainImageUrl, Product product);
     public void clearMainImageFlags(Product product);
     public void saveImages(ImageCollection imageCollection);
-    public void deleteImages(ProductImageDeleteRequestDto productImageDeleteRequestDto);
+    public void deleteImages(ProductImageDeleteRequest productImageDeleteRequest);
     public void removeAllImagesFromProduct(Long productId);
     public ImageUrlCollection uploadImagesToS3(ProductImageCollection productImageCollection);
     public void updateMainImageFlags(ProductMainImageUpdateDto productMainImageUpdateDto);
