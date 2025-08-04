@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.service.product.register;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductImageCreateRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.register.NewProductImageRequest;
 import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductMainImageCreateRequestDto;
 import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductRegisterRequestDto;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
@@ -21,8 +21,8 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
     private final ProductCrudService productCrudService;
 
     @Override
-    public Long registerProduct(ProductRegisterRequestDto productRegisterRequestDto, ProductImageCreateRequestDto productImageCreateRequestDto, ProductMainImageCreateRequestDto productMainImageCreateRequestDto){
-        ImageUrlCollection imageUrlCollection = uploadImages(productImageCreateRequestDto.getProductImageCollection());
+    public Long registerProduct(ProductRegisterRequestDto productRegisterRequestDto, NewProductImageRequest newProductImageRequest, ProductMainImageCreateRequestDto productMainImageCreateRequestDto){
+        ImageUrlCollection imageUrlCollection = uploadImages(newProductImageRequest.getProductImageCollection());
         ImageUrl mainImageUrl = uploadImages(productMainImageCreateRequestDto.getProductImageCollection()).getMainImageUrl();
         productRegisterRequestDto.setMainImage(mainImageUrl);
         Product product = createWithRegisterRequestDto(productRegisterRequestDto);
