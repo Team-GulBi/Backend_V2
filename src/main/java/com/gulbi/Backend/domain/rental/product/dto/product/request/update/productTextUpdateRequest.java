@@ -1,15 +1,14 @@
 package com.gulbi.Backend.domain.rental.product.dto.product.request.update;
 
 import com.gulbi.Backend.domain.rental.product.dto.category.CategoryInProductDto;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 @Getter
-public class ProductUpdateRequestDto {
+public class productTextUpdateRequest {
     @Schema(example = "수정1,수정2")
     private final String tag;
     @Schema(example = "제목수정")
@@ -35,7 +34,7 @@ public class ProductUpdateRequestDto {
     @Setter
     private Long productId;
 
-    private ProductUpdateRequestDto(String tag, String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
+    private productTextUpdateRequest(String tag, String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
         this.tag = tag;
         this.title = title;
         this.name = productName;
@@ -46,11 +45,11 @@ public class ProductUpdateRequestDto {
         this.description = description;
     }
 
-    public static ProductUpdateRequestDto of(String tag, String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
-        return new ProductUpdateRequestDto(tag, title, productName, price, sido, sigungu, bname, description);
+    public static productTextUpdateRequest of(String tag, String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
+        return new productTextUpdateRequest(tag, title, productName, price, sido, sigungu, bname, description);
     }
 
-    public static ProductUpdateRequestDto of(){
-        return new ProductUpdateRequestDto(null, null, null, null, null, null, null, null);
+    public static productTextUpdateRequest of(){
+        return new productTextUpdateRequest(null, null, null, null, null, null, null, null);
     }
 }
