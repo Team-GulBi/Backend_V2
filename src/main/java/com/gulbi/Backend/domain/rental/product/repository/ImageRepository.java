@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.repository;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequest;
 import com.gulbi.Backend.domain.rental.product.entity.Image;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import jakarta.transaction.Transactional;
@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image,Long > {
@@ -22,7 +21,7 @@ public interface ImageRepository extends JpaRepository<Image,Long > {
     @Transactional
     @Modifying
     @Query("DELETE FROM Image i WHERE i.id IN :#{#dto.imagesId}")
-    void deleteImages(@Param("dto") ProductImageDeleteRequestDto dto);
+    void deleteImages(@Param("dto") ProductImageDeleteRequest dto);
 
     @Transactional
     @Modifying
