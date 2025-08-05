@@ -1,6 +1,11 @@
 package com.gulbi.Backend.domain.rental.application.service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.List;
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationCreateRequest;
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusResponseDto;
 import com.gulbi.Backend.domain.rental.application.entity.Application;
 import com.gulbi.Backend.domain.rental.application.repository.ApplicationRepository;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
@@ -35,5 +40,15 @@ public class ApplicationService {
         Application application = new Application(product, user, dto.getStartDate(), dto.getEndDate());
 
         return applicationRepository.save(application);
+    }
+
+    public List<ApplicationStatusResponseDto> getApplicationsByYearMonth(YearMonth yearMonth, Long productId){
+        LocalDateTime startOfMonth = yearMonth.atDay(1).atStartOfDay();
+        LocalDateTime endOfMonth = yearMonth.atEndOfMonth().atTime(LocalTime.MAX);
+        //Native쿼리는 DTO맵핑이 바로 불가능 하기 때문에, Projection -> dto 변환 방식 사용
+        //Projection이랑 Dto랑 로직적으로 강한 결합이 있기 때문에, Dto안에 from을 두어서 변환하도록 하였음.
+        List<ApplicationStatusResponseDto> status = ApplicationStatusResponseDto.from(applicationRepository.findReservationStatusByMonth(productId, startOfMonth, endOfMonth));
+        status.stream().forEach(item -> System.out.println(item.toString()));
+        return status;
     }
 }
