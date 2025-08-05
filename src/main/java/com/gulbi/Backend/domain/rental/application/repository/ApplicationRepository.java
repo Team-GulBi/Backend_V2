@@ -1,9 +1,36 @@
 package com.gulbi.Backend.domain.rental.application.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusResponse;
 import com.gulbi.Backend.domain.rental.application.entity.Application;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
+	@Query(value = """
+		SELECT 
+        DATE(a.start_date) AS reservationDate,
+        MAX(CASE WHEN a.status = 'RESERVING' THEN TRUE ELSE FALSE END) AS hasReserving,
+        MAX(CASE WHEN a.status IN ('RESERVING', 'USING') THEN TRUE ELSE FALSE END) AS hasReservingOrUsing
+    FROM 
+        applications a
+    WHERE 
+        a.product_id = :productId
+        AND a.start_date BETWEEN :startOfMonth AND :endOfMonth
+    GROUP BY 
+        DATE(a.start_date)
+    """, nativeQuery = true)
+	List<ApplicationStatusResponse> findReservationStatusByMonth(
+		@Param("productId") Long productId,
+		// 입력받은 월의 시작 시각 (예: 2025-08-01T00:00:00)
+		@Param("startOfMonth") LocalDateTime startOfMonth,
+		// 입력받은 월의 마지막 시각 (예: 2025-08-31T23:59:59)
+		@Param("endOfMonth") LocalDateTime endOfMonth
+	);
+
 }
