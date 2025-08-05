@@ -3,7 +3,7 @@ package com.gulbi.Backend.domain.rental.application.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusResponse;
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusProjection;
 import com.gulbi.Backend.domain.rental.application.entity.Application;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +25,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     GROUP BY 
         DATE(a.start_date)
     """, nativeQuery = true)
-	List<ApplicationStatusResponse> findReservationStatusByMonth(
+	List<ApplicationStatusProjection> findReservationStatusByMonth(
 		@Param("productId") Long productId,
 		// 입력받은 월의 시작 시각 (예: 2025-08-01T00:00:00)
 		@Param("startOfMonth") LocalDateTime startOfMonth,
