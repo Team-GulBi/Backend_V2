@@ -19,17 +19,21 @@ public class ApplicationService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-
-    public void createApplication(Long productId, ApplicationCreateRequest dto) {
+    // ToDo: 유효성 검사는 그대로 두되
+    public Application createApplication(Long productId, ApplicationCreateRequest dto) {
 
         Long userId = jwtUtil.extractUserIdFromRequest();
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        // => ToDo: 유효성 검사
+        User user = userRepository //빌리려는 사람 엔티티
+            .findById(userId)
+            .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         Product product = productRepository.findProductById(productId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
 
         Application application = new Application(product, user, dto.getStartDate(), dto.getEndDate());
 
-        applicationRepository.save(application);
+        return applicationRepository.save(application);
     }
 }
