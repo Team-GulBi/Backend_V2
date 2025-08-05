@@ -1,12 +1,15 @@
 package com.gulbi.Backend.domain.contract.service;
 
-import com.gulbi.Backend.domain.contract.dto.ContractCreateDto;
+import com.gulbi.Backend.domain.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.dto.ContractResponseDto;
 import com.gulbi.Backend.domain.contract.dto.ContractSummaryDto;
 import com.gulbi.Backend.domain.contract.entity.Contract;
 import com.gulbi.Backend.domain.contract.repository.ContractRepository;
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationCreateRequest;
 import com.gulbi.Backend.domain.rental.application.entity.Application;
 import com.gulbi.Backend.domain.rental.application.repository.ApplicationRepository;
+import com.gulbi.Backend.domain.rental.application.service.ApplicationService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.repository.UserRepository;
 import com.gulbi.Backend.global.util.JwtUtil;
@@ -15,10 +18,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,7 +33,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 @Transactional
 public class ContractService {
-
+    private final ProductCrudService productCrudService;
+    private final ApplicationService applicationService;
     private final ContractRepository contractRepository;
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
@@ -40,42 +48,40 @@ public class ContractService {
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
     }
 
-    // 계약 생성
-    public void createContract(Long applicationId, ContractCreateDto dto) {
-        // 요청을 보낸 사용자 (lender)
-        User lender = getAuthenticatedUser();
+    // 계약 및 예약 생성
+    public void createContract(Long productId, ContractCreateRequest contractCreateRequest,ApplicationCreateRequest applicationCreateRequest) {
 
-        // applicationId를 기반으로 Application 찾기
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("해당 신청을 찾을 수 없습니다."));
 
-        // borrower는 Application 객체의 User
-        User borrower = application.getUser();
+        // 요청을 보낸 사용자 (borrower)
+        User borrower = getAuthenticatedUser();
+        // ToDo: void -> Application
+        Application application = applicationService.createApplication(productId, applicationCreateRequest);
+        User lender = application.getProduct().getUser();
 
         // Contract 생성
         Contract contract = Contract.builder()
                 .lender(lender)
                 .borrower(borrower)
                 .application(application)
-                .itemName(dto.getItemName())
-                .specifications(dto.getSpecifications())
-                .quantity(dto.getQuantity())
-                .condition(dto.getCondition())
-                .notes(dto.getNotes())
-                .rentalEndDate(dto.getRentalEndDate())
-                .rentalPlace(dto.getRentalPlace())
-                .rentalDetailAddress(dto.getRentalDetailAddress())
-                .returnDate(dto.getReturnDate())
-                .returnPlace(dto.getReturnPlace())
-                .returnDetailAddress(dto.getReturnDetailAddress())
-                .rentalFee(dto.getRentalFee())
-                .paymentDate(dto.getPaymentDate())
-                .lateInterestRate(dto.getLateInterestRate())
-                .latePenaltyRate(dto.getLatePenaltyRate())
-                .damageCompensationRate(dto.getDamageCompensationRate())
-                .url(dto.getUrl())
+                .itemName(contractCreateRequest.getItemName())
+                .specifications(contractCreateRequest.getSpecifications())
+                .quantity(contractCreateRequest.getQuantity())
+                .condition(contractCreateRequest.getCondition())
+                .notes(contractCreateRequest.getNotes())
+                .rentalEndDate(contractCreateRequest.getRentalEndDate())
+                .rentalPlace(contractCreateRequest.getRentalPlace())
+                .rentalDetailAddress(contractCreateRequest.getRentalDetailAddress())
+                .returnDate(contractCreateRequest.getReturnDate())
+                .returnPlace(contractCreateRequest.getReturnPlace())
+                .returnDetailAddress(contractCreateRequest.getReturnDetailAddress())
+                .rentalFee(contractCreateRequest.getRentalFee())
+                .paymentDate(contractCreateRequest.getPaymentDate())
+                .lateInterestRate(contractCreateRequest.getLateInterestRate())
+                .latePenaltyRate(contractCreateRequest.getLatePenaltyRate())
+                .damageCompensationRate(contractCreateRequest.getDamageCompensationRate())
+                .url(contractCreateRequest.getUrl())
                 .lenderApproval(false)  // 기본값 false
-                .borrowerApproval(false)  // 기본값 false
+                .borrowerApproval(true)  // 기본값 true, 해당 API생성 시점에 동의한걸로 간주함.
                 .build();
 
         contractRepository.save(contract);
