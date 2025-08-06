@@ -41,7 +41,11 @@ public class ContractController {
         RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_CREATE_SUCCESS);
         return ResponseEntity.ok(response);
     }
-
+    // 예약정보로 계약 조회 ToDo:
+    @GetMapping("/applications/{applicationId}")
+    public void getContractByApplication(@PathVariable("applicationId")Long applicationId){
+        System.out.println(contractService.getContractByApplicationId(applicationId).toString());
+    }
 
     // 특정 계약 조회 (상세 정보)
     @GetMapping("/{contractId}")
@@ -63,33 +67,33 @@ public class ContractController {
 //        return ResponseEntity.ok(contractService.getContractsByBorrower(borrowerId));
 //    }
 
-    // 특정 신청과 관련된 계약 조회
-    @GetMapping
-    public ResponseEntity<List<ContractSummaryDto>> getContractsByApplication(@PathVariable Long applicationId) {
-        return ResponseEntity.ok(contractService.getContractsByApplication(applicationId));
-    }
+    // // 특정 신청과 관련된 계약 조회
+    // @GetMapping
+    // public ResponseEntity<List<ContractSummaryDto>> getContractsByApplication(@PathVariable Long applicationId) {
+    //     return ResponseEntity.ok(contractService.getContractsByApplication(applicationId));
+    // }
+    //
+    // // 대여인 승인 상태 변경
+    // @PutMapping("/{contractId}/lender-approval")
+    // public ResponseEntity<ContractResponseDto> updateLenderApproval(
+    //         @PathVariable Long contractId) {
+    //     return ResponseEntity.ok(contractService.updateLenderApproval(contractId));
+    // }
 
-    // 대여인 승인 상태 변경
-    @PutMapping("/{contractId}/lender-approval")
-    public ResponseEntity<ContractResponseDto> updateLenderApproval(
-            @PathVariable Long contractId) {
-        return ResponseEntity.ok(contractService.updateLenderApproval(contractId));
-    }
+    // // 차용인 승인 상태 변경
+    // @PutMapping("/{contractId}/borrower-approval")
+    // public ResponseEntity<ContractResponseDto> updateBorrowerApproval(
+    //         @PathVariable Long contractId) {
+    //     return ResponseEntity.ok(contractService.updateBorrowerApproval(contractId));
+    // }
 
-    // 차용인 승인 상태 변경
-    @PutMapping("/{contractId}/borrower-approval")
-    public ResponseEntity<ContractResponseDto> updateBorrowerApproval(
-            @PathVariable Long contractId) {
-        return ResponseEntity.ok(contractService.updateBorrowerApproval(contractId));
-    }
-
-    // 계약 파일 업로드 및 url 업데이트
-    @PostMapping(value = "/{contractId}/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ContractResponseDto> uploadContractFile(
-            @PathVariable Long contractId,
-            @RequestParam("file") MultipartFile file) throws IOException {
-        return ResponseEntity.ok(contractService.uploadContractFile(contractId, file));
-    }
+    // // 계약 파일 업로드 및 url 업데이트
+    // @PostMapping(value = "/{contractId}/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    // public ResponseEntity<ContractResponseDto> uploadContractFile(
+    //         @PathVariable Long contractId,
+    //         @RequestParam("file") MultipartFile file) throws IOException {
+    //     return ResponseEntity.ok(contractService.uploadContractFile(contractId, file));
+    // }
 
 
 }

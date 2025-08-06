@@ -30,4 +30,32 @@ public class ContractResponseDto {
     private String url;
     private String lenderSignature;
     private String borrowerSignature;
+
+    @Override
+    public String toString() {
+        return "ContractResponseDto{" +
+            "id=" + id +
+            ", itemName='" + itemName + '\'' +
+            ", specifications='" + specifications + '\'' +
+            ", quantity=" + quantity +
+            ", condition='" + condition + '\'' +
+            ", notes='" + notes + '\'' +
+            ", rentalEndDate=" + rentalEndDate +
+            ", rentalPlace='" + rentalPlace + '\'' +
+            ", rentalDetailAddress='" + rentalDetailAddress + '\'' +
+            ", returnDate=" + returnDate +
+            ", returnPlace='" + returnPlace + '\'' +
+            ", returnDetailAddress='" + returnDetailAddress + '\'' +
+            ", rentalFee=" + rentalFee +
+            ", paymentDate=" + paymentDate +
+            ", lateInterestRate=" + lateInterestRate +
+            ", latePenaltyRate=" + latePenaltyRate +
+            ", damageCompensationRate=" + damageCompensationRate +
+            ", lenderApproval=" + lenderApproval +
+            ", borrowerApproval=" + borrowerApproval +
+            ", url='" + url + '\'' +
+            ", lenderSignature='" + lenderSignature + '\'' +
+            ", borrowerSignature='" + borrowerSignature + '\'' +
+            '}';
+    }
 }
