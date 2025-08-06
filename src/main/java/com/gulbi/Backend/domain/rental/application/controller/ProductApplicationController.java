@@ -1,10 +1,13 @@
 package com.gulbi.Backend.domain.rental.application.controller;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
 import com.gulbi.Backend.domain.rental.application.code.ApplicationSuccessCode;
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationCalendarResponse;
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationCreateRequest;
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationDayResponse;
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusResponse;
 import com.gulbi.Backend.domain.rental.application.service.ApplicationService;
 import com.gulbi.Backend.domain.rental.product.code.ProductSuccessCode;
@@ -41,15 +44,20 @@ public class ProductApplicationController {
         @PathVariable("date") YearMonth yearMonth
     ){
         //임시 응답 코드.. ToDo: 응답코드 변경
-        List<ApplicationStatusResponse> responseData = applicationService.getApplicationsByYearMonth(yearMonth, productId);
+        ApplicationCalendarResponse responseData = applicationService.getApplicationsByYearMonth(yearMonth, productId);
         RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,responseData);
         return ResponseEntity.ok(response);
 
     }
-
-    // @GetMapping("/dates/{productId}/{date}")
-    // public ResponseEntity<RestApiResponse> getApplicationByDate(){
-    //
-    // }
+    //ToDo: 룰..적용..
+    @GetMapping("/dates/{productId}/{date}")
+    public ResponseEntity<RestApiResponse> getApplicationByDate(
+        @PathVariable("productId") Long productId,
+        @PathVariable("date") LocalDate date
+    ){
+        ApplicationDayResponse data = applicationService.getApplicationsByDate(date, productId);
+        RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,data);
+        return ResponseEntity.ok(response);
+    }
 
 }
