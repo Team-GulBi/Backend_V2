@@ -1,9 +1,12 @@
 package com.gulbi.Backend.domain.rental.application.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusDetailResponse;
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusProjection;
+import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusResponse;
 import com.gulbi.Backend.domain.rental.application.entity.Application;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,5 +35,23 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 		// 입력받은 월의 마지막 시각 (예: 2025-08-31T23:59:59)
 		@Param("endOfMonth") LocalDateTime endOfMonth
 	);
+
+
+	@Query("""
+    SELECT new com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusDetailResponse(
+        a.startDate, a.endDate, a.status, a.id
+    )
+    FROM Application a
+    WHERE a.product.id = :productId
+    AND FUNCTION('DATE', a.startDate) = :date
+""")
+	List<ApplicationStatusDetailResponse> findByProductIdAndDate(
+		@Param("productId") Long productId,
+		@Param("date") LocalDate date
+	);
+
+
+
+
 
 }
