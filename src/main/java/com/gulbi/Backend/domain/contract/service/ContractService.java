@@ -1,5 +1,6 @@
 package com.gulbi.Backend.domain.contract.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.gulbi.Backend.domain.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.dto.ContractResponseDto;
 import com.gulbi.Backend.domain.contract.dto.ContractSummaryDto;
@@ -41,17 +42,8 @@ public class ContractService {
     private final JwtUtil jwtUtil;
     private final S3Uploader s3Uploader;
 
-    // JWT에서 현재 로그인한 유저 추출
-    public User getAuthenticatedUser() {
-        Long userId = jwtUtil.extractUserIdFromRequest();
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
-    }
-
     // 계약 및 예약 생성
     public void createContract(Long productId, ContractCreateRequest contractCreateRequest,ApplicationCreateRequest applicationCreateRequest) {
-
-
         // 요청을 보낸 사용자 (borrower)
         User borrower = getAuthenticatedUser();
         // ToDo: void -> Application
@@ -87,6 +79,14 @@ public class ContractService {
         contractRepository.save(contract);
     }
 
+    public ContractResponseDto getContractByApplicationId(Long applicationId){
+        //ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
+        Contract contract = contractRepository.findByApplicationId(applicationId)
+            .orElseThrow(() -> new NotFoundException("해당 계약서를 찾을 수 없습니다."));
+        return convertToDetailDto(contract);
+    }
+
+
     // 대여인 승인 상태 변경
     public ContractResponseDto updateLenderApproval(Long contractId) {
         User currentUser = getAuthenticatedUser();
@@ -100,7 +100,7 @@ public class ContractService {
 
         contract.approveByLender();
         contractRepository.save(contract);
-
+        // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
         return convertToDetailDto(contract);
     }
 
@@ -117,13 +117,14 @@ public class ContractService {
 
         contract.approveByBorrower();
         contractRepository.save(contract);
-
+        // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
         return convertToDetailDto(contract);
     }
 
 
     // 특정 계약 조회 (상세 정보)
     public Optional<ContractResponseDto> getContractById(Long contractId) {
+        // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
         return contractRepository.findById(contractId)
                 .map(this::convertToDetailDto);
     }
@@ -132,6 +133,7 @@ public class ContractService {
     public List<ContractSummaryDto> getContractsByLender(Long lenderId) {
         User lender = userRepository.findById(lenderId)
                 .orElseThrow(() -> new RuntimeException("대여인을 찾을 수 없습니다."));
+        // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
         return contractRepository.findByLender(lender).stream()
                 .map(this::convertToSummaryDto)
                 .collect(Collectors.toList());
@@ -141,6 +143,7 @@ public class ContractService {
     public List<ContractSummaryDto> getContractsByBorrower(Long borrowerId) {
         User borrower = userRepository.findById(borrowerId)
                 .orElseThrow(() -> new RuntimeException("차용인을 찾을 수 없습니다."));
+        // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
         return contractRepository.findByBorrower(borrower).stream()
                 .map(this::convertToSummaryDto)
                 .collect(Collectors.toList());
@@ -150,6 +153,7 @@ public class ContractService {
     public List<ContractSummaryDto> getContractsByApplication(Long applicationId) {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("해당 신청을 찾을 수 없습니다."));
+        // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
         return contractRepository.findByApplication(application).stream()
                 .map(this::convertToSummaryDto)
                 .collect(Collectors.toList());
@@ -179,6 +183,7 @@ public class ContractService {
 
 
     // Contract → ContractSummaryDto 변환 (전체 조회용)
+    // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
     private ContractSummaryDto convertToSummaryDto(Contract contract) {
         ContractSummaryDto dto = new ContractSummaryDto();
         dto.setId(contract.getId());
@@ -190,6 +195,7 @@ public class ContractService {
     }
 
     // Contract → ContractResponseDto 변환 (상세 조회용)
+    // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
     private ContractResponseDto convertToDetailDto(Contract contract) {
         ContractResponseDto dto = new ContractResponseDto();
         dto.setId(contract.getId());
@@ -228,6 +234,12 @@ public class ContractService {
             );
         }
         return dto;
+    }
+
+    private User getAuthenticatedUser() {
+        Long userId = jwtUtil.extractUserIdFromRequest();
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
     }
 
 }
