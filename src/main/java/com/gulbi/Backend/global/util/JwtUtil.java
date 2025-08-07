@@ -33,11 +33,25 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
+    public String generateToken(String email, Long userId) {
+        return Jwts.builder()
+            .setClaims(createClaims(userId))
+            .setSubject(email)
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+            .compact();
+    }
 
     private Map<String, Object> createClaims(Long userId, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId);
         claims.put("role", role);
+        return claims;
+    }
+    private Map<String, Object> createClaims(Long userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userId);
         return claims;
     }
 

@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.user.entity;
 
 import com.gulbi.Backend.domain.chat.room.entity.ChatRoom;
-import com.gulbi.Backend.domain.user.dto.RegisterRequestDto;
+import com.gulbi.Backend.domain.user.dto.RegisterRequest;
 import com.gulbi.Backend.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,7 +46,7 @@ public class User extends BaseEntity {
 
     // 빌더 패턴을 사용해 DTO 기반 객체 생성
     @Builder
-    public static User fromDto(RegisterRequestDto dto, String encodedPassword) {
+    public static User fromDto(RegisterRequest dto, String encodedPassword) {
         return User.builder()
                 .nickname(dto.getNickname())
                 .email(dto.getEmail())
