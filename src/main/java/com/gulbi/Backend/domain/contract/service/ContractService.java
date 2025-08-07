@@ -4,7 +4,7 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import com.gulbi.Backend.domain.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.dto.ContractResponseDto;
 import com.gulbi.Backend.domain.contract.dto.ContractSummaryDto;
-import com.gulbi.Backend.domain.contract.dto.ContractUpdateCommand;
+import com.gulbi.Backend.domain.contract.dto.LenderApprovalCommand;
 import com.gulbi.Backend.domain.contract.entity.Contract;
 import com.gulbi.Backend.domain.contract.repository.ContractRepository;
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationCreateRequest;
@@ -12,12 +12,11 @@ import com.gulbi.Backend.domain.rental.application.entity.Application;
 import com.gulbi.Backend.domain.rental.application.entity.ApplicationStatus;
 import com.gulbi.Backend.domain.rental.application.repository.ApplicationRepository;
 import com.gulbi.Backend.domain.rental.application.service.ApplicationService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.repository.UserRepository;
 import com.gulbi.Backend.global.util.JwtUtil;
 import com.gulbi.Backend.global.util.S3Uploader;
-import java.io.IOException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -83,7 +82,7 @@ public class ContractService {
 
     // 대여인 승인 상태 변경
     //ToDo: contract 상태변경 + s3업로드 => 책임과 역할 분리..
-    public ContractResponseDto updateLenderApproval(ContractUpdateCommand command) {
+    public ContractResponseDto updateLenderApproval(LenderApprovalCommand command) {
 
         // ToDo: s3업로드 및 상태변경
         uploadContractFile(command);
@@ -173,7 +172,7 @@ public class ContractService {
     //
     // 계약서 파일 업로드
     //ToDo: 업로드랑 업데이트의 두가지 책임을 가지고 잇음.
-    public void uploadContractFile(ContractUpdateCommand command) {
+    public void uploadContractFile(LenderApprovalCommand command) {
         Long contractId = command.getContractId();
         MultipartFile contractImage = command.getFinalContractImage();
         User currentUser = getAuthenticatedUser();

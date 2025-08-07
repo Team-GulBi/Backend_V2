@@ -3,14 +3,10 @@ package com.gulbi.Backend.domain.contract.controller;
 import com.gulbi.Backend.domain.contract.code.ContractSuccessCode;
 import com.gulbi.Backend.domain.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.dto.ContractResponseDto;
-import com.gulbi.Backend.domain.contract.dto.ContractSummaryDto;
-import com.gulbi.Backend.domain.contract.dto.ContractUpdateCommand;
+import com.gulbi.Backend.domain.contract.dto.LenderApprovalCommand;
 import com.gulbi.Backend.domain.contract.service.ContractService;
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationCreateRequest;
 import com.gulbi.Backend.global.response.RestApiResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,7 +52,7 @@ public class ContractController {
     public ResponseEntity<RestApiResponse> updateLenderApproval(
         @PathVariable Long contractId,
         @RequestPart MultipartFile finalContract) {
-        ContractUpdateCommand command = new ContractUpdateCommand(finalContract,contractId);
+        LenderApprovalCommand command = new LenderApprovalCommand(finalContract,contractId);
         contractService.updateLenderApproval(command);
         RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_CREATE_SUCCESS);
         return ResponseEntity.ok(response);
