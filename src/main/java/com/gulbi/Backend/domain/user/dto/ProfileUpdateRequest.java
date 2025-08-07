@@ -1,13 +1,14 @@
 package com.gulbi.Backend.domain.user.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDto {
-    private String email;
-    private String password;
+@NoArgsConstructor
+@Builder
+public class ProfileUpdateRequest {
+    private String phone; // 전화번호
 }

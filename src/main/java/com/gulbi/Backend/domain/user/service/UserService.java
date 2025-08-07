@@ -1,12 +1,16 @@
 package com.gulbi.Backend.domain.user.service;
 
-import com.gulbi.Backend.domain.user.dto.LoginRequestDto;
-import com.gulbi.Backend.domain.user.dto.RegisterRequestDto;
+import com.gulbi.Backend.domain.user.dto.LoginRequest;
+import com.gulbi.Backend.domain.user.dto.ProfileCreateCommand;
+import com.gulbi.Backend.domain.user.dto.RegisterCommand;
+import com.gulbi.Backend.domain.user.dto.RegisterRequest;
 import com.gulbi.Backend.domain.user.entity.Profile;
-import com.gulbi.Backend.domain.user.repository.ProfileRepository;
+import com.gulbi.Backend.domain.user.repository.ProfileRepoService;
+import com.gulbi.Backend.domain.user.repository.UserRepoService;
 import com.gulbi.Backend.global.util.JwtUtil;
 import com.gulbi.Backend.domain.user.entity.User;
-import com.gulbi.Backend.domain.user.repository.UserRepository;
+
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,21 +18,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepoService userRepoService;
+    private final ProfileRepoService profileRepoService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
-    private final ProfileRepository profileRepository;
+    private final ProfileService profileService;
 
-    public void register(RegisterRequestDto request){
+    @Transactional
+    public void register(RegisterCommand command) throws IOException {
+        RegisterRequest request = command.getRegisterRequest();
         String encodedPassword = passwordEncoder.encode(request.getPassword()); // 객체 생성 전 인코딩 처리
 
         User user = User.builder()
@@ -37,18 +45,14 @@ public class UserService {
                 .password(encodedPassword) // 인코딩된 비번 넣기
                 .phoneNumber(request.getPhoneNumber())
                 .build();
-        userRepository.save(user);
+        userRepoService.save(user);
 
-        Profile profile = Profile.builder()
-                .user(user)
-                .build();
-        profileRepository.save(profile);
+        ProfileCreateCommand profileCreateCommand = new ProfileCreateCommand(user, command.getSignature());
+        profileService.createProfile(profileCreateCommand);
     }
 
-
-    public Map<String, String> login(LoginRequestDto request) {
-        authenticateUser(request.getEmail(), request.getPassword());
-
+    @Transactional(readOnly = true)
+    public Map<String, String> login(LoginRequest request) {
         User user = findByEmail(request.getEmail());
         Profile profile = findProfileByUser(user);
         String role = determineUserRole(profile);
@@ -60,38 +64,22 @@ public class UserService {
         response.put("token", token);
         response.put("id", String.valueOf(user.getId()));  // ID를 문자열로 변환하여 저장
 
+
         return response;
     }
 
-    public boolean isProfileComplete(Profile profile) {
-        return profile.getImage() != null && profile.getIntro() != null && profile.getPhone() != null &&
-                profile.getSignature() != null && profile.getSido() != null && profile.getSigungu() != null &&
-                profile.getBname() != null; //협의해야할듯 어떤필드 여부를 따질지
-    }
+    // public boolean isProfileComplete(Profile profile) {
+    //     return profile.getImage() != null && profile.getIntro() != null && profile.getPhone() != null &&
+    //             profile.getSignature() != null && profile.getSido() != null && profile.getSigungu() != null &&
+    //             profile.getBname() != null; //협의해야할듯 어떤필드 여부를 따질지
+    // }
 
     public User getAuthenticatedUser() {
         String email = getAuthenticatedEmail();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Authenticated User not found"));
+        return userRepoService.findByEmail(email);
     }
 
 
-    public User getDummyUser() {
-        // 유니크한 email을 생성하기 위해 UUID를 사용
-        String uniqueEmail = "user_" + UUID.randomUUID().toString() + "@example.com";
-        String uniquePhone = "010" + UUID.randomUUID().toString() + "5680";
-        String uniqueName = "김" + UUID.randomUUID().toString();
-        String uniquePassWord = "dsd" + UUID.randomUUID().toString();
-
-        User user = User.builder()
-                .email(uniqueEmail)  // 유니크한 email을 사용
-                .phoneNumber(uniquePhone)
-                .nickname(uniqueName)
-                .password(uniquePassWord)
-                .build();
-        userRepository.save(user);
-        return user;
-    }
     private String getAuthenticatedEmail() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -102,17 +90,17 @@ public class UserService {
         }
     }
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        return userRepoService.findByEmail(email);
+
     }
     public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return userRepoService.findById(id);
+
     }
     // 닉네임 반환 메서드 (ID 기반)
     public String getNicknameById(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        User user = userRepoService.findById(userId);
+
         return user.getNickname();
     }
     //Spring Security 인증 처리
@@ -121,12 +109,13 @@ public class UserService {
     }
     //프로필 조회
     private Profile findProfileByUser(User user) {
-        return profileRepository.findByUser(user).orElse(null);
+        return profileRepoService.findByUser(user);
     }
-    //jwt role 결정
+
     private String determineUserRole(Profile profile) {
-        return (profile == null || !isProfileComplete(profile)) ? "ROLE_INCOMPLETED_USER" : "ROLE_COMPLETED_USER";
+        return "ROLE_COMPLETED_USER";
     }
+
 
 
 }

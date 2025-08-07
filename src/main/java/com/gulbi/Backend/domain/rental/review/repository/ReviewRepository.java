@@ -22,7 +22,6 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "r.content AS content, " +
             "r.rating AS rating, " +
             "u.nickname AS nickName, " +
-            "p.image AS profileImage, " +
             "(SELECT AVG(r.rating) FROM Review r WHERE r.product.id =:productId) AS averageRating " +
             "FROM Review r " +
             "JOIN User u ON u.id = r.user.id " +

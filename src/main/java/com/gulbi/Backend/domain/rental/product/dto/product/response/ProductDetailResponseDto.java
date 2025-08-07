@@ -34,10 +34,10 @@ public class ProductDetailResponseDto {
 
     private final List<ReviewWithAvgProjection> reviews;
 
-    private final ImageUrl userPhoto;
+    // private final ImageUrl userPhoto;
     private final String userNickname;
 
-    public static ProductDetailResponseDto of(ProductDto product, ProductImageDtoCollection images, List<ReviewWithAvgProjection> reviews,ImageUrl userPhoto, String nickName) {
+    public static ProductDetailResponseDto of(ProductDto product, ProductImageDtoCollection images, List<ReviewWithAvgProjection> reviews, String nickName) {
         return ProductDetailResponseDto.builder()
                 .tag(product.getTag())
                 .title(product.getTitle())
@@ -54,7 +54,7 @@ public class ProductDetailResponseDto {
                 .created_at(LocalDateTime.now())
                 .images(images)
                 .reviews(reviews)
-                .userPhoto(userPhoto)
+                // .userPhoto(userPhoto)
                 .userNickname(nickName)
                 .build();
     }
