@@ -8,10 +8,15 @@ import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusDetailRe
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusProjection;
 import com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusResponse;
 import com.gulbi.Backend.domain.rental.application.entity.Application;
+import com.gulbi.Backend.domain.rental.application.entity.ApplicationStatus;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
@@ -49,6 +54,15 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 		@Param("productId") Long productId,
 		@Param("date") LocalDate date
 	);
+
+	@Transactional
+	@Modifying
+	@Query(value = """
+	UPDATE Application a
+	SET a.status = :status
+	WHERE a.id = :applicationId
+""")
+	void updateApplcationStatus(@Param("applicationId") Long applicationId, @Param("status")ApplicationStatus status);
 
 
 
