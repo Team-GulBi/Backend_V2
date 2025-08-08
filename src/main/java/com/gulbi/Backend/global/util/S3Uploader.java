@@ -20,7 +20,6 @@ public class S3Uploader {
     private String bucketName;
 
     public String uploadFile(MultipartFile file, String folder) throws IOException {
-        try {
             // 고유한 파일 이름 생성
             String uniqueFileName = folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
@@ -34,8 +33,5 @@ public class S3Uploader {
 
             // 업로드된 파일의 URL 반환
             return s3Client.getUrl(bucketName, uniqueFileName).toString();
-        }catch (Exception e){
-            throw new RuntimeException("수정해야 합니다, 임시 에러코드");
-        }
     }
 }

@@ -34,6 +34,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getMetaData().getResponseApiCode().getStatus()).body(response);
 
     }
+    // @ExceptionHandler(InfrastructureException.class)
+    // public  ResponseEntity<RestApiResponse> handleInfraException(InfrastructureException e){
+    //
+    // }
 
 
 }
