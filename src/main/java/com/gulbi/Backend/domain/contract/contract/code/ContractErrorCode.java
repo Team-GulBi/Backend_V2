@@ -9,7 +9,7 @@ public enum ContractErrorCode implements ResponseApiCode {
 
 	CONTRACT_NOT_FOUND(HttpStatus.NOT_FOUND, "C100", "계약서를 찾을 수 없습니다."),
 	CONTRACT_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "C101", "계약서 삭제에 실패했습니다."),
-	CONTRACT_REPO_ERROR (HttpStatus.INTERNAL_SERVER_ERROR, "C102", "계약서 관련작업 중 DB에 문제가 발생 했습니다.");
+	CURRENT_USER_NOT_PERMISSION(HttpStatus.INTERNAL_SERVER_ERROR, "C102", "해당 작업을 수행 할 권한이 없습니다.");
 
 	private final HttpStatus status;
 	private final String code;
