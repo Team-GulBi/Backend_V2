@@ -1,0 +1,97 @@
+package com.gulbi.Backend.domain.contract.application.service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.List;
+
+import com.gulbi.Backend.domain.contract.application.dto.ApplicationCalendarResponse;
+import com.gulbi.Backend.domain.contract.application.dto.ApplicationCreateRequest;
+import com.gulbi.Backend.domain.contract.application.dto.ApplicationDayResponse;
+import com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusDetailResponse;
+import com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusResponse;
+import com.gulbi.Backend.domain.contract.application.entity.Application;
+import com.gulbi.Backend.domain.contract.application.repository.ApplicationRepository;
+import com.gulbi.Backend.domain.rental.product.entity.Product;
+import com.gulbi.Backend.domain.rental.product.repository.ProductRepository;
+import com.gulbi.Backend.domain.user.entity.User;
+import com.gulbi.Backend.domain.user.repository.UserRepository;
+import com.gulbi.Backend.domain.user.service.UserService;
+import com.gulbi.Backend.global.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class ApplicationService {
+    private final ApplicationRepository applicationRepository;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final UserService userService;
+    //ToDo: 겹치는 로직을 템플릿 메서드로 빼보자.(상품 유효성 검사, 유저 유효성 검사), 예외처리 일관성을 위해 CrudService를 쓰자
+
+    public Application createApplication(Long productId, ApplicationCreateRequest dto) {
+
+        Long userId = jwtUtil.extractUserIdFromRequest();
+
+        // => ToDo: 유효성 검사
+        User user = userRepository //빌리려는 사람 엔티티
+            .findById(userId)
+            .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        Product product = productRepository.findProductById(productId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
+
+        Application application = new Application(product, user, dto.getStartDate(), dto.getEndDate());
+
+        return applicationRepository.save(application);
+    }
+
+    public ApplicationCalendarResponse getApplicationsByYearMonth(YearMonth yearMonth, Long productId){
+        //년월에서 해당 월에 첫번째일 즉 1일을 넣어서
+        LocalDateTime startOfMonth = yearMonth.atDay(1).atStartOfDay();
+        //해당 년원에 마지막 일을
+        LocalDateTime endOfMonth = yearMonth.atEndOfMonth().atTime(LocalTime.MAX);
+        //Native쿼리는 DTO맵핑이 바로 불가능 하기 때문에, Projection -> dto 변환 방식 사용
+        //Projection이랑 Dto랑 로직적으로 강한 결합이 있기 때문에, Dto안에 from을 두어서 변환하도록 하였음.
+        List<ApplicationStatusResponse> status = ApplicationStatusResponse.from(applicationRepository.findReservationStatusByMonth(productId, startOfMonth, endOfMonth));
+        status.stream().forEach(item -> System.out.println(item.toString()));
+
+        //productId를 기반으로 상품을 조회하고 거기에 있는 유저 정보를 뽑아냄. JWT 유저와 비교했을때 같으면 오너 아니면 게스트
+        User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
+        Product product = productRepository.findProductById(productId).orElseThrow();
+        User productOwner = product.getUser(); // 상품 등록자
+        boolean isOwner;
+        if(authenticatedUser.getId().equals(productOwner.getId())){
+            isOwner=true;
+        }
+        else
+            isOwner=false;
+
+        ApplicationCalendarResponse response = new ApplicationCalendarResponse(status,isOwner);
+
+
+        return response;
+    }
+
+    public ApplicationDayResponse getApplicationsByDate(LocalDate date, Long productId){
+
+        User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
+        Product product = productRepository.findProductById(productId).orElseThrow();
+        User productOwner = product.getUser(); // 상품 등록자
+        boolean isOwner;
+        if(authenticatedUser.getId().equals(productOwner.getId())){
+            isOwner=true;
+        }
+        else
+            isOwner=false;
+        List<ApplicationStatusDetailResponse> status = applicationRepository.findByProductIdAndDate(productId, date);
+        ApplicationDayResponse response = new ApplicationDayResponse(status,isOwner);
+        return response;
+
+
+
+    }
+}
