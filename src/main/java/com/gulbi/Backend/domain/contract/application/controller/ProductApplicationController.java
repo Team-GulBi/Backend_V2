@@ -41,20 +41,20 @@ public class ProductApplicationController {
         @PathVariable("productId") Long productId,
         @PathVariable("date") YearMonth yearMonth
     ){
-        //임시 응답 코드.. ToDo: 응답코드 변경
-        ApplicationCalendarResponse responseData = applicationService.getApplicationsByYearMonth(yearMonth, productId);
-        RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,responseData);
+        //임시 응답 코드.. ToDo: 응답코드 변경,
+        ApplicationCalendarResponse data = applicationService.getApplicationsByYearMonth(yearMonth, productId);
+        RestApiResponse response = new RestApiResponse(ApplicationSuccessCode.APPLICATION_FOUND_SUCCESS,data);
         return ResponseEntity.ok(response);
 
     }
-    //ToDo: 룰..적용..
+
     @GetMapping("/dates/{productId}/{date}")
     public ResponseEntity<RestApiResponse> getApplicationByDate(
         @PathVariable("productId") Long productId,
         @PathVariable("date") LocalDate date
     ){
         ApplicationDayResponse data = applicationService.getApplicationsByDate(date, productId);
-        RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,data);
+        RestApiResponse response = new RestApiResponse(ApplicationSuccessCode.APPLICATION_FOUND_SUCCESS,data);
         return ResponseEntity.ok(response);
     }
 
