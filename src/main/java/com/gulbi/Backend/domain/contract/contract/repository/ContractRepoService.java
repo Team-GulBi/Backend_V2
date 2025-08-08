@@ -10,6 +10,7 @@ import com.gulbi.Backend.domain.contract.contract.entity.Contract;
 import com.gulbi.Backend.domain.contract.contract.exception.ContractException;
 import com.gulbi.Backend.global.error.DatabaseException;
 import com.gulbi.Backend.global.error.ExceptionMetaDataFactory;
+import com.gulbi.Backend.global.error.InfraErrorCode;
 
 import jakarta.persistence.PersistenceException;
 
@@ -28,7 +29,7 @@ public class ContractRepoService {
 		} catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException |
 				 PersistenceException exception) {
 			throw new DatabaseException(
-				ExceptionMetaDataFactory.of(applicationId, className, exception, ContractErrorCode.CONTRACT_REPO_ERROR)
+				ExceptionMetaDataFactory.of(applicationId, className, exception, InfraErrorCode.DB_EXCEPTION)
 			);//InfrastructureException
 		}
 	}
@@ -41,7 +42,7 @@ public class ContractRepoService {
 				));//BusinessException
 		}catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException | PersistenceException exception){
 				throw new DatabaseException(
-					ExceptionMetaDataFactory.of(contractId, className,exception,ContractErrorCode.CONTRACT_REPO_ERROR)
+					ExceptionMetaDataFactory.of(contractId, className,exception,InfraErrorCode.DB_EXCEPTION)
 				);//InfrastructureException
 		}
 
@@ -52,7 +53,7 @@ public class ContractRepoService {
 			return contractRepository.save(contract);
 		}catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException | PersistenceException exception){
 			throw new DatabaseException(
-				ExceptionMetaDataFactory.of(contract, className,exception,ContractErrorCode.CONTRACT_REPO_ERROR)
+				ExceptionMetaDataFactory.of(contract, className,exception,InfraErrorCode.DB_EXCEPTION)
 			);//InfrastructureException
 		}
 
@@ -63,7 +64,7 @@ public class ContractRepoService {
 		} catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException |
 				 PersistenceException exception) {
 			throw new DatabaseException(
-				ExceptionMetaDataFactory.of(contractId, className, exception, ContractErrorCode.CONTRACT_REPO_ERROR)
+				ExceptionMetaDataFactory.of(contractId, className, exception, InfraErrorCode.DB_EXCEPTION)
 			);//InfrastructureException
 		}
 	}
