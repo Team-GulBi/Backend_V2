@@ -7,8 +7,8 @@ import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewRespon
 import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductSearchRequestDto;
 import com.gulbi.Backend.domain.rental.product.dto.product.response.ProductDetailResponseDto;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
-import com.gulbi.Backend.domain.rental.product.service.image.ImageCrudService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.logging.ProductLogHandler;
 import com.gulbi.Backend.domain.rental.product.service.product.search.strategy.search.ProductSearchStrategy;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvgProjection;
@@ -27,8 +27,8 @@ import java.util.Optional;
 public class ProductSearchServiceImpl implements ProductSearchService {
 
 
-    private final ProductCrudService productCrudService;
-    private final ImageCrudService imageCrudService;
+    private final ProductRepoService productRepoService;
+    private final ImageRepoService imageRepoService;
     private final ReviewService reviewService;
     private final ProfileService profileService;
 
@@ -38,10 +38,10 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private final ProductLogHandler productLogHandler;
 
     @Autowired
-    public ProductSearchServiceImpl(ProductLogHandler productLogHandler, ProductCrudService productCrudService, ImageCrudService imageCrudService, ReviewService reviewService, ProfileService profileService, Map<String, ProductSearchStrategy> productSearchStrategies) {
+    public ProductSearchServiceImpl(ProductLogHandler productLogHandler, ProductRepoService productRepoService, ImageRepoService imageRepoService, ReviewService reviewService, ProfileService profileService, Map<String, ProductSearchStrategy> productSearchStrategies) {
         this.productLogHandler = productLogHandler;
-        this.productCrudService = productCrudService;
-        this.imageCrudService = imageCrudService;
+        this.productRepoService = productRepoService;
+        this.imageRepoService = imageRepoService;
         this.reviewService = reviewService;
         this.profileService = profileService;
         this.productSearchStrategies = productSearchStrategies;
@@ -69,11 +69,11 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
 
     private ProductDto getProductById(Long productId) {
-        return productCrudService.getProductDtoById(productId);
+        return productRepoService.getProductDtoById(productId);
     }
 
     private ProductImageDtoCollection getProductImagesByProductId(Long productId) {
-        return imageCrudService.getImageByProductId(productId);
+        return imageRepoService.getImageByProductId(productId);
     }
 
     private List<ReviewWithAvgProjection> getProductReviewsByProductId(Long productId) {

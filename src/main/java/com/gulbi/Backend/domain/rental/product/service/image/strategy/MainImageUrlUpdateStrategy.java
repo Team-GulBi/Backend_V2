@@ -7,15 +7,16 @@ import org.springframework.stereotype.Component;
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductMainImageUpdateDto;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.service.image.ImageCrudService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
+
 @Component
 public class MainImageUrlUpdateStrategy extends AbstractImageUpdateStrategy{
-	private final ImageCrudService imageCrudService;
+	private final ImageRepoService imageRepoService;
 
-	public MainImageUrlUpdateStrategy(ImageCrudService imageCrudService, ProductCrudService productCrudService) {
-		super(productCrudService);
-		this.imageCrudService = imageCrudService;
+	public MainImageUrlUpdateStrategy(ImageRepoService imageRepoService, ProductRepoService productRepoService) {
+		super(productRepoService);
+		this.imageRepoService = imageRepoService;
 	}
 
 	@Override
@@ -27,12 +28,12 @@ public class MainImageUrlUpdateStrategy extends AbstractImageUpdateStrategy{
 	public void update(ProductImageUpdateCommand command) {
 		Long productId = command.getProductId();
 		Product product = resolveProduct(productId);
-		imageCrudService.clearMainImageFlags(product);
+		imageRepoService.clearMainImageFlags(product);
 		ProductMainImageUpdateDto productMainImageUpdateDto = ProductMainImageUpdateDto.of(productId, command.getToBeUpdatedMainImageWithUrl().getMainImageUrl());
 		handleUpdatedMainImageWithUrl(productMainImageUpdateDto);
 	}
 	private void handleUpdatedMainImageWithUrl(ProductMainImageUpdateDto dto) {
-		imageCrudService.updateMainImageFlags(dto);
-		productCrudService.updateProductMainImage(dto);
+		imageRepoService.updateMainImageFlags(dto);
+		productRepoService.updateProductMainImage(dto);
 	}
 }

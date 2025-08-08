@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 import com.gulbi.Backend.domain.rental.product.dto.product.request.register.NewProductImageRequest;
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.service.image.ImageCrudService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrlCollection;
 @Component
 public class ImageUploadStrategy extends AbstractImageUpdateStrategy{
-	private final ImageCrudService imageCrudService;
-	public ImageUploadStrategy(ProductCrudService productCrudService, ImageCrudService imageCrudService) {
-		super(productCrudService);
-		this.imageCrudService = imageCrudService;
+	private final ImageRepoService imageRepoService;
+	public ImageUploadStrategy(ProductRepoService productRepoService, ImageRepoService imageRepoService) {
+		super(productRepoService);
+		this.imageRepoService = imageRepoService;
 	}
 
 	@Override
@@ -32,9 +32,9 @@ public class ImageUploadStrategy extends AbstractImageUpdateStrategy{
 	}
 
 	private ImageUrlCollection uploadImagesToS3(NewProductImageRequest request){
-		return imageCrudService.uploadImagesToS3(request.getProductImageCollection());
+		return imageRepoService.uploadImagesToS3(request.getProductImageCollection());
 	}
 	private void updateNewImage(ImageUrlCollection uploadedImages, Product product){
-		imageCrudService.registerImagesWithProduct(uploadedImages, product);
+		imageRepoService.registerImagesWithProduct(uploadedImages, product);
 	}
 }

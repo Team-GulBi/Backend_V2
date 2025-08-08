@@ -5,8 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class ReviewUpdateRequestDto {
-    private final Long reviewId;
+public class ReviewUpdateRequest {
     private final Integer rating;
     private final String content;
 }

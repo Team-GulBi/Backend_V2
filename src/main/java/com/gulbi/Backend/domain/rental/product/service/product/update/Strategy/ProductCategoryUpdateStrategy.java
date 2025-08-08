@@ -3,19 +3,19 @@ package com.gulbi.Backend.domain.rental.product.service.product.update.Strategy;
 import org.springframework.stereotype.Component;
 
 import com.gulbi.Backend.domain.rental.product.dto.category.CategoryInProductDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.update.ProductCategoryUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductContentUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.service.category.CategoryBusinessService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
+
 @Component
 public class ProductCategoryUpdateStrategy implements ProductUpdateStrategy{
 	private final CategoryBusinessService categoryBusinessService;
-	private final ProductCrudService productCrudService;
+	private final ProductRepoService productRepoService;
 
 	public ProductCategoryUpdateStrategy(CategoryBusinessService categoryBusinessService,
-		ProductCrudService productCrudService) {
+		ProductRepoService productRepoService) {
 		this.categoryBusinessService = categoryBusinessService;
-		this.productCrudService = productCrudService;
+		this.productRepoService = productRepoService;
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class ProductCategoryUpdateStrategy implements ProductUpdateStrategy{
 	@Override
 	public void update(ProductContentUpdateCommand command) {
 		validateCategories(command);
-		productCrudService.updateProductCategories(command);
+		productRepoService.updateProductCategories(command);
 	}
 
 	//카테고리 유효성 검사.

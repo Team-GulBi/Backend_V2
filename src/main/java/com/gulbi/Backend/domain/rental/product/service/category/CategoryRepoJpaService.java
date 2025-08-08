@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryCrudServiceImpl implements CategoryCrudService {
+public class CategoryRepoJpaService implements CategoryRepoService {
 
     private final CategoryRepository categoryRepository;
     private final String className = this.getClass().getName();

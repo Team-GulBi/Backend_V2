@@ -1,9 +1,9 @@
 package com.gulbi.Backend.domain.rental.review.service;
 
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.review.code.ReviewErrorCode;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateRequestDto;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateRequest;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvgProjection;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
 import com.gulbi.Backend.domain.rental.review.exception.ReviewException;
@@ -19,10 +19,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewCrudServiceImpl implements ReviewCrudService {
+public class ReviewRepoJpaService implements ReviewRepoService {
 
     private final ReviewRepository reviewRepository;
-    private final ProductCrudService productCrudService;
+    private final ProductRepoService productRepoService;
 
     @Override
     public void saveReview(Review review) {
@@ -46,11 +46,11 @@ public class ReviewCrudServiceImpl implements ReviewCrudService {
     }
 
     @Override
-    public void updateReview(ReviewUpdateRequestDto reviewUpdateRequestDto) {
+    public void updateReview(ReviewUpdateRequest reviewUpdateRequest) {
         reviewRepository.updateReviewInfo(
-                reviewUpdateRequestDto.getRating(),
-                reviewUpdateRequestDto.getContent(),
-                reviewUpdateRequestDto.getReviewId()
+                reviewUpdateRequest.getRating(),
+                reviewUpdateRequest.getContent(),
+                reviewUpdateRequest.getReviewId()
         );
     }
 
@@ -60,7 +60,7 @@ public class ReviewCrudServiceImpl implements ReviewCrudService {
     }
 
     private Product resolveProduct(Long productId) {
-        return productCrudService.getProductById(productId);
+        return productRepoService.getProductById(productId);
     }
 
     private void createDatabaseErrorException(Review review, String className, Throwable throwable) {

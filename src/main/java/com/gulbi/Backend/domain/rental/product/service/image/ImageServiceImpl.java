@@ -3,12 +3,9 @@ package com.gulbi.Backend.domain.rental.product.service.image;
 import java.util.List;
 
 import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductMainImageUpdateDto;
-import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.image.strategy.ImageUpdateStrategy;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrlCollection;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
-    private final ImageCrudService imageCrudService;
-    private final ProductCrudService productCrudService;
+    private final ImageRepoService imageRepoService;
+    private final ProductRepoService productRepoService;
     private final List<ImageUpdateStrategy> imageUpdateStrategies;
     @Override
     public void updateProductImages(ProductImageUpdateCommand command) {

@@ -9,7 +9,7 @@ import com.gulbi.Backend.domain.rental.product.dto.ProductImageDtoCollection;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageCollection;
 import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
 
-public interface ImageCrudService {
+public interface ImageRepoService {
     public void registerImagesWithProduct(ImageUrlCollection imageUrlCollection, Product product);
     public ProductImageDtoCollection getImageByProductId(Long productId);
     void saveMainImage(ImageUrl mainImageUrl, Product product);

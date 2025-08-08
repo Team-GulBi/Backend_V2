@@ -9,7 +9,7 @@ import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ImageException;
 import com.gulbi.Backend.domain.rental.product.factory.ImageFactory;
 import com.gulbi.Backend.domain.rental.product.repository.ImageRepository;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageCollection;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrlCollection;
@@ -28,10 +28,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class ImageCrudServiceImpl implements ImageCrudService {
+public class ImageRepoJpaService implements ImageRepoService {
     private final String className = this.getClass().getName();
     private final ImageRepository imageRepository;
-    private final ProductCrudService productCrudService;
+    private final ProductRepoService productRepoService;
     private final S3Uploader s3Uploader;
 
     @Override
@@ -114,7 +114,7 @@ public class ImageCrudServiceImpl implements ImageCrudService {
     }
 
     private Product resolveProduct(Long productId) {
-        return productCrudService.getProductById(productId);
+        return productRepoService.getProductById(productId);
     }
 
     private ImageException.NotUploadImageToS3Exception createImageUploadException(Object args, Exception e) {

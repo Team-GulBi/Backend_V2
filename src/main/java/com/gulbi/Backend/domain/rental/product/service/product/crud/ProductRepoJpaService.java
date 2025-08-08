@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
-public class ProductCrudServiceImpl implements ProductCrudService {
+public class ProductRepoJpaService implements ProductRepoService {
     private final String className = this.getClass().getName();
     private final ProductRepository productRepository;
 

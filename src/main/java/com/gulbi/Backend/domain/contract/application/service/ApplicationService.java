@@ -14,7 +14,7 @@ import com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusRespon
 import com.gulbi.Backend.domain.contract.application.entity.Application;
 import com.gulbi.Backend.domain.contract.application.repository.ApplicationRepoService;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.repository.UserRepoService;
 import com.gulbi.Backend.domain.user.service.UserService;
@@ -28,14 +28,14 @@ public class ApplicationService {
     private final ApplicationRepoService applicationRepoService;
     private final JwtUtil jwtUtil;
     private final UserRepoService userRepoService;
-    private final ProductCrudService productCrudService;
+    private final ProductRepoService productRepoService;
     private final UserService userService;
 
     public Application createApplication(Long productId, ApplicationCreateRequest dto) {
 
         Long userId = jwtUtil.extractUserIdFromRequest();
         User user = userRepoService.findById(userId);
-        Product product = productCrudService.getProductById(productId);
+        Product product = productRepoService.getProductById(productId);
         Application application = new Application(product, user, dto.getStartDate(), dto.getEndDate());
 
         return applicationRepoService.save(application);
@@ -53,7 +53,7 @@ public class ApplicationService {
 
         //productId를 기반으로 상품을 조회하고 거기에 있는 유저 정보를 뽑아냄. JWT 유저와 비교했을때 같으면 오너 아니면 게스트
         User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
-        Product product = productCrudService.getProductById(productId);
+        Product product = productRepoService.getProductById(productId);
         User productOwner = product.getUser(); // 상품 등록자
 
         ApplicationCalendarResponse response = new ApplicationCalendarResponse(status,isOwner(authenticatedUser, productOwner));
@@ -65,7 +65,7 @@ public class ApplicationService {
     public ApplicationDayResponse getApplicationsByDate(LocalDate date, Long productId){
 
         User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
-        Product product = productCrudService.getProductById(productId);
+        Product product = productRepoService.getProductById(productId);
         User productOwner = product.getUser();
         List<ApplicationStatusDetailResponse> status = applicationRepoService.findByProductIdAndDate(productId, date);
         ApplicationDayResponse response = new ApplicationDayResponse(status,isOwner(authenticatedUser, productOwner));

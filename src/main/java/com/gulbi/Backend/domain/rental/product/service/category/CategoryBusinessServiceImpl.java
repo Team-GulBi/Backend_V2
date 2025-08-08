@@ -9,19 +9,19 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CategoryBusinessServiceImpl implements CategoryBusinessService{
-    private final CategoryCrudService categoryCrudService;
+    private final CategoryRepoService categoryRepoService;
     @Override
     public CategoryInProductDto resolveCategories(Long bCategoryId, Long mCategoryId, Long sCategoryId) {
-        Category bCategory = categoryCrudService.getCategoryById(bCategoryId);
-        Category mCategory = categoryCrudService.getCategoryById(mCategoryId);
-        Category sCategory = categoryCrudService.getCategoryById(sCategoryId);
+        Category bCategory = categoryRepoService.getCategoryById(bCategoryId);
+        Category mCategory = categoryRepoService.getCategoryById(mCategoryId);
+        Category sCategory = categoryRepoService.getCategoryById(sCategoryId);
         return CategoryInProductDto.of(bCategory, mCategory, sCategory);
     }
     @Override
     public CategoryInProductDto resolveCategories(ProductCategoryUpdateRequest productCategoryUpdateRequest){
-        Category bCategory = categoryCrudService.getCategoryById(productCategoryUpdateRequest.getBCategoryId());
-        Category mCategory = categoryCrudService.getCategoryById(productCategoryUpdateRequest.getMCategoryId());
-        Category sCategory = categoryCrudService.getCategoryById(productCategoryUpdateRequest.getSCategoryId());
+        Category bCategory = categoryRepoService.getCategoryById(productCategoryUpdateRequest.getBCategoryId());
+        Category mCategory = categoryRepoService.getCategoryById(productCategoryUpdateRequest.getMCategoryId());
+        Category sCategory = categoryRepoService.getCategoryById(productCategoryUpdateRequest.getSCategoryId());
         return CategoryInProductDto.of(bCategory, mCategory, sCategory);
     }
 }

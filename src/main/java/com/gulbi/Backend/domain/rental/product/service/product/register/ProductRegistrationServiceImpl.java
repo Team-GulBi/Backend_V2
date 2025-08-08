@@ -5,8 +5,8 @@ import com.gulbi.Backend.domain.rental.product.dto.product.request.register.Prod
 import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductRegisterRequestDto;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.factory.ProductFactory;
-import com.gulbi.Backend.domain.rental.product.service.image.ImageCrudService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrlCollection;
 import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ProductRegistrationServiceImpl implements ProductRegistrationService{
-    private final ImageCrudService imageCrudService;
+    private final ImageRepoService imageRepoService;
     private final ProductFactory productFactory;
-    private final ProductCrudService productCrudService;
+    private final ProductRepoService productRepoService;
 
     @Override
     public Long registerProduct(ProductRegisterRequestDto productRegisterRequestDto, NewProductImageRequest newProductImageRequest, ProductMainImageCreateRequestDto productMainImageCreateRequestDto){
@@ -33,19 +33,19 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
     }
 
     private ImageUrlCollection uploadImages(ProductImageCollection productImageCollection){
-        return imageCrudService.uploadImagesToS3(productImageCollection);
+        return imageRepoService.uploadImagesToS3(productImageCollection);
     }
 
     private Product createWithRegisterRequestDto(ProductRegisterRequestDto productRegisterRequestDto){
         return productFactory.createWithRegisterRequestDto(productRegisterRequestDto);
     }
     private Long saveProduct(Product product){
-        return productCrudService.saveProduct(product);
+        return productRepoService.saveProduct(product);
     }
     private void saveImages(ImageUrlCollection imageUrlCollection, Product product){
-        imageCrudService.registerImagesWithProduct(imageUrlCollection,product);
+        imageRepoService.registerImagesWithProduct(imageUrlCollection,product);
     }
     private void saveMainImage(ImageUrl imageUrl, Product product){
-        imageCrudService.saveMainImage(imageUrl,product);
+        imageRepoService.saveMainImage(imageUrl,product);
     }
 }
