@@ -82,5 +82,11 @@ public class Application {
         return time;
     }
 
+    public void markAsUsing(){
+        this.status=ApplicationStatus.USING;
+    }
+    public void markAsRejected(){
+        this.status=ApplicationStatus.REJECTED;
+    }
 
 }

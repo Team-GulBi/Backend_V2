@@ -42,7 +42,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
 
 	@Query("""
-    SELECT new com.gulbi.Backend.domain.rental.application.dto.ApplicationStatusDetailResponse(
+    SELECT new com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusDetailResponse(
         a.startDate, a.endDate, a.status, a.id
     )
     FROM Application a

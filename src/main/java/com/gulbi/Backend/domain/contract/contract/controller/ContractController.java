@@ -2,7 +2,7 @@ package com.gulbi.Backend.domain.contract.contract.controller;
 
 import com.gulbi.Backend.domain.contract.contract.code.ContractSuccessCode;
 import com.gulbi.Backend.domain.contract.contract.dto.ContractCreateRequest;
-import com.gulbi.Backend.domain.contract.contract.dto.ContractResponseDto;
+import com.gulbi.Backend.domain.contract.contract.dto.ContractResponse;
 import com.gulbi.Backend.domain.contract.contract.dto.LenderApprovalCommand;
 import com.gulbi.Backend.domain.contract.contract.service.ContractService;
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationCreateRequest;
@@ -11,7 +11,6 @@ import com.gulbi.Backend.global.response.RestApiResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,7 +42,7 @@ public class ContractController {
 
     @GetMapping("/applications/{applicationId}")
     public ResponseEntity<RestApiResponse> getContractByApplication(@PathVariable("applicationId")Long applicationId){
-        ContractResponseDto data = contractService.getContractByApplicationId(applicationId);
+        ContractResponse data = contractService.getContractByApplicationId(applicationId);
         RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_FOUNDED_SUCCESS,data);
         return ResponseEntity.ok(response);
     }
