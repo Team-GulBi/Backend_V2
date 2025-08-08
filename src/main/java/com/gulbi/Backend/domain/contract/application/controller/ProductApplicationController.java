@@ -28,7 +28,7 @@ public class ProductApplicationController {
         this.applicationService = applicationService;
     }
 
-    @PostMapping
+    @PostMapping("/{productId}")
     public ResponseEntity<RestApiResponse> createApplication(@PathVariable("productId") Long productId,
                                                              @RequestBody ApplicationCreateRequest dto) {
         applicationService.createApplication(productId, dto);
