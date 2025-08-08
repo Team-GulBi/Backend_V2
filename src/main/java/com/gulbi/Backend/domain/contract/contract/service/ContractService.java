@@ -6,6 +6,7 @@ import com.gulbi.Backend.domain.contract.contract.dto.ContractResponseDto;
 import com.gulbi.Backend.domain.contract.contract.dto.ContractSummaryDto;
 import com.gulbi.Backend.domain.contract.contract.dto.LenderApprovalCommand;
 import com.gulbi.Backend.domain.contract.contract.entity.Contract;
+import com.gulbi.Backend.domain.contract.contract.repository.ContractRepoService;
 import com.gulbi.Backend.domain.contract.contract.repository.ContractRepository;
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationCreateRequest;
 import com.gulbi.Backend.domain.contract.application.entity.Application;
@@ -13,6 +14,7 @@ import com.gulbi.Backend.domain.contract.application.entity.ApplicationStatus;
 import com.gulbi.Backend.domain.contract.application.repository.ApplicationRepository;
 import com.gulbi.Backend.domain.contract.application.service.ApplicationService;
 import com.gulbi.Backend.domain.user.entity.User;
+import com.gulbi.Backend.domain.user.repository.UserRepoService;
 import com.gulbi.Backend.domain.user.repository.UserRepository;
 import com.gulbi.Backend.global.util.JwtUtil;
 import com.gulbi.Backend.global.util.S3Uploader;
@@ -30,8 +32,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class ContractService {
     private final ApplicationService applicationService;
     private final ApplicationRepository applicationRepository;
-    private final ContractRepository contractRepository;
-    private final UserRepository userRepository;
+    private final ContractRepoService contractRepoService;
+    private final UserRepoService userRepoService;
     private final JwtUtil jwtUtil;
     private final S3Uploader s3Uploader;
 
@@ -69,13 +71,12 @@ public class ContractService {
                 .borrowerApproval(true)  // 기본값 true, 해당 API생성 시점에 동의한걸로 간주함.
                 .build();
 
-        contractRepository.save(contract);
+        contractRepoService.save(contract);
     }
 
     public ContractResponseDto getContractByApplicationId(Long applicationId){
         //ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
-        Contract contract = contractRepository.findByApplicationId(applicationId)
-            .orElseThrow(() -> new NotFoundException("해당 계약서를 찾을 수 없습니다."));
+        Contract contract = contractRepoService.findByApplicationId(applicationId);
         return convertToDetailDto(contract);
     }
 
@@ -89,8 +90,7 @@ public class ContractService {
         // ToDo: contract 상태변경
         Long contractId = command.getContractId();
         User currentUser = getAuthenticatedUser();
-        Contract contract = contractRepository.findById(contractId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 계약을 찾을 수 없습니다."));
+        Contract contract = contractRepoService.findById(contractId);
 
         // 현재 유저가 계약의 lender인지 확인
         if (!contract.getLender().getId().equals(currentUser.getId())) {
@@ -98,7 +98,7 @@ public class ContractService {
         }
 
         contract.approveByLender();
-        contractRepository.save(contract);
+        contractRepoService.save(contract);
         //ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
 
         //ToDo: Application 상태 변경
@@ -108,68 +108,12 @@ public class ContractService {
     }
 
     public void rejectContraction(Long contractId){
-        Contract contract = contractRepository.findById(contractId).orElseThrow(() -> new org.webjars.NotFoundException("임시코드"));
+        Contract contract = contractRepoService.findById(contractId);
         Long applicationId = contract.getApplication().getId();
-        contractRepository.deleteById(contractId);
+        contractRepoService.deleteById(contractId);
         applicationRepository.updateApplcationStatus(applicationId,ApplicationStatus.REJECTED);
     }
 
-    // // 차용인
-    // public ContractResponseDto updateBorrowerApproval(Long contractId) {
-    //     User currentUser = getAuthenticatedUser();
-    //     Contract contract = contractRepository.findById(contractId)
-    //             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 계약을 찾을 수 없습니다."));
-    //
-    //     // 현재 유저가 계약의 lender인지 확인
-    //     if (!contract.getBorrower().getId().equals(currentUser.getId())) {
-    //         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "대여인만 승인 상태를 변경할 수 있습니다.");
-    //     }
-    //
-    //     contract.approveByBorrower();
-    //     contractRepository.save(contract);
-    //     // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
-    //     return convertToDetailDto(contract);
-    // }
-    //
-    //
-    // // 특정 계약 조회 (상세 정보)
-    // public Optional<ContractResponseDto> getContractById(Long contractId) {
-    //     // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
-    //     return contractRepository.findById(contractId)
-    //             .map(this::convertToDetailDto);
-    // }
-    //
-    // // 특정 대여인의 계약 조회
-    // //ToDo:
-    // public List<ContractSummaryDto> getContractsByLender(Long lenderId) {
-    //     User lender = userRepository.findById(lenderId)
-    //             .orElseThrow(() -> new RuntimeException("대여인을 찾을 수 없습니다."));
-    //     // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
-    //     return contractRepository.findByLender(lender).stream()
-    //             .map(this::convertToSummaryDto)
-    //             .collect(Collectors.toList());
-    // }
-    //
-    // // 특정 차용인의 계약 조회
-    // public List<ContractSummaryDto> getContractsByBorrower(Long borrowerId) {
-    //     User borrower = userRepository.findById(borrowerId)
-    //             .orElseThrow(() -> new RuntimeException("차용인을 찾을 수 없습니다."));
-    //     // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
-    //     return contractRepository.findByBorrower(borrower).stream()
-    //             .map(this::convertToSummaryDto)
-    //             .collect(Collectors.toList());
-    // }
-    //
-    // // 특정 신청과 관련된 계약 조회
-    // public List<ContractSummaryDto> getContractsByApplication(Long applicationId) {
-    //     Application application = applicationRepository.findById(applicationId)
-    //             .orElseThrow(() -> new RuntimeException("해당 신청을 찾을 수 없습니다."));
-    //     // ToDo: 해당 책임은 CrudService 클래스를 만들어서 위임 예정
-    //     return contractRepository.findByApplication(application).stream()
-    //             .map(this::convertToSummaryDto)
-    //             .collect(Collectors.toList());
-    // }
-    //
     // 계약서 파일 업로드
     //ToDo: 업로드랑 업데이트의 두가지 책임을 가지고 잇음.
     public void uploadContractFile(LenderApprovalCommand command) {
@@ -178,8 +122,8 @@ public class ContractService {
         User currentUser = getAuthenticatedUser();
         try {
         //ToDo: 유효성 검사 중복 발견, 조치
-        Contract contract = contractRepository.findById(contractId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 계약을 찾을 수 없습니다."));
+        Contract contract = contractRepoService.findById(contractId);
+
 
         // 계약의 대여인 또는 차용인만 업로드 가능
         if (!contract.getLender().getId().equals(currentUser.getId()) &&
@@ -192,7 +136,7 @@ public class ContractService {
 
         // Contract의 url 필드 업데이트
         contract.updateUrl(fileUrl);
-        contractRepository.save(contract);
+            contractRepoService.save(contract);
         }catch (Exception e){
             throw new RuntimeException("임시 에러 코드 입니다, 수정 해야 합니다");
         }
@@ -245,8 +189,8 @@ public class ContractService {
 
     private User getAuthenticatedUser() {
         Long userId = jwtUtil.extractUserIdFromRequest();
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+        return userRepoService.findById(userId);
+
     }
 
 }
