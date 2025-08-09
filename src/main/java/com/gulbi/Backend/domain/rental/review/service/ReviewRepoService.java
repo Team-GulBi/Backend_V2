@@ -7,9 +7,9 @@ import com.gulbi.Backend.domain.rental.review.entity.Review;
 import java.util.List;
 
 public interface ReviewRepoService {
-    public void saveReview(Review review);
-    public List<ReviewWithAvgProjection> getReviewWithRateAvg(Long productId);
-    public void deleteReview(Long reviewId);
-    public void updateReview(ReviewUpdateRequest reviewUpdateRequest);
-    public void removeAllReviewsFromProductId(Long productId);
+    Review findById(Long reviewId);
+    void save(Review review);
+    List<ReviewWithAvgProjection> getReviewWithRateAvgById(Long productId);
+    void delete(Long reviewId);
+    void removeAllReviewsByProductId(Long productId);
 }

@@ -25,7 +25,7 @@ public class ProductDeleteServiceImpl implements ProductDeleteService{
         //초기 조회 비용이 조금 증가하더라도, 검증을 하는게 좋다 판단, 상품 삭제가 서비스에서 상대적으로 많이 이루어질거 같다고 판단하지 않음.
         Optional.ofNullable(isExistProduct(productId)).ifPresent(productExist ->{
                     imageRepoService.removeAllImagesFromProduct(productId);
-                    reviewRepoService.removeAllReviewsFromProductId(productId);
+                    reviewRepoService.removeAllReviewsByProductId(productId);
                     productRepoService.deleteProduct(productId);
                 }
         );
