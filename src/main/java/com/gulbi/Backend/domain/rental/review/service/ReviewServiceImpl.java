@@ -26,30 +26,32 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public void addReviewToProduct(ReviewCreateCommand command) {
-        Review review = createReviewWithUserAndProduct(command.getRequest());
-        reviewRepoService.saveReview(review);
+        Review review = createReviewWithUserAndProduct(command);
+        reviewRepoService.save(review);
     }
 
     @Override
     public List<ReviewWithAvgProjection> getAllReview(Long productId) {
-        return reviewRepoService.getReviewWithRateAvg(productId);
+        return reviewRepoService.getReviewWithRateAvgById(productId);
     }
 
     @Override
     public void deleteReview(Long reviewId){
-        reviewRepoService.deleteReview(reviewId);
+        reviewRepoService.delete(reviewId);
     }
 
     @Override
     public void updateReview(ReviewUpdateCommand command){
-        reviewRepoService.updateReview();
+        Review review = reviewRepoService.findById(command.getReviewId());
+        review.update(command.getRequest().getContent(), command.getRequest().getRating());
+        reviewRepoService.save(review);
     }
 
 
-    private Review createReviewWithUserAndProduct(ReviewCreateRequest request) {
+    private Review createReviewWithUserAndProduct(ReviewCreateCommand command) {
         User reviewer = getAuthenticatedUser();
-        Product targetProduct = getProduct(request.getProductId());
-        return ReviewFactory.createWithRegisterRequest(request,reviewer,targetProduct);
+        Product targetProduct = getProduct(command.getProductId());
+        return ReviewFactory.createWithRegisterRequest(command.getRequest(),reviewer,targetProduct);
     }
 
     private User getAuthenticatedUser(){
