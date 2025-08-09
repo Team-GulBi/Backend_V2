@@ -3,14 +3,17 @@ package com.gulbi.Backend.domain.rental.review.service;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.review.code.ReviewErrorCode;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateRequest;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvgProjection;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
 import com.gulbi.Backend.domain.rental.review.exception.ReviewException;
 import com.gulbi.Backend.domain.rental.review.repository.ReviewRepository;
-import com.gulbi.Backend.global.error.ExceptionMetaData;
+import com.gulbi.Backend.global.error.DatabaseException;
+import com.gulbi.Backend.global.error.ExceptionMetaDataFactory;
+import com.gulbi.Backend.global.error.InfraErrorCode;
+
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
@@ -21,65 +24,68 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewRepoJpaService implements ReviewRepoService {
 
+    private final String className = this.getClass().getName();
+
     private final ReviewRepository reviewRepository;
     private final ProductRepoService productRepoService;
 
     @Override
-    public void saveReview(Review review) {
+    public Review findById(Long reviewId) {
+        try {
+            return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewException(
+                    ExceptionMetaDataFactory.of(reviewId, className, null, ReviewErrorCode.REVIEW_NOT_FOUND)
+                ));
+        } catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
+            throw new DatabaseException(ExceptionMetaDataFactory.of(reviewId, className, e, InfraErrorCode.DB_EXCEPTION));
+        }
+    }
+
+
+    @Override
+    public void save(Review review) {
         try {
             reviewRepository.save(review);
         } catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
-            createDatabaseErrorException(review, this.getClass().getName(),e);
-        } catch (IllegalArgumentException e) {
-            createMissingReviewFieldException(review,this.getClass().getName(),e);
+            throw new DatabaseException(ExceptionMetaDataFactory.of(review, className, e, InfraErrorCode.DB_EXCEPTION));
         }
     }
 
     @Override
-    public List<ReviewWithAvgProjection> getReviewWithRateAvg(Long productId) {
-        return reviewRepository.findAllReviewWithRelationsByProductId(productId);
+    public List<ReviewWithAvgProjection> getReviewWithRateAvgById(Long productId) {
+        try {
+            List<ReviewWithAvgProjection> list = reviewRepository.findAllReviewWithRelationsByProductId(productId);
+            if (list.isEmpty()) {
+                throw new ReviewException(
+                    ExceptionMetaDataFactory.of(productId, className, null, ReviewErrorCode.REVIEW_NOT_FOUND));
+            }
+            return list;
+        }catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
+            throw new DatabaseException(ExceptionMetaDataFactory.of(productId, className, e, InfraErrorCode.DB_EXCEPTION));
+        }
     }
 
     @Override
-    public void deleteReview(Long reviewId) {
-        reviewRepository.deleteReviewByReviewId(reviewId);
+    public void delete(Long reviewId) {
+        try {
+            reviewRepository.deleteReviewByReviewId(reviewId);
+        } catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
+            throw new DatabaseException(
+                ExceptionMetaDataFactory.of(reviewId, className, e, InfraErrorCode.DB_EXCEPTION));
+        }
     }
 
     @Override
-    public void updateReview(ReviewUpdateRequest reviewUpdateRequest) {
-        reviewRepository.updateReviewInfo(
-                reviewUpdateRequest.getRating(),
-                reviewUpdateRequest.getContent(),
-                reviewUpdateRequest.getReviewId()
-        );
-    }
+    public void removeAllReviewsByProductId(Long productId) {
+        try {
+            reviewRepository.deleteAllReviewsByProduct(resolveProduct(productId));
+        }catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
+            throw new DatabaseException(ExceptionMetaDataFactory.of(productId, className, e, InfraErrorCode.DB_EXCEPTION));
+        }
 
-    @Override
-    public void removeAllReviewsFromProductId(Long productId) {
-        reviewRepository.deleteAllReviewsByProduct(resolveProduct(productId));
     }
 
     private Product resolveProduct(Long productId) {
         return productRepoService.getProductById(productId);
-    }
-
-    private void createDatabaseErrorException(Review review, String className, Throwable throwable) {
-        ExceptionMetaData exceptionMetaData = new ExceptionMetaData.Builder()
-                .args(review)
-                .className(className)
-                .stackTrace(throwable)
-                .responseApiCode(ReviewErrorCode.DATABASE_ERROR)
-                .build();
-        throw new ReviewException.DatabaseErrorException(exceptionMetaData);
-    }
-
-    private void createMissingReviewFieldException(Review review, String className, Throwable throwable) {
-        ExceptionMetaData exceptionMetaData = new ExceptionMetaData.Builder()
-                .args(review)
-                .className(className)
-                .stackTrace(throwable)
-                .responseApiCode(ReviewErrorCode.DATABASE_ERROR)
-                .build();
-        throw  new ReviewException.MissingReviewFiledException(exceptionMetaData);
     }
 }
