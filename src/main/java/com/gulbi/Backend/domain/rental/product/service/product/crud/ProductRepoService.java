@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ProductRepoService {
-    Long save(Product product);
+    Product save(Product product);
     Product findProductById(Long productId);
     Product findProductByIdWithUser(Long productId);
     List<ProductOverViewResponse> findProductOverViewByTag(String tag, String tag2, String tag3);

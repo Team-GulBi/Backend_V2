@@ -2,8 +2,11 @@ package com.gulbi.Backend.domain.rental.product.vo;
 
 import com.gulbi.Backend.domain.rental.product.code.ImageErrorCode;
 import com.gulbi.Backend.domain.rental.product.entity.Image;
+import com.gulbi.Backend.domain.rental.product.exception.ImageException;
 import com.gulbi.Backend.domain.rental.product.exception.ImageVoException;
 import com.gulbi.Backend.global.error.ExceptionMetaData;
+import com.gulbi.Backend.global.error.ExceptionMetaDataFactory;
+import com.gulbi.Backend.global.error.GlobalErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +25,7 @@ public class Images {
 
     public List<Image> getImages(){
         if(this.imageList.isEmpty()){
-            ExceptionMetaData exceptionMetaData = new ExceptionMetaData
-                    .Builder()
-                    .className(className)
-                    .responseApiCode(ImageErrorCode.IMAGE_COLLECTION_IS_EMPTY)
-                    .build();
-            throw  new ImageVoException.ImageCollectionIsEmptyException(exceptionMetaData);
+            throw new ImageException(ExceptionMetaDataFactory.of(null, className,null, GlobalErrorCode.LIST_IS_EMPTY));
         }
         return new ArrayList<>(this.imageList);
     }

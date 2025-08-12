@@ -73,36 +73,6 @@ public class Product extends BaseEntity {
     @Builder
     private Product(User user, Category bCategory, Category mCategory, Category sCategory, String tag, String title, String name, int views, int price,
                     String sido, String sigungu, String bname, String description, String mainImage) {
-
-        // 유틸리티 메서드를 사용하여 메타데이터 자동 생성
-        if (user == null) {
-            throwProductException(ProductErrorCode.MISSING_USER, user);
-        }
-        if (bCategory == null || mCategory == null || sCategory == null) {
-            throwProductException(ProductErrorCode.MISSING_CATEGORY, bCategory);
-        }
-        if (title == null || title.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_TITLE, title);
-        }
-        if (name == null || name.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_NAME, name);
-        }
-        if (views < 0) {
-            throwProductException(ProductErrorCode.INVALID_VIEWS, views);
-        }
-        if (price < 0) {
-            throwProductException(ProductErrorCode.INVALID_PRICE, price);
-        }
-        if (sido == null || sido.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_SIDO, sido);
-        }
-        if (sigungu == null || sigungu.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_SIGUNGU, sigungu);
-        }
-        if (description == null || description.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_DESCRIPTION, description);
-        }
-
         this.user = user;
         this.bCategory = bCategory;
         this.mCategory = mCategory;
@@ -119,15 +89,6 @@ public class Product extends BaseEntity {
         this.mainImage = mainImage;
     }
 
-    private ProductException.MissingProductFieldException throwProductException(ProductErrorCode errorCode, Object args) {
-        ExceptionMetaData exceptionMetaData = new ExceptionMetaData
-                .Builder()
-                .args(args)
-                .className(this.getClass().getName())
-                .responseApiCode(errorCode)
-                .build();
-        throw new ProductException.MissingProductFieldException(exceptionMetaData);
-    }
 
     public void updateMainImage(ImageUrl mainImage){
         this.mainImage = mainImage.getImageUrl();

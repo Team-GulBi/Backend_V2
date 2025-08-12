@@ -22,11 +22,8 @@ public class ProductImageFiles {
     }
 
     public boolean isEmpty(){
-        if(this.productImages.isEmpty() || this.productImages == null){
-            return true;
-        }
-        return false;
+		return this.productImages.isEmpty();
 
-    }
+	}
 
 }

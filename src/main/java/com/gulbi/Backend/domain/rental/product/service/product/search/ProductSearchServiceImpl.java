@@ -49,7 +49,8 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         String detail = productSearchRequest.getDetail().trim();
         String query = productSearchRequest.getQuery();
         loggingQuery(query,detail);
-        ProductSearchStrategy productSearchStrategy = getProductSearchStrategy(detail, productSearchRequest);
+        //ToDo: 태그 보류, 추가 된다면 예외처리 부터
+        ProductSearchStrategy productSearchStrategy = productSearchStrategies.get(detail);
         return productSearchStrategy.search(query);
     }
 
@@ -86,15 +87,6 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
     // 로깅 서비스 호출 메서드 부분(끝)
 
-    // 예외 호출 (시작)
-    private ProductSearchStrategy getProductSearchStrategy(String detail, ProductSearchRequest productSearchRequest) {
-        return Optional.ofNullable(productSearchStrategies.get(detail))
-                .orElseThrow(() -> createInvalidProductSearchDetailException(productSearchRequest));
-    }
 
-    private ProductException.InvalidProductSearchDetailException createInvalidProductSearchDetailException(Object args) {
-        ExceptionMetaData exceptionMetaData = new ExceptionMetaData.Builder().args(args).className(className).responseApiCode(ProductErrorCode.UNSUPPORTED_SEARCH_CONDITION).build();
-        return new ProductException.InvalidProductSearchDetailException(exceptionMetaData);
-    }
-    // 예외 호출 (종료)
+
 }
