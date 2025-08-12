@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.factory;
 
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryBundle;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductRegisterRequest;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
+import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.user.entity.User;
 

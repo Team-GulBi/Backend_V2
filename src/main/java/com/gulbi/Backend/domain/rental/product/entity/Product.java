@@ -1,11 +1,10 @@
 package com.gulbi.Backend.domain.rental.product.entity;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryBundle;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductCategoryUpdateRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductTextUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
+import com.gulbi.Backend.domain.rental.product.dto.ProductTextUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.global.entity.BaseEntity;
 import com.gulbi.Backend.global.error.ExceptionMetaData;

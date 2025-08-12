@@ -1,8 +1,8 @@
 package com.gulbi.Backend.domain.rental.product.service.product.search;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductSearchRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductDetailResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 
 import java.util.List;
 

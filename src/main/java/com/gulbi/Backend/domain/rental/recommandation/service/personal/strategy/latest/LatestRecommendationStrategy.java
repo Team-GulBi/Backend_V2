@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.recommandation.service.personal.strategy.latest;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.recommandation.service.personal.strategy.CategoryBasedRecommendStrategy;
 import com.gulbi.Backend.domain.rental.recommandation.vo.ExtractedRecommendation;

@@ -1,8 +1,8 @@
 package com.gulbi.Backend.domain.rental.product.service.product.register;
 
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryBundle;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductRegisterCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductRegisterRequest;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
+import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
 import com.gulbi.Backend.domain.rental.product.entity.Image;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.factory.ProductFactory;
@@ -10,10 +10,10 @@ import com.gulbi.Backend.domain.rental.product.service.category.CategoryService;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrls;
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrls;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
+import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.service.UserService;
 

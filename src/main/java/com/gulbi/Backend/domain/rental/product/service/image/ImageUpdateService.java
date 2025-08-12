@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.service.image.strategy.ImageUpdateStrategy;
 @Component
 public class ImageUpdateService {

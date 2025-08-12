@@ -16,7 +16,7 @@ import com.gulbi.Backend.domain.contract.contract.repository.ContractRepoService
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationCreateRequest;
 import com.gulbi.Backend.domain.contract.application.entity.Application;
 import com.gulbi.Backend.domain.contract.application.service.ApplicationService;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.repository.UserRepoService;
 import com.gulbi.Backend.global.error.ExceptionMetaDataFactory;

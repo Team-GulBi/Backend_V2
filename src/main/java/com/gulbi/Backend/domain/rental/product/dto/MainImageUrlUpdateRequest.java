@@ -1,6 +1,6 @@
-package com.gulbi.Backend.domain.rental.product.dto.product;
+package com.gulbi.Backend.domain.rental.product.dto;
 
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

@@ -3,9 +3,7 @@ package com.gulbi.Backend.domain.rental.product.service.image;
 import java.util.List;
 
 import com.gulbi.Backend.domain.rental.product.entity.Image;
-import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
 
 public interface ImageRepoService {
     void saveAll(List<Image> images);

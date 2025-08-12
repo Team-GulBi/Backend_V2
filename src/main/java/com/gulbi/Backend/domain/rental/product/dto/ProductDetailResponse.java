@@ -1,9 +1,7 @@
-package com.gulbi.Backend.domain.rental.product.dto.product;
+package com.gulbi.Backend.domain.rental.product.dto;
 
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoriesResponse;
-import com.gulbi.Backend.domain.rental.product.entity.Category;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewsWithAvg;
 
 import lombok.Builder;

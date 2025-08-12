@@ -1,4 +1,4 @@
-package com.gulbi.Backend.domain.rental.product.dto.category;
+package com.gulbi.Backend.domain.rental.product.dto;
 
 
 

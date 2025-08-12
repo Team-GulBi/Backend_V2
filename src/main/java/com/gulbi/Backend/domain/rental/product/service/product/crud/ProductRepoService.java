@@ -1,7 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.service.product.crud;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import org.springframework.data.domain.Pageable;
 

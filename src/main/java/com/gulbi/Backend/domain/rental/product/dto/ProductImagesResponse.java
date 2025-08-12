@@ -1,10 +1,10 @@
-package com.gulbi.Backend.domain.rental.product.dto.product;
+package com.gulbi.Backend.domain.rental.product.dto;
 
 import lombok.Getter;
 
 import java.util.*;
 
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
 
 @Getter
 public class ProductImagesResponse {

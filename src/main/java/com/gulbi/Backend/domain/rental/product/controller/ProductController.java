@@ -1,20 +1,20 @@
 package com.gulbi.Backend.domain.rental.product.controller;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductSuccessCode;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageDeleteRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductRegisterCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductRegisterRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductSearchRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.MainImageUrlUpdateRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.product.NewProductImageRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductCategoryUpdateRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductTextUpdateRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductDetailResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageDeleteRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.MainImageUrlUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.NewProductImageRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductCategoryUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductTextUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 import com.gulbi.Backend.domain.rental.product.service.product.ProductService;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
 import com.gulbi.Backend.global.response.RestApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -81,17 +81,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    // @PatchMapping("/{productId}/views")
-    // @Operation(
-    //         summary = "상품 조회수 갱신(조회수 UP)",
-    //         description = "추후 리팩터링시 상품 상세 조회시 올라가도록 로직변경 예정이나, 언제가 될지 미지숫가루"
-    // )
-    // public ResponseEntity<RestApiResponse> updateProductViews(@Parameter(description = "상품아이디", required = true)@PathVariable("productId") Long productId){
-    //     productService.updateProductViews(productId);
-    //     RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_VIEWS_UPDATED_SUCCESS);
-    //     return ResponseEntity.ok(response);
-    //
-    // }
+
     @RequestBody(content = @Content(
             encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))
     @PatchMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -153,6 +143,7 @@ public class ProductController {
             ProductImageUpdateCommand
                 .of(newProductImageRequest, newProductMainImageRequest, mainImageUrlUpdateRequest,
                     productImageDeleteRequest, productId);
+
 
         productService.updateProduct(productContentUpdateCommand, productImageUpdateCommand);
         RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_INFO_UPDATED_SUCCESS);

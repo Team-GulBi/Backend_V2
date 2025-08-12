@@ -4,18 +4,18 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.NewProductImageRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductMainImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.NewProductImageRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductMainImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Image;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.factory.ImageFactory;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrls;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrls;
+import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
 
 @Component
 public class MainImageFileUpdateStrategy extends AbstractImageUpdateStrategy{

@@ -2,8 +2,8 @@ package com.gulbi.Backend.domain.rental.product.service.product.update;
 
 import java.util.List;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageUpdateService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;

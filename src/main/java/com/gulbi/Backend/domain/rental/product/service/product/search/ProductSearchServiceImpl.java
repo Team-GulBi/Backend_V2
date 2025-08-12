@@ -1,16 +1,16 @@
 package com.gulbi.Backend.domain.rental.product.service.product.search;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductSearchRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductDetailResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.logging.ProductLogHandler;
 import com.gulbi.Backend.domain.rental.product.service.product.search.strategy.search.ProductSearchStrategy;
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewsWithAvg;
 import com.gulbi.Backend.domain.rental.review.service.ReviewService;
 import com.gulbi.Backend.domain.user.service.ProfileService;

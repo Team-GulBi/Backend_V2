@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.controller;
 
 import com.gulbi.Backend.domain.rental.product.code.CategorySuccessCode;
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryProjection;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryProjection;
 import com.gulbi.Backend.domain.rental.product.service.category.CategoryRepoService;
 import com.gulbi.Backend.global.response.RestApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

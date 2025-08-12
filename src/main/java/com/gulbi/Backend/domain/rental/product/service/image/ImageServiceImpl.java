@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductMainImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductMainImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Image;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.factory.ImageFactory;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrls;
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrls;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
+import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
 import com.gulbi.Backend.global.util.S3Uploader;
 
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,6 @@
-package com.gulbi.Backend.domain.rental.product.dto.product;
+package com.gulbi.Backend.domain.rental.product.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 // @Setter

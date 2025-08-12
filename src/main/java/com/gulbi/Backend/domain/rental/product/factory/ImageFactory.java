@@ -2,9 +2,9 @@ package com.gulbi.Backend.domain.rental.product.factory;
 
 import com.gulbi.Backend.domain.rental.product.entity.Image;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrls;
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrls;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
 
 import java.util.Collections;
 import java.util.List;

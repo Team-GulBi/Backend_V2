@@ -1,6 +1,6 @@
-package com.gulbi.Backend.domain.rental.product.dto.product;
+package com.gulbi.Backend.domain.rental.product.dto;
 
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;

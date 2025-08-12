@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.repository;
 
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryProjection;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryProjection;
 import com.gulbi.Backend.domain.rental.product.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

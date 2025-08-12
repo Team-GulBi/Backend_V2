@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductTextUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductTextUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 @Component

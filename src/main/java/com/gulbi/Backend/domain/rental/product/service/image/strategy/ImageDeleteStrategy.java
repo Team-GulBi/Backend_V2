@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 @Component

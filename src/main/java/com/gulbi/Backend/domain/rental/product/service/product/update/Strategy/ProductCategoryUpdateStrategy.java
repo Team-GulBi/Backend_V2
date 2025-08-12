@@ -2,9 +2,9 @@ package com.gulbi.Backend.domain.rental.product.service.product.update.Strategy;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryBundle;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductCategoryUpdateRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
+import com.gulbi.Backend.domain.rental.product.dto.ProductCategoryUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductContentUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.category.CategoryService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;

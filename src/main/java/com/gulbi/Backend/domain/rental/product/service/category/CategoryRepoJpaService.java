@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.service.category;
 
 import com.gulbi.Backend.domain.rental.product.code.CategoryErrorCode;
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryProjection;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryProjection;
 import com.gulbi.Backend.domain.rental.product.entity.Category;
 import com.gulbi.Backend.domain.rental.product.exception.CategoryException;
 import com.gulbi.Backend.domain.rental.product.repository.CategoryRepository;

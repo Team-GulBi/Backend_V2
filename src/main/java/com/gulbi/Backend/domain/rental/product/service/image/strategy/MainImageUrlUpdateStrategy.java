@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductMainImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductMainImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 
 @Component
 public class MainImageUrlUpdateStrategy extends AbstractImageUpdateStrategy{

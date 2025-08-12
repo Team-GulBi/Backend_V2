@@ -1,4 +1,4 @@
-package com.gulbi.Backend.domain.rental.product.vo.image;
+package com.gulbi.Backend.domain.rental.product.vo;
 
 import com.gulbi.Backend.domain.rental.product.code.ImageErrorCode;
 import com.gulbi.Backend.domain.rental.product.entity.Image;

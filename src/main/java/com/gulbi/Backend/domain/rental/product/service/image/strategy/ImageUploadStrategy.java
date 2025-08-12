@@ -4,15 +4,15 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.NewProductImageRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.NewProductImageRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoJpaService;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrls;
-import com.gulbi.Backend.domain.rental.product.vo.image.Images;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrls;
+import com.gulbi.Backend.domain.rental.product.vo.Images;
+import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
 
 @Component
 public class ImageUploadStrategy extends AbstractImageUpdateStrategy{

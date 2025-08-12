@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.service.image.strategy;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 
 public abstract class AbstractImageUpdateStrategy implements ImageUpdateStrategy {
