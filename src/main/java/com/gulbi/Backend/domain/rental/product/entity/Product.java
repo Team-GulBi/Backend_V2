@@ -1,7 +1,11 @@
 package com.gulbi.Backend.domain.rental.product.entity;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
+import com.gulbi.Backend.domain.rental.product.dto.category.CategoryBundle;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductCategoryUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductTextUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
+import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.global.entity.BaseEntity;
 import com.gulbi.Backend.global.error.ExceptionMetaData;
@@ -124,5 +128,36 @@ public class Product extends BaseEntity {
                 .responseApiCode(errorCode)
                 .build();
         throw new ProductException.MissingProductFieldException(exceptionMetaData);
+    }
+
+    public void updateMainImage(ImageUrl mainImage){
+        this.mainImage = mainImage.getImageUrl();
+    }
+
+    public void updateView(){
+        this.views = this.views + 1;
+    }
+    public void updateTextInfo(ProductTextUpdateRequest dto) {
+        if (dto.getTag() != null) this.tag = dto.getTag();
+        if (dto.getTitle() != null) this.title = dto.getTitle();
+        if (dto.getName() != null) this.name = dto.getName();
+        if (dto.getPrice() != null) this.price = dto.getPrice();
+        if (dto.getSido() != null) this.sido = dto.getSido();
+        if (dto.getSigungu() != null) this.sigungu = dto.getSigungu();
+        if (dto.getBname() != null) this.bname = dto.getBname();
+        if (dto.getDescription() != null) this.description = dto.getDescription();
+    }
+
+    public void updateCategories(CategoryBundle categories) {
+        if (categories.getBCategory() != null) {
+            // 엔티티에 맞게 Category 객체를 찾아서 할당해야 함 (예: CategoryRepository 사용)
+            this.bCategory = categories.getBCategory();
+        }
+        if (categories.getMCategory() != null) {
+            this.mCategory = categories.getMCategory();
+        }
+        if (categories.getSCategory() != null) {
+            this.sCategory = categories.getSCategory();
+        }
     }
 }

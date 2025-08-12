@@ -4,19 +4,21 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductMainImageUpdateDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductMainImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
+import com.gulbi.Backend.domain.rental.product.service.image.ImageService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
+import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
 
 @Component
 public class MainImageUrlUpdateStrategy extends AbstractImageUpdateStrategy{
-	private final ImageRepoService imageRepoService;
+	private final ImageService imageService;
 
-	public MainImageUrlUpdateStrategy(ImageRepoService imageRepoService, ProductRepoService productRepoService) {
+	public MainImageUrlUpdateStrategy(ProductRepoService productRepoService,
+		ImageService imageService) {
 		super(productRepoService);
-		this.imageRepoService = imageRepoService;
+		this.imageService = imageService;
 	}
 
 	@Override
@@ -26,14 +28,16 @@ public class MainImageUrlUpdateStrategy extends AbstractImageUpdateStrategy{
 
 	@Override
 	public void update(ProductImageUpdateCommand command) {
+		//메인 이미지, 바꿀 상품 아이디 추출
+		ImageUrl mainImageUrl = command.getToBeUpdatedMainImageWithUrl().getMainImageUrl();
 		Long productId = command.getProductId();
-		Product product = resolveProduct(productId);
-		imageRepoService.clearMainImageFlags(product);
-		ProductMainImageUpdateDto productMainImageUpdateDto = ProductMainImageUpdateDto.of(productId, command.getToBeUpdatedMainImageWithUrl().getMainImageUrl());
-		handleUpdatedMainImageWithUrl(productMainImageUpdateDto);
-	}
-	private void handleUpdatedMainImageWithUrl(ProductMainImageUpdateDto dto) {
-		imageRepoService.updateMainImageFlags(dto);
-		productRepoService.updateProductMainImage(dto);
+		//업데이트를 위한 상품 조회
+		Product product = productRepoService.findProductById(productId);
+		//업데이트
+		product.updateMainImage(mainImageUrl);
+		productRepoService.save(product);
+		//이미지 업데이트
+		ProductMainImageUpdateCommand requestCommand = ProductMainImageUpdateCommand.of(productId,mainImageUrl);
+		imageService.changeMainImage(requestCommand);
 	}
 }

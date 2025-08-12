@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.service.product.logging;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductDto;
+import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.service.UserService;
 import org.slf4j.*;
@@ -32,7 +32,7 @@ public class LokiLoggingHandler implements ProductLogHandler{
     }
 
     @Override
-    public void loggingReturnedProductData(ProductDto productDto) {
+    public void loggingReturnedProductData(Product productDto) {
         User user = getAuthenticationUser();
         MDC.put("userId", String.valueOf(user.getId()));
         MDC.put("bCategoryId", String.valueOf(productDto.getBCategory().getId()));

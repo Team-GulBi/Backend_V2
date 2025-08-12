@@ -3,7 +3,7 @@ package com.gulbi.Backend.domain.rental.review.service;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.review.code.ReviewErrorCode;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvgProjection;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvg;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
 import com.gulbi.Backend.domain.rental.review.exception.ReviewException;
 import com.gulbi.Backend.domain.rental.review.repository.ReviewRepository;
@@ -52,9 +52,9 @@ public class ReviewRepoJpaService implements ReviewRepoService {
     }
 
     @Override
-    public List<ReviewWithAvgProjection> getReviewWithRateAvgById(Long productId) {
+    public List<ReviewWithAvg> findAllByProductIdWithAvg(Long productId) {
         try {
-            List<ReviewWithAvgProjection> list = reviewRepository.findAllReviewWithRelationsByProductId(productId);
+            List<ReviewWithAvg> list = reviewRepository.findAllByProductIdWithAvg(productId);
             if (list.isEmpty()) {
                 throw new ReviewException(
                     ExceptionMetaDataFactory.of(productId, className, null, ReviewErrorCode.REVIEW_NOT_FOUND));
@@ -68,7 +68,7 @@ public class ReviewRepoJpaService implements ReviewRepoService {
     @Override
     public void delete(Long reviewId) {
         try {
-            reviewRepository.deleteReviewByReviewId(reviewId);
+            reviewRepository.deleteById(reviewId);
         } catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
             throw new DatabaseException(
                 ExceptionMetaDataFactory.of(reviewId, className, e, InfraErrorCode.DB_EXCEPTION));
@@ -76,16 +76,13 @@ public class ReviewRepoJpaService implements ReviewRepoService {
     }
 
     @Override
-    public void removeAllReviewsByProductId(Long productId) {
+    public void deleteAllByProductId(Long productId) {
         try {
-            reviewRepository.deleteAllReviewsByProduct(resolveProduct(productId));
+            reviewRepository.deleteAllByProduct(productId);
         }catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
             throw new DatabaseException(ExceptionMetaDataFactory.of(productId, className, e, InfraErrorCode.DB_EXCEPTION));
         }
 
     }
 
-    private Product resolveProduct(Long productId) {
-        return productRepoService.getProductById(productId);
-    }
 }

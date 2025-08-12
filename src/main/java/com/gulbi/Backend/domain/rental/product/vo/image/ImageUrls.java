@@ -8,22 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ImageUrlCollection {
+public class ImageUrls {
     private final List<ImageUrl> imageUrlList;
 
-    private ImageUrlCollection(List<ImageUrl> imageUrlList) {
+    private ImageUrls(List<ImageUrl> imageUrlList) {
         this.imageUrlList = imageUrlList;
     }
-    public static ImageUrlCollection of(List<ImageUrl> imageUrlList){
+    public static ImageUrls of(List<ImageUrl> imageUrlList){
         if (imageUrlList.isEmpty()){
             ExceptionMetaData exceptionMetaData = new ExceptionMetaData
                     .Builder()
-                    .className(ImageUrlCollection.class.getName())
+                    .className(ImageUrls.class.getName())
                     .responseApiCode(ProductErrorCode.IMAGEURL_NOT_FOUND)
                     .build();
             throw new ImageVoException.ImageUrlNotFoundException(exceptionMetaData);
         }
-        return new ImageUrlCollection(imageUrlList);
+        return new ImageUrls(imageUrlList);
     }
     public List<ImageUrl> getImageUrls(){
         if(!imageUrlList.isEmpty()){
@@ -43,11 +43,11 @@ public class ImageUrlCollection {
                 });
     }
 
-    public ImageUrlCollection append(ImageUrl imageUrl) {
+    public ImageUrls append(ImageUrl imageUrl) {
         if(!imageUrlList.isEmpty()){
         List<ImageUrl> newImageUrls = new ArrayList<>(this.imageUrlList);
         newImageUrls.add(imageUrl);
-        return new ImageUrlCollection(newImageUrls);
+        return new ImageUrls(newImageUrls);
         }
         return null;
     }

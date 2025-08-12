@@ -1,8 +1,4 @@
-package com.gulbi.Backend.domain.rental.product.dto.product.update;
-
-import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.register.NewProductImageRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.update.MainImageUrlUpdateRequest;
+package com.gulbi.Backend.domain.rental.product.dto.product;
 
 import lombok.Getter;
 

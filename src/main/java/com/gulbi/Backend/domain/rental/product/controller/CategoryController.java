@@ -28,7 +28,7 @@ public class CategoryController {
     )
 
     public ResponseEntity<RestApiResponse> getBigCategory(){
-        List<CategoryProjection> list = categoryRepoService.getBigCategories();
+        List<CategoryProjection> list = categoryRepoService.findAllBigCategories();
         RestApiResponse response = new RestApiResponse(CategorySuccessCode.GET_CATEGORY_SUCCESS,list);
         return ResponseEntity.ok(response);
 
@@ -40,7 +40,7 @@ public class CategoryController {
             description = "대분류, 중분류 카테고리 조회, EX) 대분류 카테고리 id = 1 일때 해당 api를 사용하면 1에 대응 하는 중분류를 보여줌"
     )
     public ResponseEntity<RestApiResponse> getMidCategory(@PathVariable("categoryId") Long categoryId){
-        List<CategoryProjection> list = categoryRepoService.getBelowCategoriesByParentId(categoryId);
+        List<CategoryProjection> list = categoryRepoService.findAllBelowByParentId(categoryId);
         RestApiResponse response = new RestApiResponse(CategorySuccessCode.GET_CATEGORY_SUCCESS,list);
         return ResponseEntity.ok(response);
     }

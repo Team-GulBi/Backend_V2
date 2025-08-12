@@ -1,24 +1,19 @@
 package com.gulbi.Backend.domain.rental.product.service.image;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductImageDeleteRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductMainImageUpdateDto;
+import java.util.List;
+
+import com.gulbi.Backend.domain.rental.product.entity.Image;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrlCollection;
-import com.gulbi.Backend.domain.rental.product.dto.ProductImageDtoCollection;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageCollection;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
+import com.gulbi.Backend.domain.rental.product.vo.image.Images;
 
 public interface ImageRepoService {
-    public void registerImagesWithProduct(ImageUrlCollection imageUrlCollection, Product product);
-    public ProductImageDtoCollection getImageByProductId(Long productId);
-    void saveMainImage(ImageUrl mainImageUrl, Product product);
-    public void clearMainImageFlags(Product product);
-    public void saveImages(ImageCollection imageCollection);
-    public void deleteImages(ProductImageDeleteRequest productImageDeleteRequest);
-    public void removeAllImagesFromProduct(Long productId);
-    public ImageUrlCollection uploadImagesToS3(ProductImageCollection productImageCollection);
-    public void updateMainImageFlags(ProductMainImageUpdateDto productMainImageUpdateDto);
-
+    void saveAll(List<Image> images);
+    void save(Image image);
+    Images findImagesByProductId(Long productId);
+    void deleteByIds(List<Long> imageIds);
+    void removeAllImagesByProductId(Long productId);
+    void updateMainFalseByProductId(Long productId);
+    void updateMainTrueByUrl(String url);
 
 }

@@ -6,15 +6,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 @ValidProductImages
-public class ProductImageCollection {
+public class ProductImageFiles {
     private final List<MultipartFile> productImages;
 
-    private ProductImageCollection(List<MultipartFile> productImages) {
+    private ProductImageFiles(List<MultipartFile> productImages) {
         this.productImages = productImages;
     }
 
-    public static ProductImageCollection of(List<MultipartFile> productImages){
-        return new ProductImageCollection(productImages);
+    public static ProductImageFiles of(List<MultipartFile> productImages){
+        return new ProductImageFiles(productImages);
     }
 
     public List<MultipartFile> getProductImages(){

@@ -1,7 +1,7 @@
-package com.gulbi.Backend.domain.rental.product.dto.product.request.register;
+package com.gulbi.Backend.domain.rental.product.dto.product;
 
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
-import lombok.Getter;
+import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -9,17 +9,17 @@ import java.util.List;
 
 public class ProductMainImageCreateRequestDto {
 
-    private final ProductImageCollection mainImage;
+    private final ProductImageFiles mainImage;
 
     private ProductMainImageCreateRequestDto(List<MultipartFile> mainImage) {
-        this.mainImage = ProductImageCollection.of(mainImage);
+        this.mainImage = ProductImageFiles.of(mainImage);
     }
 
     public static ProductMainImageCreateRequestDto of(List<MultipartFile> mainImage){
         return new ProductMainImageCreateRequestDto(mainImage);
     }
 
-    public ProductImageCollection getProductImageCollection(){
+    public ProductImageFiles getProductImageCollection(){
         if(!mainImage.isEmpty()){
             return this.mainImage;
         }

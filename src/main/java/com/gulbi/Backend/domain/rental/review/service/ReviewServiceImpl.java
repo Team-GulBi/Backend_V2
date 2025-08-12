@@ -3,10 +3,8 @@ package com.gulbi.Backend.domain.rental.review.service;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewCreateCommand;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewCreateRequest;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateCommand;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateRequest;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvgProjection;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvg;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
 import com.gulbi.Backend.domain.rental.review.factory.ReviewFactory;
 import com.gulbi.Backend.domain.user.entity.User;
@@ -15,6 +13,7 @@ import com.gulbi.Backend.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,8 +30,13 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public List<ReviewWithAvgProjection> getAllReview(Long productId) {
-        return reviewRepoService.getReviewWithRateAvgById(productId);
+    public List<ReviewWithAvg> getAllReview(Long productId) {
+        try {
+            return reviewRepoService.findAllByProductIdWithAvg(productId);
+        }catch (Exception e){
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
@@ -59,7 +63,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     private Product getProduct(Long productId){
-        return productRepoService.getProductById(productId);
+        return productRepoService.findProductById(productId);
     }
 
 }

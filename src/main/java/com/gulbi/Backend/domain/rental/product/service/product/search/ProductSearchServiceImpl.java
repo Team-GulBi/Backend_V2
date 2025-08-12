@@ -1,19 +1,18 @@
 package com.gulbi.Backend.domain.rental.product.service.product.search;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
-import com.gulbi.Backend.domain.rental.product.dto.ProductImageDtoCollection;
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductDto;
 import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.ProductSearchRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.response.ProductDetailResponseDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductDetailResponse;
+import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.logging.ProductLogHandler;
 import com.gulbi.Backend.domain.rental.product.service.product.search.strategy.search.ProductSearchStrategy;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvgProjection;
+import com.gulbi.Backend.domain.rental.product.vo.image.Images;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewsWithAvg;
 import com.gulbi.Backend.domain.rental.review.service.ReviewService;
-import com.gulbi.Backend.domain.user.dto.ProfileResponse;
 import com.gulbi.Backend.domain.user.service.ProfileService;
 import com.gulbi.Backend.global.error.ExceptionMetaData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private final ImageRepoService imageRepoService;
     private final ReviewService reviewService;
     private final ProfileService profileService;
-
+    //ToDo: 태그검색 제외
     private final Map<String, ProductSearchStrategy> productSearchStrategies;
 
     private final String className = this.getClass().getName();
@@ -57,43 +56,25 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
 
     @Override
-    public ProductDetailResponseDto getProductDetail(Long productId) {
+    public ProductDetailResponse getProductDetail(Long productId) {
+        //실시간 인기 상품을 위한 로깅
         loggingProductId(productId);
-        ProductDto product = getProductById(productId);
+
+        //상품 조회(User와 FetchJoin)
+        Product product = productRepoService.findProductByIdWithUser(productId);
+
+        //상품 이미지 조회
+        Images productImages = imageRepoService.findImagesByProductId(productId);
+        //상품 리뷰 조회(리뷰가 없을 수 있음)
+        ReviewsWithAvg reviewsWithAvg = new ReviewsWithAvg(reviewService.getAllReview(productId));
+
+        //맞춤상품을 위한 ? 로깅
         loggingReturnedProduct(product);
-        ProductImageDtoCollection imageList = getProductImagesByProductId(productId);
-        List<ReviewWithAvgProjection> reviewWithAvg = getProductReviewsByProductId(productId);
-        // ImageUrl userPhoto = getImageOfUser(product);
-        String userNickname = getUserName(product);
-        return ProductDetailResponseDto.of(product, imageList, reviewWithAvg,userNickname);
+
+        return ProductDetailResponse.of(product, productImages, reviewsWithAvg);
     }
 
-    private ProductDto getProductById(Long productId) {
-        return productRepoService.getProductDtoById(productId);
-    }
 
-    private ProductImageDtoCollection getProductImagesByProductId(Long productId) {
-        return imageRepoService.getImageByProductId(productId);
-    }
-
-    private List<ReviewWithAvgProjection> getProductReviewsByProductId(Long productId) {
-        return reviewService.getAllReview(productId);
-    }
-
-    private ProfileResponse getProfile(Long userId){
-        return profileService.getProfile(userId);
-    }
-
-    // private ImageUrl getImageOfUser(ProductDto product){
-    //     User user = product.getUser();
-    //     ProfileResponse profile = getProfile(user.getId());
-    //     return ImageUrl.of(profile.getImage());
-    // }
-
-    private String getUserName(ProductDto product){
-
-        return product.getUser().getNickname();
-    }
 
     // 로깅 서비스 호출 메서드 부분(시작)
     private void loggingProductId(Long productId){
@@ -102,8 +83,8 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private void loggingQuery(String query, String detail){
         productLogHandler.loggingQueryData(query,detail);
     }
-    private void loggingReturnedProduct(ProductDto productDto){
-        productLogHandler.loggingReturnedProductData(productDto);
+    private void loggingReturnedProduct(Product product){
+        productLogHandler.loggingReturnedProductData(product);
     }
     // 로깅 서비스 호출 메서드 부분(끝)
 

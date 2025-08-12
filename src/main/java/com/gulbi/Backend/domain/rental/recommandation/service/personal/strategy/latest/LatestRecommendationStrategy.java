@@ -43,7 +43,7 @@ public class LatestRecommendationStrategy implements CategoryBasedRecommendStrat
             Long bCategoryId = Long.valueOf(extractedRecommendation.getBCategory(priority));
             Long mCategoryId = Long.valueOf(extractedRecommendation.getMCategory(priority));
             recommendedProducts.add(
-                    productRepoService.getProductOverViewByCategories(bCategoryId, mCategoryId, null, null, pageable)
+                    productRepoService.findProductOverViewByCategories(bCategoryId, mCategoryId, null, null, pageable)
             );
         }
         return new PersonalRecommendationResponseDto(recommendedProducts);
@@ -62,7 +62,7 @@ public class LatestRecommendationStrategy implements CategoryBasedRecommendStrat
             Long mCategoryId = Long.valueOf(personalCategoryPagination.getMCategoryIdByPriority(priority));
             LocalDateTime lastCreatedAt = personalCategoryPagination.getLastCreatedByPriority(priority);
             recommendedProducts.add(
-                    productRepoService.getProductOverViewByCategories(bCategoryId, mCategoryId, null, lastCreatedAt, pageable)
+                    productRepoService.findProductOverViewByCategories(bCategoryId, mCategoryId, null, lastCreatedAt, pageable)
             );
         }
         return new PersonalRecommendationResponseDto(recommendedProducts);

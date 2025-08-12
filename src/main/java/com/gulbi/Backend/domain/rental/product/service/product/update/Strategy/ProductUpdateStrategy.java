@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.service.product.update.Strategy;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
 
 public interface ProductUpdateStrategy {
 	// 해당 요청이 내가 처리 할 전략인지 판별하는 메서드

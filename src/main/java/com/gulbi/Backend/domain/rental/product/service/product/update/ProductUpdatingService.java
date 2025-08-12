@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.service.product.update;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
 
 public interface ProductUpdatingService {
     public void updateProductViews(Long productId);

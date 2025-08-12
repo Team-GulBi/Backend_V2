@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 public class ReviewFactory {
 
-
     public static Review createWithRegisterRequest(ReviewCreateRequest reviewCreateRequest,User user, Product product) {
         return Review.builder()
                 .content(reviewCreateRequest.getContent())

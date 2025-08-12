@@ -1,27 +1,19 @@
-package com.gulbi.Backend.domain.rental.product.dto.product.request.register;
+package com.gulbi.Backend.domain.rental.product.dto.product;
 
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRegisterRequestDto {
-    @NotNull(message = "1개 이상의 태그를 입력 해 주새요.")
-    @Pattern(regexp = "^[\\w가-힣]{1,7}(,[\\w가-힣]{1,7})*$", message = "각 항목은 1자에서 7자 사이의 글자만 포함할 수 있습니다.")
-    @Schema(description = "태그를 입력 해 주세요.", example = "태그1,태그2")
-    private String tag;
+public class ProductRegisterRequest {
 
     @NotNull(message = "제목을 입력 해 주세요.")
     @Size(min = 1, max = 30, message = "최소 1글자에서 최대 30글자 까지 적어주세요.")
@@ -64,16 +56,9 @@ public class ProductRegisterRequestDto {
     @Schema(description = "카테고리의 PK를 입력해주세요", example = "3")
     private Long scategoryId;
 
-    @Setter
-    @Schema(hidden = true)
-    private ProductImageCollection productImageCollection;
-    @Setter
-    @Schema(hidden = true)
-    private ImageUrl mainImage;
 
-    public ProductRegisterRequestDto(String tags, String title, String productName, Integer price, String sido, String sigungu, String bname, String description, ImageUrl mainImage, Long bcategoryId, Long mcategoryId, Long scategoryId) {
+    public ProductRegisterRequest(String title, String productName, Integer price, String sido, String sigungu, String bname, String description, ImageUrl mainImage, Long bcategoryId, Long mcategoryId, Long scategoryId) {
         System.out.println("RequestPart는 생성자를 이용하지 않습니다!");
-        this.tag = tag;
         this.title = title;
         this.name = productName;
         this.price = price;

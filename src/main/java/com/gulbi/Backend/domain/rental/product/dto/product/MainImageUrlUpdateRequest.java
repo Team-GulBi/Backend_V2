@@ -1,4 +1,4 @@
-package com.gulbi.Backend.domain.rental.product.dto.product.request.update;
+package com.gulbi.Backend.domain.rental.product.dto.product;
 
 import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
 import io.swagger.v3.oas.annotations.media.Schema;

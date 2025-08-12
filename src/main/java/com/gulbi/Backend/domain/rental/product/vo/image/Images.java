@@ -8,16 +8,16 @@ import com.gulbi.Backend.global.error.ExceptionMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageCollection {
+public class Images {
     private final String className = this.getClass().getName();
     private final List<Image> imageList;
 
-    private ImageCollection(List<Image> imageList) {
+    private Images(List<Image> imageList) {
         this.imageList = imageList;
     }
 
-    public static ImageCollection of(List<Image> imageList){
-        return new ImageCollection(imageList);
+    public static Images of(List<Image> imageList){
+        return new Images(imageList);
     }
 
     public List<Image> getImages(){

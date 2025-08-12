@@ -35,7 +35,7 @@ public class ApplicationService {
 
         Long userId = jwtUtil.extractUserIdFromRequest();
         User user = userRepoService.findById(userId);
-        Product product = productRepoService.getProductById(productId);
+        Product product = productRepoService.findProductById(productId);
         Application application = new Application(product, user, dto.getStartDate(), dto.getEndDate());
 
         return applicationRepoService.save(application);
@@ -53,7 +53,7 @@ public class ApplicationService {
 
         //productId를 기반으로 상품을 조회하고 거기에 있는 유저 정보를 뽑아냄. JWT 유저와 비교했을때 같으면 오너 아니면 게스트
         User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
-        Product product = productRepoService.getProductById(productId);
+        Product product = productRepoService.findProductById(productId);
         User productOwner = product.getUser(); // 상품 등록자
 
         ApplicationCalendarResponse response = new ApplicationCalendarResponse(status,isOwner(authenticatedUser, productOwner));
@@ -65,7 +65,7 @@ public class ApplicationService {
     public ApplicationDayResponse getApplicationsByDate(LocalDate date, Long productId){
 
         User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
-        Product product = productRepoService.getProductById(productId);
+        Product product = productRepoService.findProductById(productId);
         User productOwner = product.getUser();
         List<ApplicationStatusDetailResponse> status = applicationRepoService.findByProductIdAndDate(productId, date);
         ApplicationDayResponse response = new ApplicationDayResponse(status,isOwner(authenticatedUser, productOwner));

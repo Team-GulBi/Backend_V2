@@ -1,13 +1,11 @@
 package com.gulbi.Backend.domain.rental.product.service.product;
 
 import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.*;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.register.NewProductImageRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductMainImageCreateRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.register.ProductRegisterRequestDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.response.ProductDetailResponseDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductRegisterCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductDetailResponse;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.dto.product.ProductContentUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.service.product.delete.ProductDeleteService;
 import com.gulbi.Backend.domain.rental.product.service.product.register.ProductRegistrationService;
 import com.gulbi.Backend.domain.rental.product.service.product.search.ProductSearchService;
@@ -34,11 +32,12 @@ public class ProductServiceImpl implements ProductService {
         return productSearchService.searchProductByQuery(productSearchRequestDto);
     }
     @Override
-    public Long registrationProduct(ProductRegisterRequestDto productRegisterRequestDto, NewProductImageRequest newProductImageRequest, ProductMainImageCreateRequestDto productMainImageCreateRequestDto){
-        return productRegistrationService.registerProduct(productRegisterRequestDto, newProductImageRequest,productMainImageCreateRequestDto);
+    public Long registrationProduct(ProductRegisterCommand command){
+
+        return productRegistrationService.registerProduct(command);
     }
     @Override
-    public ProductDetailResponseDto getProductDetail(Long productId){
+    public ProductDetailResponse getProductDetail(Long productId){
         return productSearchService.getProductDetail(productId);
     }
 

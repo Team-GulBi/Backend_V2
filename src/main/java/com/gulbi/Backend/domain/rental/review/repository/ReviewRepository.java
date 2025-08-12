@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.review.repository;
 
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvgProjection;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvg;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,8 +14,6 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review,Long> {
-    @Query("SELECT r FROM Review r WHERE r.product.id = :productId")
-    List<Review> findAllReviewByProductId(@Param("productId") Long productId);
 
     @Query("SELECT " +
             "r.id AS id, " +
@@ -26,22 +24,18 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "FROM Review r " +
             "JOIN User u ON u.id = r.user.id " +
             "JOIN Profile p ON u.id = p.user.id WHERE r.product.id =:productId")
-    List<ReviewWithAvgProjection> findAllReviewWithRelationsByProductId(@Param("productId") Long productId);
+    List<ReviewWithAvg> findAllByProductIdWithAvg(@Param("productId") Long productId);
 
 
     @Transactional
     @Modifying
     @Query("DELETE FROM Review r WHERE r.id = :reviewId")
-    void deleteReviewByReviewId(@Param("reviewId") Long reviewId);
+    void deleteById(@Param("reviewId") Long reviewId);
+
 
     @Transactional
     @Modifying
-    @Query("UPDATE Review r SET r.rating = :rating, r.content = :content WHERE r.id = :reviewId")
-    void updateReviewInfo(@Param("rating") Integer rating, @Param("content")String content, @Param("reviewId") Long reviewId);
-
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM Review r WHERE r.product = :product")
-    void deleteAllReviewsByProduct(@Param("product")Product product);
+    @Query("DELETE FROM Review r WHERE r.product = :productId")
+    void deleteAllByProduct(@Param("productId")Long productId);
 
 }

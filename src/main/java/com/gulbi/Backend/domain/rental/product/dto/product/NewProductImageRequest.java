@@ -1,7 +1,7 @@
-package com.gulbi.Backend.domain.rental.product.dto.product.request.register;
+package com.gulbi.Backend.domain.rental.product.dto.product;
 
-import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
+import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageFiles;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class NewProductImageRequest {
     @Valid
-    private final ProductImageCollection productImageCollection;
+    private final ProductImageFiles productImageFiles;
 
     @Setter
     @Getter
@@ -20,16 +20,16 @@ public class NewProductImageRequest {
 
 
     private NewProductImageRequest(List<MultipartFile> images) {
-        this.productImageCollection = ProductImageCollection.of(images);
+        this.productImageFiles = ProductImageFiles.of(images);
     }
 
     public static NewProductImageRequest of(List<MultipartFile> images){
         return new NewProductImageRequest(images);
     }
 
-    public ProductImageCollection getProductImageCollection(){
-        if(!productImageCollection.isEmpty()){
-            return this.productImageCollection;
+    public ProductImageFiles getProductImageFiles(){
+        if(!productImageFiles.isEmpty()){
+            return this.productImageFiles;
         }
         return null;
     }
