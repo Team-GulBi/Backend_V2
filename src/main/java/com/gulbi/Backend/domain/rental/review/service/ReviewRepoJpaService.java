@@ -27,7 +27,6 @@ public class ReviewRepoJpaService implements ReviewRepoService {
     private final String className = this.getClass().getName();
 
     private final ReviewRepository reviewRepository;
-    private final ProductRepoService productRepoService;
 
     @Override
     public Review findById(Long reviewId) {
