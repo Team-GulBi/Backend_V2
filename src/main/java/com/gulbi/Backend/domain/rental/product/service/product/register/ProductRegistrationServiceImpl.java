@@ -48,7 +48,7 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
         //상품 생성, 영속성 컨텍스트를 위해 미리 저장
         Product product = ProductFactory.createWithRegisterRequestDto(user, categories, request);
         product.updateMainImage(mainImageUrl);
-        Long id = productRepoService.save(product);
+        productRepoService.save(product);
         //상품 이미지들 생성
         Images productImages = imageService.createImages(imageUrls, product);
         //메인 이미지 생성
@@ -56,7 +56,7 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
         //이미지 저장 후 메인이미지 저장
         imageRepoService.saveAll(productImages.getImages());
         imageRepoService.save(productMainImage);
-        return id;
+        return product.getId();
     }
 
     private ImageUrls uploadImages(ProductImageFiles productImageFiles){
