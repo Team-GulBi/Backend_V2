@@ -2,7 +2,7 @@ package com.gulbi.Backend.domain.rental.product.service.product.search;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
@@ -29,7 +29,6 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private final ProductRepoService productRepoService;
     private final ImageRepoService imageRepoService;
     private final ReviewService reviewService;
-    private final ProfileService profileService;
     //ToDo: 태그검색 제외
     private final Map<String, ProductSearchStrategy> productSearchStrategies;
 
@@ -37,21 +36,20 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private final ProductLogHandler productLogHandler;
 
     @Autowired
-    public ProductSearchServiceImpl(ProductLogHandler productLogHandler, ProductRepoService productRepoService, ImageRepoService imageRepoService, ReviewService reviewService, ProfileService profileService, Map<String, ProductSearchStrategy> productSearchStrategies) {
+    public ProductSearchServiceImpl(ProductLogHandler productLogHandler, ProductRepoService productRepoService, ImageRepoService imageRepoService, ReviewService reviewService, Map<String, ProductSearchStrategy> productSearchStrategies) {
         this.productLogHandler = productLogHandler;
         this.productRepoService = productRepoService;
         this.imageRepoService = imageRepoService;
         this.reviewService = reviewService;
-        this.profileService = profileService;
         this.productSearchStrategies = productSearchStrategies;
     }
 
     @Override
-    public List<ProductOverViewResponse> searchProductByQuery(ProductSearchRequestDto productSearchRequestDto) {
-        String detail = productSearchRequestDto.getDetail().trim();
-        String query = productSearchRequestDto.getQuery();
+    public List<ProductOverViewResponse> searchProductByQuery(ProductSearchRequest productSearchRequest) {
+        String detail = productSearchRequest.getDetail().trim();
+        String query = productSearchRequest.getQuery();
         loggingQuery(query,detail);
-        ProductSearchStrategy productSearchStrategy = getProductSearchStrategy(detail, productSearchRequestDto);
+        ProductSearchStrategy productSearchStrategy = getProductSearchStrategy(detail, productSearchRequest);
         return productSearchStrategy.search(query);
     }
 
@@ -89,9 +87,9 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     // 로깅 서비스 호출 메서드 부분(끝)
 
     // 예외 호출 (시작)
-    private ProductSearchStrategy getProductSearchStrategy(String detail, ProductSearchRequestDto productSearchRequestDto) {
+    private ProductSearchStrategy getProductSearchStrategy(String detail, ProductSearchRequest productSearchRequest) {
         return Optional.ofNullable(productSearchStrategies.get(detail))
-                .orElseThrow(() -> createInvalidProductSearchDetailException(productSearchRequestDto));
+                .orElseThrow(() -> createInvalidProductSearchDetailException(productSearchRequest));
     }
 
     private ProductException.InvalidProductSearchDetailException createInvalidProductSearchDetailException(Object args) {

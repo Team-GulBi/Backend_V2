@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.service.product;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
 import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
@@ -28,8 +28,8 @@ public class ProductServiceImpl implements ProductService {
     private final Logger LOGER = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Override
-    public List<ProductOverViewResponse> searchProductOverview(ProductSearchRequestDto productSearchRequestDto) {
-        return productSearchService.searchProductByQuery(productSearchRequestDto);
+    public List<ProductOverViewResponse> searchProductOverview(ProductSearchRequest productSearchRequest) {
+        return productSearchService.searchProductByQuery(productSearchRequest);
     }
     @Override
     public Long registrationProduct(ProductRegisterCommand command){

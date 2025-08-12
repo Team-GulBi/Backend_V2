@@ -4,7 +4,7 @@ import com.gulbi.Backend.domain.rental.product.code.ProductSuccessCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageDeleteRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
-import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequestDto;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
 import com.gulbi.Backend.domain.rental.product.dto.MainImageUrlUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
 import com.gulbi.Backend.domain.rental.product.dto.ProductContentUpdateCommand;
@@ -75,8 +75,8 @@ public class ProductController {
     public ResponseEntity<RestApiResponse> searchProduct(
             @Parameter(description = "검색어", required = true) @RequestParam("query") String query,
             @Parameter(description = "필터", required = true) @RequestParam("detail") String detail){
-        ProductSearchRequestDto productSearchRequestDto = ProductSearchRequestDto.of(detail, query);
-        List<ProductOverViewResponse> data = productService.searchProductOverview(productSearchRequestDto);
+        ProductSearchRequest productSearchRequest = ProductSearchRequest.of(detail, query);
+        List<ProductOverViewResponse> data = productService.searchProductOverview(productSearchRequest);
         RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_FOUND_SUCCESS,data);
         return ResponseEntity.ok(response);
     }
