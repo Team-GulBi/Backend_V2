@@ -39,10 +39,10 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
         //상품 메인 이미지 S3 업로드
         ImageUrl mainImageUrl = uploadImages(imageFiles).getMainImageUrl();
 
-        //현제 상품 등록 요청 유저의 ID추출
+        //현제 상품 등록 요청 유저 추출
         User user = userService.getAuthenticatedUser();
 
-        //카테고리 추출 및 유효성 검사.
+        //카테고리 추출 및 카테고리 유효성 검사.
         CategoryBundle categories = categoryService.resolveCategories(request.getBcategoryId(), request.getMcategoryId(), request.getScategoryId());
 
         //상품 생성, 영속성 컨텍스트를 위해 미리 저장

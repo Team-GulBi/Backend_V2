@@ -47,10 +47,11 @@ public class ProductController {
             @Parameter(description = "상품 이미지 파일", required = true)
             @RequestPart("images") List<MultipartFile> productImages,
             @RequestPart("mainImage") List<MultipartFile> productMainImage)
-    {
+    {       //request를 조합하여 command객체 생성
             ProductImageFiles imageFiles = ProductImageFiles.of(productImages);
             ProductImageFiles mainImageFile = ProductImageFiles.of(productMainImage);
             ProductRegisterCommand command = new ProductRegisterCommand(productInfo, mainImageFile,imageFiles);
+            //서비스 요청
             Long savedProductId= productService.registrationProduct(command);
             RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,savedProductId);
         return ResponseEntity.ok(response);

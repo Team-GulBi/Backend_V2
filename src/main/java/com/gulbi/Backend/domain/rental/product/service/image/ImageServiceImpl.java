@@ -52,14 +52,11 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void changeMainImage(ProductMainImageUpdateCommand productMainImageUpdateCommand) {
-        //ToDo: 플래그를 한번 싹 밀고, update하기.
-        // private final Long productId;
-        // private final ImageUrl mainImageUrl;
-
-        //ToDo: 한번 싹 밀고
+        // 어떤 상품의 메인이미지를 바꿀건지 파악
         Long productId = productMainImageUpdateCommand.getProductId();
+        // 상품과 관련있는 이미지의 메인 플레그 초기화
         imageRepoService.updateMainFalseByProductId(productId);
-        //ToDo: 해당 url을 가진 이미지를 메인으로 변경
+        // 요청이 들어온 url로 메인이미지 변경
         String url = productMainImageUpdateCommand.getMainImageUrl().getImageUrl();
         imageRepoService.updateMainTrueByUrl(url);
     }
