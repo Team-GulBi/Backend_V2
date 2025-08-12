@@ -30,4 +30,9 @@ public class Image extends BaseEntity {
         this.url = url;
         this.main = main;
     }
+
+    public void updateMainStatus(boolean isMain) {
+        this.main = isMain;
+    }
+
 }

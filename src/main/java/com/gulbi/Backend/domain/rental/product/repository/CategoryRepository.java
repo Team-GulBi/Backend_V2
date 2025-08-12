@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.repository;
 
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryProjection;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryProjection;
 import com.gulbi.Backend.domain.rental.product.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category,Integer> {
+public interface CategoryRepository extends JpaRepository<Category,Long> {
 //    @Query("SELECT c1 FROM Category c1 LEFT JOIN c1.parent c2")
     @Query("SELECT c FROM Category c WHERE c.parent IS NULL")
     List<CategoryProjection> findAllNoParentProjection();

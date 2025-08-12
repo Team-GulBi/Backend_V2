@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.user.service;
 
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.dto.ProfileCreateCommand;
 import com.gulbi.Backend.domain.user.dto.ProfileResponse;
 import com.gulbi.Backend.domain.user.dto.ProfileUpdateCommand;

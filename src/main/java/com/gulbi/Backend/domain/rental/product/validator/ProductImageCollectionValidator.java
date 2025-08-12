@@ -1,6 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.validator;
 
-import com.gulbi.Backend.domain.rental.product.vo.image.ProductImageCollection;
+import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
+
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.ConstraintValidator;
@@ -8,19 +9,19 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.io.IOException;
 import java.util.List;
 
-public class ProductImageCollectionValidator implements ConstraintValidator<ValidProductImages, ProductImageCollection> {
+public class ProductImageCollectionValidator implements ConstraintValidator<ValidProductImages, ProductImageFiles> {
 
     @Override
     public void initialize(ValidProductImages constraintAnnotation) {
         // 초기화할 내용이 없다면 비워둡니다.
     }
 
-    public boolean isValid(ProductImageCollection productImageCollection, ConstraintValidatorContext context) {
-        if (productImageCollection == null || productImageCollection.isEmpty()) {
+    public boolean isValid(ProductImageFiles productImageFiles, ConstraintValidatorContext context) {
+        if (productImageFiles == null || productImageFiles.isEmpty()) {
             return false;
         }
 
-        List<MultipartFile> images = productImageCollection.getProductImages();
+        List<MultipartFile> images = productImageFiles.getProductImages();
         Tika tika = new Tika(); // Tika 객체 생성
 
         for (MultipartFile image : images) {

@@ -4,16 +4,16 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductImageUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.service.image.ImageCrudService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 @Component
 public class ImageDeleteStrategy extends AbstractImageUpdateStrategy{
-	private final ImageCrudService imageCrudService;
+	private final ImageRepoService imageRepoService;
 
-	public ImageDeleteStrategy(ProductCrudService productCrudService, ImageCrudService imageCrudService) {
-		super(productCrudService);
-		this.imageCrudService = imageCrudService;
+	public ImageDeleteStrategy(ProductRepoService productRepoService, ImageRepoService imageRepoService) {
+		super(productRepoService);
+		this.imageRepoService = imageRepoService;
 	}
 
 	@Override
@@ -25,9 +25,8 @@ public class ImageDeleteStrategy extends AbstractImageUpdateStrategy{
 	public void update(ProductImageUpdateCommand command) {
 		if (!command.getToBeDeletedImages().getImagesId().isEmpty()) {
 			resolveProduct(command.getProductId());
-			imageCrudService.deleteImages(command.getToBeDeletedImages());
+			imageRepoService.deleteByIds(command.getToBeDeletedImages().getImagesId());
 		}
-			//지우려는게 메인이미지 일때 예외처리 해주긴해야함.. todo..
 
 	}
 }

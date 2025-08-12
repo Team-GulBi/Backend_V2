@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.recommandation.service.personal.strategy.latest;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.recommandation.service.personal.strategy.CategoryBasedRecommendStrategy;
 import com.gulbi.Backend.domain.rental.recommandation.vo.ExtractedRecommendation;
 import com.gulbi.Backend.domain.rental.recommandation.vo.PersonalCategoryPagination;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service("latestProductQueryStrategy")
 //전략에 대한 정보만 유치 필요한 상품의 비율은 서비스 호출로 충족.
 public class LatestRecommendationStrategy implements CategoryBasedRecommendStrategy {
-    private final ProductCrudService productCrudService;
+    private final ProductRepoService productRepoService;
     //비율은 우선순위대로 50%, 30%, 10%,5%,5% 하겠습니다.
     private static final int RECOMMENDATION_RATE_100 = 10;
     private static final int RECOMMENDATION_RATE_70 = 7;
@@ -26,8 +26,8 @@ public class LatestRecommendationStrategy implements CategoryBasedRecommendStrat
     private static final int RECOMMENDATION_RATE_30 = 3;
     private static final int RECOMMENDATION_RATE_10 = 1;
 
-    public LatestRecommendationStrategy(ProductCrudService productCrudService) {
-        this.productCrudService = productCrudService;
+    public LatestRecommendationStrategy(ProductRepoService productRepoService) {
+        this.productRepoService = productRepoService;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class LatestRecommendationStrategy implements CategoryBasedRecommendStrat
             Long bCategoryId = Long.valueOf(extractedRecommendation.getBCategory(priority));
             Long mCategoryId = Long.valueOf(extractedRecommendation.getMCategory(priority));
             recommendedProducts.add(
-                    productCrudService.getProductOverViewByCategories(bCategoryId, mCategoryId, null, null, pageable)
+                    productRepoService.findProductOverViewByCategories(bCategoryId, mCategoryId, null, null, pageable)
             );
         }
         return new PersonalRecommendationResponseDto(recommendedProducts);
@@ -62,7 +62,7 @@ public class LatestRecommendationStrategy implements CategoryBasedRecommendStrat
             Long mCategoryId = Long.valueOf(personalCategoryPagination.getMCategoryIdByPriority(priority));
             LocalDateTime lastCreatedAt = personalCategoryPagination.getLastCreatedByPriority(priority);
             recommendedProducts.add(
-                    productCrudService.getProductOverViewByCategories(bCategoryId, mCategoryId, null, lastCreatedAt, pageable)
+                    productRepoService.findProductOverViewByCategories(bCategoryId, mCategoryId, null, lastCreatedAt, pageable)
             );
         }
         return new PersonalRecommendationResponseDto(recommendedProducts);

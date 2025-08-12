@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.recommandation.controller;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.recommandation.code.RecommendationSuccessCode;
 import com.gulbi.Backend.domain.rental.recommandation.service.ProductRecommendFacade;
 import com.gulbi.Backend.domain.rental.recommandation.dto.PersonalRecommendationRequestDto;

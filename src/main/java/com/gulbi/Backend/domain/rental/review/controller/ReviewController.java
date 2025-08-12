@@ -1,15 +1,15 @@
 package com.gulbi.Backend.domain.rental.review.controller;
 
 import com.gulbi.Backend.domain.rental.review.code.ReviewSuccessCode;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewCreateRequestDto;
-import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateRequestDto;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewCreateCommand;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewCreateRequest;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateCommand;
+import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateRequest;
 import com.gulbi.Backend.domain.rental.review.service.ReviewService;
-import com.gulbi.Backend.domain.user.response.SuccessCode;
 import com.gulbi.Backend.global.response.RestApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
-    @PostMapping
+    @PostMapping("/product/{productId}")
     @Operation(
             summary = "상품 리뷰 생성"
     )
-    public ResponseEntity<RestApiResponse> createReview(@RequestBody @Validated ReviewCreateRequestDto request){
-        reviewService.addReviewToProduct(request);
+    public ResponseEntity<RestApiResponse> createReview(@RequestBody @Validated ReviewCreateRequest request,
+    @PathVariable("productId") Long productId){
+        ReviewCreateCommand command = new ReviewCreateCommand(request, productId);
+        reviewService.addReviewToProduct(command);
         RestApiResponse response = new RestApiResponse(ReviewSuccessCode.REVIEW_REGISTER_SUCCESS);
         return ResponseEntity.ok(response);
     }
@@ -40,12 +42,15 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping
+    @PatchMapping("/{reviewId}")
     @Operation(
             summary = "리뷰수정"
     )
-    public ResponseEntity<RestApiResponse> updateReview(@RequestBody ReviewUpdateRequestDto reviewUpdateRequestDto){
-        reviewService.updateReview(reviewUpdateRequestDto);
+    public ResponseEntity<RestApiResponse> updateReview(@RequestBody ReviewUpdateRequest request,
+        @PathVariable("reviewId")Long reviewId){
+
+        ReviewUpdateCommand command = new ReviewUpdateCommand(request, reviewId);
+        reviewService.updateReview(command);
         RestApiResponse response = new RestApiResponse(ReviewSuccessCode.REVIEW_INFO_UPDATED_SUCCESS);
         return ResponseEntity.ok(response);
     }

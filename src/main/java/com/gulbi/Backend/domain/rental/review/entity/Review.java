@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
+
 @Entity
 @Table(name = "reviews")
 @Getter
@@ -38,4 +40,10 @@ public class Review extends BaseEntity {
         this.content = content;
         this.rating = rating;
     }
+
+    public void update(String content, Integer rating){
+        this.content = content == null ? this.content : content;
+        this.rating = rating == null ? this.rating : rating;
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.contract.contract.entity;
 
 import com.gulbi.Backend.domain.contract.application.entity.Application;
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

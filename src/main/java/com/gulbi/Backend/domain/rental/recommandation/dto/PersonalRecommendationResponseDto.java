@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.rental.recommandation.dto;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import lombok.Getter;
 
 import java.util.List;

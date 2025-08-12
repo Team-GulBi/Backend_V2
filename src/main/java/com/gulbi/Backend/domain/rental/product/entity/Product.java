@@ -1,7 +1,10 @@
 package com.gulbi.Backend.domain.rental.product.entity;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
+import com.gulbi.Backend.domain.rental.product.dto.ProductTextUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.global.entity.BaseEntity;
 import com.gulbi.Backend.global.error.ExceptionMetaData;
@@ -70,36 +73,6 @@ public class Product extends BaseEntity {
     @Builder
     private Product(User user, Category bCategory, Category mCategory, Category sCategory, String tag, String title, String name, int views, int price,
                     String sido, String sigungu, String bname, String description, String mainImage) {
-
-        // 유틸리티 메서드를 사용하여 메타데이터 자동 생성
-        if (user == null) {
-            throwProductException(ProductErrorCode.MISSING_USER, user);
-        }
-        if (bCategory == null || mCategory == null || sCategory == null) {
-            throwProductException(ProductErrorCode.MISSING_CATEGORY, bCategory);
-        }
-        if (title == null || title.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_TITLE, title);
-        }
-        if (name == null || name.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_NAME, name);
-        }
-        if (views < 0) {
-            throwProductException(ProductErrorCode.INVALID_VIEWS, views);
-        }
-        if (price < 0) {
-            throwProductException(ProductErrorCode.INVALID_PRICE, price);
-        }
-        if (sido == null || sido.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_SIDO, sido);
-        }
-        if (sigungu == null || sigungu.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_SIGUNGU, sigungu);
-        }
-        if (description == null || description.isEmpty()) {
-            throwProductException(ProductErrorCode.MISSING_DESCRIPTION, description);
-        }
-
         this.user = user;
         this.bCategory = bCategory;
         this.mCategory = mCategory;
@@ -116,13 +89,35 @@ public class Product extends BaseEntity {
         this.mainImage = mainImage;
     }
 
-    private ProductException.MissingProductFieldException throwProductException(ProductErrorCode errorCode, Object args) {
-        ExceptionMetaData exceptionMetaData = new ExceptionMetaData
-                .Builder()
-                .args(args)
-                .className(this.getClass().getName())
-                .responseApiCode(errorCode)
-                .build();
-        throw new ProductException.MissingProductFieldException(exceptionMetaData);
+
+    public void updateMainImage(ImageUrl mainImage){
+        this.mainImage = mainImage.getImageUrl();
+    }
+
+    public void updateView(){
+        this.views = this.views + 1;
+    }
+    public void updateTextInfo(ProductTextUpdateRequest dto) {
+        if (dto.getTag() != null) this.tag = dto.getTag();
+        if (dto.getTitle() != null) this.title = dto.getTitle();
+        if (dto.getName() != null) this.name = dto.getName();
+        if (dto.getPrice() != null) this.price = dto.getPrice();
+        if (dto.getSido() != null) this.sido = dto.getSido();
+        if (dto.getSigungu() != null) this.sigungu = dto.getSigungu();
+        if (dto.getBname() != null) this.bname = dto.getBname();
+        if (dto.getDescription() != null) this.description = dto.getDescription();
+    }
+
+    public void updateCategories(CategoryBundle categories) {
+        if (categories.getBCategory() != null) {
+            // 엔티티에 맞게 Category 객체를 찾아서 할당해야 함 (예: CategoryRepository 사용)
+            this.bCategory = categories.getBCategory();
+        }
+        if (categories.getMCategory() != null) {
+            this.mCategory = categories.getMCategory();
+        }
+        if (categories.getSCategory() != null) {
+            this.sCategory = categories.getSCategory();
+        }
     }
 }

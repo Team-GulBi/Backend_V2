@@ -2,20 +2,22 @@ package com.gulbi.Backend.domain.rental.product.service.product.update.Strategy;
 
 import org.springframework.stereotype.Component;
 
-import com.gulbi.Backend.domain.rental.product.dto.category.CategoryInProductDto;
-import com.gulbi.Backend.domain.rental.product.dto.product.request.update.ProductCategoryUpdateRequest;
-import com.gulbi.Backend.domain.rental.product.dto.product.update.ProductContentUpdateCommand;
-import com.gulbi.Backend.domain.rental.product.service.category.CategoryBusinessService;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
+import com.gulbi.Backend.domain.rental.product.dto.ProductCategoryUpdateRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductContentUpdateCommand;
+import com.gulbi.Backend.domain.rental.product.entity.Product;
+import com.gulbi.Backend.domain.rental.product.service.category.CategoryService;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
+
 @Component
 public class ProductCategoryUpdateStrategy implements ProductUpdateStrategy{
-	private final CategoryBusinessService categoryBusinessService;
-	private final ProductCrudService productCrudService;
+	private final CategoryService categoryService;
+	private final ProductRepoService productRepoService;
 
-	public ProductCategoryUpdateStrategy(CategoryBusinessService categoryBusinessService,
-		ProductCrudService productCrudService) {
-		this.categoryBusinessService = categoryBusinessService;
-		this.productCrudService = productCrudService;
+	public ProductCategoryUpdateStrategy(CategoryService categoryService,
+		ProductRepoService productRepoService) {
+		this.categoryService = categoryService;
+		this.productRepoService = productRepoService;
 	}
 
 	@Override
@@ -25,12 +27,19 @@ public class ProductCategoryUpdateStrategy implements ProductUpdateStrategy{
 
 	@Override
 	public void update(ProductContentUpdateCommand command) {
-		validateCategories(command);
-		productCrudService.updateProductCategories(command);
+		//카테고리 유효성 조회
+		ProductCategoryUpdateRequest request = command.getProductCategoryUpdateRequest();
+		CategoryBundle bundle = validateCategories(request);
+		// 상품 유효성 검사
+		Long productId = command.getProductId();
+		Product product = productRepoService.findProductById(productId);
+		// 업데이트
+		product.updateCategories(bundle);
+		productRepoService.save(product);
 	}
 
 	//카테고리 유효성 검사.
-	private void validateCategories(ProductContentUpdateCommand productCategoryUpdateRequest){
-		CategoryInProductDto category = categoryBusinessService.resolveCategories(productCategoryUpdateRequest.getProductCategoryUpdateRequest());
+	private CategoryBundle validateCategories(ProductCategoryUpdateRequest request){
+		return categoryService.resolveCategories(request);
 	}
 }

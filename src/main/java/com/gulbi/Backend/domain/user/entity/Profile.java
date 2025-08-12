@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.user.entity;
 
 
-import com.gulbi.Backend.domain.rental.product.vo.image.ImageUrl;
+import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.dto.ProfileUpdateRequest;
 
 import jakarta.persistence.*;

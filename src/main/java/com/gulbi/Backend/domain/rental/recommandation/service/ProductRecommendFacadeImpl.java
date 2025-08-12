@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.recommandation.service;
 
-import com.gulbi.Backend.domain.rental.product.dto.product.ProductOverViewResponse;
-import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductCrudService;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.recommandation.service.personal.PersonalProductProvider;
 import com.gulbi.Backend.domain.rental.recommandation.service.personal.strategy.RecommendationStrategyProviderService;
 import com.gulbi.Backend.domain.rental.recommandation.service.query.ProductLogQueryService;
@@ -17,12 +17,12 @@ import java.util.List;
 
 @Service
 public class ProductRecommendFacadeImpl implements ProductRecommendFacade {
-    private final ProductCrudService productCrudService;
+    private final ProductRepoService productRepoService;
     private final PersonalProductProvider personalProductProvider;
     private final PopularProductProvider popularProductProvider;
 
-    public ProductRecommendFacadeImpl(ProductLogQueryService productLogQueryService, ProductCrudService productCrudService, QueryHandler queryHandler, RecommendationStrategyProviderService recommendatedProviderService, PersonalProductProvider personalProductProvider, PopularProductProvider popularProductProvider) {
-        this.productCrudService = productCrudService;
+    public ProductRecommendFacadeImpl(ProductLogQueryService productLogQueryService, ProductRepoService productRepoService, QueryHandler queryHandler, RecommendationStrategyProviderService recommendatedProviderService, PersonalProductProvider personalProductProvider, PopularProductProvider popularProductProvider) {
+        this.productRepoService = productRepoService;
         this.personalProductProvider = personalProductProvider;
         this.popularProductProvider = popularProductProvider;
     }
@@ -34,12 +34,12 @@ public class ProductRecommendFacadeImpl implements ProductRecommendFacade {
 
     @Override
     public List<ProductOverViewResponse> getRecentRegistrationProducts(Pageable pageable, LocalDateTime lastCreatedAt) {
-        return productCrudService.getProductOverViewByCreatedAtDesc(pageable,lastCreatedAt);
+        return productRepoService.findProductOverViewByCreatedAtDesc(pageable,lastCreatedAt);
     }
 
     @Override
     public List<ProductOverViewResponse> getRecentProductByCategory(Long bCategoryId, Long mCategoryId, Long sCategoryId, LocalDateTime lastCreatedAt, Pageable pageable) {
-        return productCrudService.getProductOverViewByCategories(bCategoryId, mCategoryId, sCategoryId,lastCreatedAt,pageable);
+        return productRepoService.findProductOverViewByCategories(bCategoryId, mCategoryId, sCategoryId,lastCreatedAt,pageable);
     }
 
     @Override
