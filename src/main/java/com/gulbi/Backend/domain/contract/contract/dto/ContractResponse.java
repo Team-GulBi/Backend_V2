@@ -33,13 +33,15 @@ public class ContractResponse {
     private String lenderSignature;
     private String borrowerSignature;
 
+    private String lenderName;
+    private String borrowerName;
     public ContractResponse(Long id, String itemName, String specifications, Integer quantity, String condition,
         String notes, LocalDateTime rentalEndDate, String rentalPlace, String rentalDetailAddress,
         LocalDateTime returnDate,
         String returnPlace, String returnDetailAddress, BigDecimal rentalFee, LocalDateTime paymentDate,
         BigDecimal lateInterestRate, BigDecimal latePenaltyRate, BigDecimal damageCompensationRate,
         Boolean lenderApproval,
-        Boolean borrowerApproval, String url, String lenderSignature, String borrowerSignature) {
+        Boolean borrowerApproval, String url, String lenderSignature, String borrowerSignature, String lenderName, String borrowerName) {
         this.id = id;
         this.itemName = itemName;
         this.specifications = specifications;
@@ -62,6 +64,8 @@ public class ContractResponse {
         this.url = url;
         this.lenderSignature = lenderSignature;
         this.borrowerSignature = borrowerSignature;
+        this.lenderName=lenderName;
+        this.borrowerName=borrowerName;
     }
 
     @Override
@@ -115,7 +119,9 @@ public class ContractResponse {
             contract.getBorrowerApproval(),
             contract.getUrl(),
             contract.getLender().getProfile().getSignature(),
-            contract.getBorrower().getProfile().getSignature()
+            contract.getBorrower().getProfile().getSignature(),
+            contract.getLender().getNickname(),
+            contract.getBorrower().getNickname()
         );
     }
 
