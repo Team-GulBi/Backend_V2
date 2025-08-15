@@ -21,8 +21,8 @@ public class ChatRoomController {
     private final UserService userService;
     // 채팅방 생성 또는 반환
     @PostMapping("/chatrooms")
-    public ResponseEntity<ChatRoomDto> findOrCreateChatRoom(@RequestParam String user1Email, @RequestParam String user2Email) {
-        ChatRoom chatRoom = chatRoomService.findOrCreateChatRoom(user1Email, user2Email);
+    public ResponseEntity<ChatRoomDto> findOrCreateChatRoom(@RequestParam Long user1, @RequestParam Long user2) {
+        ChatRoom chatRoom = chatRoomService.findOrCreateChatRoom(user1, user2);
         return ResponseEntity.ok(ChatRoomDto.fromEntity(chatRoom));
     }
 

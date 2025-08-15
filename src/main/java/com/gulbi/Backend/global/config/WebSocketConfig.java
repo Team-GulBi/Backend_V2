@@ -19,7 +19,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app"); // 메시지 송신 경로 pub으로 수정예정 
+        // 발행경로, 프론트에서 /pub이 들어가는 경우 MessageController가 수신받음
+        registry.setApplicationDestinationPrefixes("/pub");
+        // 수신경로: sendToMsg 할때 /sub으로 한다면 해당 경로를 구독하는 프론트엔드한테 감
         registry.enableSimpleBroker("/queue", "/topic", "/sub"); //수신 경로
     }
 

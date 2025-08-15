@@ -30,11 +30,13 @@ public class WebSocketEventHandler implements ApplicationListener<SessionConnect
         this.userRepository = userRepository;
         this.eventPublisher = eventPublisher;
     }
+    // 클라이언트가 웹소켓으로 처음 호출 했을때 딱 한번 실행되는 메서드
+        // SessionConnectEvent에는 연결 관련 정보
     @Override
     public void onApplicationEvent(SessionConnectEvent event) {
+        //Stomp
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication != null && authentication.isAuthenticated()) {
             String username = authentication.getName(); // 사용자 이메일
             log.info("WebSocket 연결된 사용자: {}", username);
@@ -52,6 +54,7 @@ public class WebSocketEventHandler implements ApplicationListener<SessionConnect
             log.warn("WebSocket 연결 실패: 인증되지 않은 사용자");
         }
     }
+    // 사용자가 특정 토픽이나 채널을 구독할 때 매번 실행
     @EventListener
     public void handleSubscribe(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());

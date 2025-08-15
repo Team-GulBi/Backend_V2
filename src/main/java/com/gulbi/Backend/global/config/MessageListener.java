@@ -1,15 +1,16 @@
 package com.gulbi.Backend.global.config;
 
-import com.gulbi.Backend.domain.chat.message.dto.ChatMessageDto;
+import com.gulbi.Backend.domain.chat.message.dto.MessageReceiveRequest;
+import com.gulbi.Backend.domain.chat.message.dto.MessageSendResponse;
+import com.gulbi.Backend.domain.chat.message.entity.ChatMessage;
 import com.gulbi.Backend.domain.chat.room.entity.ChatRoom;
 import com.gulbi.Backend.domain.chat.room.service.ChatRoomService;
 import com.gulbi.Backend.domain.chat.websocket.WebSocketEventHandler;
-import com.gulbi.Backend.domain.chat.websocket.UserConnectedEvent;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -36,13 +37,14 @@ public class MessageListener {
 
 
     // 구독 이벤트 처리
+    //구독을 하자마자 발생하는 이벤트임 !!
     @EventListener
     public void onUserSubscribed(SessionSubscribeEvent event) {
         // StompHeaderAccessor를 사용하여 세션 ID 추출
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId(); // 세션 ID 가져오기
-        Long userId = webSocketEventHandler.getUserIdBySessionId(sessionId); // 세션 ID를 통해 사용자 ID 가져오기
-        if (userId == null) {
+        Long recevierId = webSocketEventHandler.getUserIdBySessionId(sessionId); // 세션 ID를 통해 사용자 ID 가져오기
+        if (recevierId == null) {
             log.warn("Session {} not associated with any user.", sessionId);
             return;
         }
@@ -55,7 +57,7 @@ public class MessageListener {
 
         // chatRoomId 추출
         Long chatRoomId = Long.valueOf(destination.replace("/sub/chat/room/", ""));
-        log.info("User {} subscribed to chat room: {}", userId, chatRoomId);
+        log.info("User {} subscribed to chat room: {}", recevierId, chatRoomId);
 
         // 🔹 채팅방별로 동적 큐 생성 & 바인딩
         String queueName = "chat.queue." + chatRoomId;
@@ -63,44 +65,43 @@ public class MessageListener {
         Binding binding = rabbitMQConfig.bindQueueToExchange(queue);
 
         // 큐에서 메시지 가져오기 (큐가 비어있을 때까지)
-        ChatMessageDto chatMessageDto;
-        while ((chatMessageDto = (ChatMessageDto) rabbitTemplate.receiveAndConvert(queueName)) != null) {
-            log.debug("Dequeued message for chat room {}: {}", chatRoomId, chatMessageDto);
+        MessageSendResponse chatMessage;
+        while ((chatMessage = (MessageSendResponse) rabbitTemplate.receiveAndConvert(queueName)) != null) {
+            log.debug("Dequeued message for chat room {}: {}", chatRoomId, chatMessage);
 
             // 채팅방에서 상대방 ID 가져오기
-            Long receiverId = findReceiverIdFromChatRoom(chatMessageDto.getChatRoomId(), chatMessageDto.getSenderId());
-            chatMessageDto.setReceiverId(receiverId);
+            Long receiverId = findReceiverIdFromChatRoom(chatMessage.getChatRoomId(), chatMessage.getSenderId());
 
             // 수신자가 현재 연결된 사용자이고, 메시지가 처리되지 않았다면 전송
-            if (receiverId.equals(userId) && !processedMessages.contains(chatMessageDto.getId())) {
-                log.info("Delivering queued message to user {}: {}", userId, chatMessageDto);
-                sendToWebSocket(chatMessageDto);
-                processedMessages.add(chatMessageDto.getId());
+            if (receiverId.equals(recevierId) && !processedMessages.contains(chatMessage.getMessageId())) {
+                chatMessage.readMessage();
+                log.info("Delivering queued message to user {}: {}", recevierId, chatMessage);
+                sendToWebSocket(chatMessage);
+                processedMessages.add(chatMessage.getMessageId());
             } else {
-                log.warn("Message for user {} does not match connected user {}. Requeuing message: {}",
-                        receiverId, userId, chatMessageDto);
-                storeMessageForLater(chatMessageDto);
+                storeMessageForLater(chatMessage);
             }
         }
-        log.info("Finished processing queued messages for user {} in chat room {}.", userId, chatRoomId);
     }
 
 
     // WebSocket으로 메시지 전송
-    private void sendToWebSocket(ChatMessageDto chatMessageDto) {
-        log.debug("Sending message via WebSocket to chat room {}: {}", chatMessageDto.getChatRoomId(), chatMessageDto);
+    private void sendToWebSocket(MessageSendResponse chatMessage) {
+        log.debug("Sending message via WebSocket to chat room {}: {}", chatMessage.getChatRoomId(),
+            chatMessage);
         messagingTemplate.convertAndSend(
-                "/sub/chat/room/" + chatMessageDto.getChatRoomId(),
-                chatMessageDto
+                "/sub/chat/room/" + chatMessage.getChatRoomId(),
+            chatMessage
         );
-        log.info("Message sent to WebSocket for chat room {}: {}", chatMessageDto.getChatRoomId(), chatMessageDto);
+        log.info("Message sent to WebSocket for chat room {}: {}",chatMessage.getChatRoomId(),
+            chatMessage);
     }
 
     // 메시지를 큐에 저장
-    private void storeMessageForLater(ChatMessageDto chatMessageDto) {
-        log.debug("Storing message back in queue: {}", chatMessageDto);
-        rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, chatMessageDto);
-        log.info("Message requeued: {}", chatMessageDto);
+    private void storeMessageForLater(MessageSendResponse chatMessage) {
+        log.debug("Storing message back in queue: {}", chatMessage);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, chatMessage);
+        log.info("Message requeued: {}", chatMessage);
     }
 
 
