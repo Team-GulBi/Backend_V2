@@ -6,6 +6,7 @@ import com.gulbi.Backend.domain.rental.review.dto.ReviewCreateCommand;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewUpdateCommand;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvg;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
+import com.gulbi.Backend.domain.rental.review.exception.ReviewException;
 import com.gulbi.Backend.domain.rental.review.factory.ReviewFactory;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.service.UserService;
@@ -33,7 +34,7 @@ public class ReviewServiceImpl implements ReviewService{
     public List<ReviewWithAvg> getAllReview(Long productId) {
         try {
             return reviewRepoService.findAllByProductIdWithAvg(productId);
-        }catch (Exception e){
+        }catch (ReviewException e){
             return Collections.emptyList();
         }
 

@@ -43,6 +43,10 @@ public class ChatMessage {
         this.isRead = false;  // 기본값으로 읽지 않음
     }
 
+    public void readMessage(){
+        this.isRead=true;
+    }
+
     public void markAsRead() {
         this.isRead = true;
     }
