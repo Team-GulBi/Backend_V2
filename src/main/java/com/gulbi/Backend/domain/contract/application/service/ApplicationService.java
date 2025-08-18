@@ -1,6 +1,5 @@
 package com.gulbi.Backend.domain.contract.application.service;
 
-import java.sql.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,6 +15,7 @@ import com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusRespon
 import com.gulbi.Backend.domain.contract.application.entity.Application;
 import com.gulbi.Backend.domain.contract.application.exception.ApplicationException;
 import com.gulbi.Backend.domain.contract.application.repository.ApplicationRepoService;
+import com.gulbi.Backend.domain.contract.contract.service.ContractService;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.user.entity.User;
@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ApplicationService {
     private final ApplicationRepoService applicationRepoService;
+    private final ContractService contractService;
     private final JwtUtil jwtUtil;
     private final UserRepoService userRepoService;
     private final ProductRepoService productRepoService;
@@ -38,10 +39,11 @@ public class ApplicationService {
 
         Long userId = jwtUtil.extractUserIdFromRequest();
         User user = userRepoService.findById(userId);
-        Product product = productRepoService.findProductById(productId);
+        Product product = productRepoService.findProductByIdWithTemplate(productId);
         Application application = new Application(product, user, dto.getStartDate(), dto.getEndDate());
-
-        return applicationRepoService.save(application);
+        applicationRepoService.save(application);
+        contractService.createContractFromApplication(application);
+        return application;
     }
 
     public ApplicationCalendarResponse getApplicationsByYearMonth(YearMonth yearMonth, Long productId){
