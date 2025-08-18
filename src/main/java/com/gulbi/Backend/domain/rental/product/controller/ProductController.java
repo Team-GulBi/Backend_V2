@@ -1,5 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.controller;
 
+import com.gulbi.Backend.domain.contract.contract.dto.TemplateCreateRequest;
 import com.gulbi.Backend.domain.rental.product.code.ProductSuccessCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageDeleteRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
@@ -43,14 +44,17 @@ public class ProductController {
             description = "상품정보, 상품이미지를 이용하여 상품을 등록 합니다."
     )
     public ResponseEntity<RestApiResponse> register(
-            @Parameter(description = "상품정보", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @RequestPart("body") ProductRegisterRequest productInfo,
+            @Parameter(description = "상품정보", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+            @RequestPart("product") ProductRegisterRequest productInfo,
+            @Parameter(description = "계약서 템플릿", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+            @RequestPart("template") TemplateCreateRequest template,
             @Parameter(description = "상품 이미지 파일", required = true)
             @RequestPart("images") List<MultipartFile> productImages,
             @RequestPart("mainImage") List<MultipartFile> productMainImage)
     {       //request를 조합하여 command객체 생성
             ProductImageFiles imageFiles = ProductImageFiles.of(productImages);
             ProductImageFiles mainImageFile = ProductImageFiles.of(productMainImage);
-            ProductRegisterCommand command = new ProductRegisterCommand(productInfo, mainImageFile,imageFiles);
+            ProductRegisterCommand command = new ProductRegisterCommand(productInfo, template,mainImageFile,imageFiles);
             //서비스 요청
             Long savedProductId= productService.registrationProduct(command);
             RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,savedProductId);

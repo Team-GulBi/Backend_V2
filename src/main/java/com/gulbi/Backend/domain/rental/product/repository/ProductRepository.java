@@ -66,44 +66,10 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
         "WHERE p.id = :id")
     Optional<Product> findByIdWithAll(@Param("id") Long id);
 
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE Product p SET p.views = p.views + 1 WHERE p.id = :id ")
-    Integer updateProductViews(@Param("id") Long id);
-
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE products p SET p.b_category_id = :bCategoryId, p.m_category_id = :mCategoryId, p.s_category_id = :sCategoryId WHERE p.id = :productId", nativeQuery = true)
-    void updateProductCategories(@Param("productId") Long productId,
-        @Param("bCategoryId") Long bCategoryId,
-        @Param("mCategoryId") Long mCategoryId,
-        @Param("sCategoryId") Long sCategoryId);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE Product p " +
-            "SET p.tag = COALESCE(:tag, p.tag), " +
-            "p.title = COALESCE(:title, p.title), " +
-            "p.name = COALESCE(:name, p.name), " +
-            "p.price = COALESCE(:price, p.price), " +
-            "p.sido = COALESCE(:sido, p.sido), " +
-            "p.sigungu = COALESCE(:sigungu, p.sigungu), " +
-            "p.bname = COALESCE(:bname, p.bname), " +
-            "p.description = COALESCE(:description, p.description) " +
-            "WHERE p.id = :productId"
-    )
-    void updateProductInfo(
-            @Param("productId") Long productId,
-            @Param("tag") String tag,
-            @Param("title") String title,
-            @Param("name") String name,
-            @Param("price") Integer price,
-            @Param("sido") String sido,
-            @Param("sigungu") String sigungu,
-            @Param("bname") String bname,
-            @Param("description") String description
-    );
+    @Query("SELECT p FROM Product p " +
+        "LEFT JOIN FETCH p.contractTemplate " +
+        "WHERE p.id = :productId")
+    Optional<Product> findByIdWithTemplate(@Param("productId") Long productId);
 
 
     @Transactional

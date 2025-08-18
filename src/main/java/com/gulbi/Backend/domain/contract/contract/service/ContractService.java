@@ -6,16 +6,13 @@ import java.util.Map;
 
 import com.gulbi.Backend.domain.contract.application.repository.ApplicationRepoService;
 import com.gulbi.Backend.domain.contract.contract.code.ContractErrorCode;
-import com.gulbi.Backend.domain.contract.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.contract.dto.ContractResponse;
 import com.gulbi.Backend.domain.contract.contract.dto.LenderApprovalCommand;
 import com.gulbi.Backend.domain.contract.contract.entity.Contract;
 import com.gulbi.Backend.domain.contract.contract.entity.ContractFactory;
 import com.gulbi.Backend.domain.contract.contract.exception.ContractException;
 import com.gulbi.Backend.domain.contract.contract.repository.ContractRepoService;
-import com.gulbi.Backend.domain.contract.application.dto.ApplicationCreateRequest;
 import com.gulbi.Backend.domain.contract.application.entity.Application;
-import com.gulbi.Backend.domain.contract.application.service.ApplicationService;
 import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.repository.UserRepoService;
@@ -34,23 +31,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContractService {
     private final String className = this.getClass().getName();
 
-    private final ApplicationService applicationService;
     private final ApplicationRepoService applicationRepoService;
     private final ContractRepoService contractRepoService;
     private final UserRepoService userRepoService;
     private final JwtUtil jwtUtil;
     private final S3Uploader s3Uploader;
 
-    // 계약 및 예약 생성
-    public void createContract(Long productId, ContractCreateRequest contractCreateRequest,ApplicationCreateRequest applicationCreateRequest) {
-        // 요청을 보낸 사용자 (borrower)
-        User borrower = getAuthenticatedUser();
-        Application application = applicationService.createApplication(productId, applicationCreateRequest);
-        // lender
-        User lender = application.getProduct().getUser();
-
+    // 계약서 생성
+    public void createContractFromApplication(Application application) {
         // Contract 생성
-        Contract contract = ContractFactory.createContract(contractCreateRequest, application, lender, borrower);
+        Contract contract = ContractFactory.createContract(application);
         contractRepoService.save(contract);
     }
 

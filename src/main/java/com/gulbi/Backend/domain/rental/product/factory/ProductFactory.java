@@ -1,5 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.factory;
 
+import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
 import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ProductFactory{
-    public static Product createWithRegisterRequestDto(User user, CategoryBundle categories, ProductRegisterRequest productRegisterRequest) {
+    public static Product createWithRegisterRequestDto(User user, CategoryBundle categories, ContractTemplate template, ProductRegisterRequest productRegisterRequest) {
         return Product.builder()
                 .user(user)
                 .title(productRegisterRequest.getTitle())
@@ -25,6 +26,7 @@ public class ProductFactory{
                 .bCategory(categories.getBCategory())
                 .mCategory(categories.getMCategory())
                 .sCategory(categories.getSCategory())
+                .template(template)
                 .build();
 
     }

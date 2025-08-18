@@ -1,7 +1,6 @@
 package com.gulbi.Backend.domain.contract.contract.controller;
 
 import com.gulbi.Backend.domain.contract.contract.code.ContractSuccessCode;
-import com.gulbi.Backend.domain.contract.contract.dto.ContractCreateRequest;
 import com.gulbi.Backend.domain.contract.contract.dto.ContractResponse;
 import com.gulbi.Backend.domain.contract.contract.dto.LenderApprovalCommand;
 import com.gulbi.Backend.domain.contract.contract.service.ContractService;
@@ -29,16 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ContractController {
 
     private final ContractService contractService;
-    @PostMapping(path = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RestApiResponse> createContract(
-        @PathVariable Long productId,
-        @Parameter(description = "계약서") @RequestPart ContractCreateRequest contractCreateRequest,
-        @Parameter(description = "예약") @RequestPart ApplicationCreateRequest applicationCreateRequest) {
-
-        contractService.createContract(productId, contractCreateRequest, applicationCreateRequest);
-        RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_CREATE_SUCCESS);
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping("/applications/{applicationId}")
     public ResponseEntity<RestApiResponse> getContractByApplication(@PathVariable("applicationId")Long applicationId){
