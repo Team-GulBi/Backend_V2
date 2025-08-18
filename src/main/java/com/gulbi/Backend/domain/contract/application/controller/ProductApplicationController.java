@@ -8,15 +8,20 @@ import com.gulbi.Backend.domain.contract.application.dto.ApplicationCalendarResp
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationCreateRequest;
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationDayResponse;
 import com.gulbi.Backend.domain.contract.application.service.ApplicationService;
-import com.gulbi.Backend.domain.rental.product.code.ProductSuccessCode;
+import com.gulbi.Backend.domain.contract.contract.code.ContractSuccessCode;
 import com.gulbi.Backend.global.response.RestApiResponse;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Parameter;
 
 @RestController
 @RequestMapping("api/v1/products/applications")
@@ -28,11 +33,13 @@ public class ProductApplicationController {
         this.applicationService = applicationService;
     }
 
-    @PostMapping("/{productId}")
-    public ResponseEntity<RestApiResponse> createApplication(@PathVariable("productId") Long productId,
-                                                             @RequestBody ApplicationCreateRequest dto) {
-        applicationService.createApplication(productId, dto);
-        RestApiResponse response = new RestApiResponse(ApplicationSuccessCode.APPLICATION_CREATE_SUCCESS);
+    @PostMapping(path = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RestApiResponse> createContract(
+        @PathVariable Long productId,
+        @Parameter(description = "예약") @RequestPart ApplicationCreateRequest applicationCreateRequest) {
+
+        applicationService.createApplication(productId,applicationCreateRequest);
+        RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_CREATE_SUCCESS);
         return ResponseEntity.ok(response);
     }
 
