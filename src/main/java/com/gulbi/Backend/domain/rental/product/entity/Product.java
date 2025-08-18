@@ -1,5 +1,6 @@
 package com.gulbi.Backend.domain.rental.product.entity;
 
+import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
 import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
 import com.gulbi.Backend.domain.rental.product.dto.ProductTextUpdateRequest;
@@ -69,10 +70,14 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 2000)
     private String mainImage;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "template_id", nullable = false)
+    private ContractTemplate contractTemplate;
+
     // 생성자
     @Builder
     private Product(User user, Category bCategory, Category mCategory, Category sCategory, String tag, String title, String name, int views, int price,
-                    String sido, String sigungu, String bname, String description, String mainImage) {
+                    String sido, String sigungu, String bname, String description, String mainImage, ContractTemplate template) {
         this.user = user;
         this.bCategory = bCategory;
         this.mCategory = mCategory;
@@ -87,6 +92,7 @@ public class Product extends BaseEntity {
         this.bname = bname;
         this.description = description;
         this.mainImage = mainImage;
+        this.contractTemplate = template;
     }
 
 
