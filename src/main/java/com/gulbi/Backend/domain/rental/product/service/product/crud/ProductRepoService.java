@@ -16,6 +16,7 @@ public interface ProductRepoService {
     List<ProductOverViewResponse> findProductOverViewByproductIds(List<Long> productIds);
     List<ProductOverViewResponse> findProductOverViewByCreatedAtDesc(Pageable pageable, LocalDateTime lastCreatedAt);
     List<ProductOverViewResponse> findProductOverViewByCategories(Long bCategoryId, Long mCategoryId, Long sCategoryId, LocalDateTime lastCreatedAt, Pageable pageable);
+    Product findProductByIdWithTemplate(Long productId);
     void delete(Long productId);
 
 }
