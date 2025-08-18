@@ -41,7 +41,7 @@ public class ProductApplicationController {
         @PathVariable("productId") Long productId,
         @PathVariable("date") YearMonth yearMonth
     ){
-        //임시 응답 코드.. ToDo: 응답코드 변경,
+
         ApplicationCalendarResponse data = applicationService.getApplicationsByYearMonth(yearMonth, productId);
         RestApiResponse response = new RestApiResponse(ApplicationSuccessCode.APPLICATION_FOUND_SUCCESS,data);
         return ResponseEntity.ok(response);

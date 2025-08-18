@@ -1,9 +1,11 @@
 package com.gulbi.Backend.domain.contract.application.service;
 
+import java.sql.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.util.Collections;
 import java.util.List;
 
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationCalendarResponse;
@@ -12,6 +14,7 @@ import com.gulbi.Backend.domain.contract.application.dto.ApplicationDayResponse;
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusDetailResponse;
 import com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusResponse;
 import com.gulbi.Backend.domain.contract.application.entity.Application;
+import com.gulbi.Backend.domain.contract.application.exception.ApplicationException;
 import com.gulbi.Backend.domain.contract.application.repository.ApplicationRepoService;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
@@ -42,6 +45,7 @@ public class ApplicationService {
     }
 
     public ApplicationCalendarResponse getApplicationsByYearMonth(YearMonth yearMonth, Long productId){
+        try {
         //년월에서 해당 월에 첫번째일 즉 1일을 넣어서
         LocalDateTime startOfMonth = yearMonth.atDay(1).atStartOfDay();
         //해당 년원에 마지막 일을
@@ -57,9 +61,10 @@ public class ApplicationService {
         User productOwner = product.getUser(); // 상품 등록자
 
         ApplicationCalendarResponse response = new ApplicationCalendarResponse(status,isOwner(authenticatedUser, productOwner));
-
-
         return response;
+        }catch (ApplicationException e){
+            return new ApplicationCalendarResponse(Collections.emptyList(), false);
+        }
     }
 
     public ApplicationDayResponse getApplicationsByDate(LocalDate date, Long productId){
