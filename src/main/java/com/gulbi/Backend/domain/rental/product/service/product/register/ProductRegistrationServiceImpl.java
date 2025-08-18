@@ -1,5 +1,9 @@
 package com.gulbi.Backend.domain.rental.product.service.product.register;
 
+import com.gulbi.Backend.domain.contract.contract.dto.TemplateCreateRequest;
+import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
+import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplateFactory;
+import com.gulbi.Backend.domain.contract.contract.service.ContractTemplateRepoService;
 import com.gulbi.Backend.domain.rental.product.dto.CategoryBundle;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
@@ -28,12 +32,20 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
     private final ProductRepoService productRepoService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final ContractTemplateRepoService contractTemplateRepoService;
 
     @Override
     public Long registerProduct(ProductRegisterCommand command){
         ProductRegisterRequest request = command.getProductRegisterRequest();
         ProductImageFiles imageFiles = command.getImageFiles();
         ProductImageFiles mainImageFile = command.getMainImageFiles();
+
+        //계약서 템플릿 생성
+        TemplateCreateRequest templateCreateRequest = command.getTemplateCreateRequest();
+        ContractTemplate template = ContractTemplateFactory.createTemplate(templateCreateRequest);
+        //계약서 템플릿 저장
+        contractTemplateRepoService.save(template);
+
         //상품 이미지 S3 업로드
         ImageUrls imageUrls = uploadImages(mainImageFile);
         //상품 메인 이미지 S3 업로드
@@ -46,7 +58,7 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
         CategoryBundle categories = categoryService.resolveCategories(request.getBcategoryId(), request.getMcategoryId(), request.getScategoryId());
 
         //상품 생성, 영속성 컨텍스트를 위해 미리 저장
-        Product product = ProductFactory.createWithRegisterRequestDto(user, categories, request);
+        Product product = ProductFactory.createWithRegisterRequestDto(user, categories, template, request);
         product.updateMainImage(mainImageUrl);
         productRepoService.save(product);
         //상품 이미지들 생성
@@ -56,6 +68,7 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
         //이미지 저장 후 메인이미지 저장
         imageRepoService.saveAll(productImages.getImages());
         imageRepoService.save(productMainImage);
+
         return product.getId();
     }
 
