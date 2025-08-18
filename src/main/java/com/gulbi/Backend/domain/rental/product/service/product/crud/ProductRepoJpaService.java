@@ -120,7 +120,10 @@ public class ProductRepoJpaService implements ProductRepoService {
         // }
         return overViewResponses;
     }
-
+    @Override
+    public Product findProductByIdWithTemplate(Long productId){
+        return productRepository.findByIdWithTemplate(productId).orElseThrow();
+    }
 
 
     @Override
