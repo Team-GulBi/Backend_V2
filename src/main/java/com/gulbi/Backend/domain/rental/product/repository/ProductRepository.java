@@ -66,10 +66,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
         "WHERE p.id = :id")
     Optional<Product> findByIdWithAll(@Param("id") Long id);
 
-    @Query("SELECT p FROM Product p " +
-        "LEFT JOIN FETCH p.contractTemplate " +
-        "WHERE p.id = :productId")
-    Optional<Product> findByIdWithTemplate(@Param("productId") Long productId);
 
 
     @Transactional

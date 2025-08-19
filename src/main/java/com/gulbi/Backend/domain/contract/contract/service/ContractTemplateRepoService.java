@@ -16,8 +16,8 @@ public class ContractTemplateRepoService {
 		return contractTemplateRepository.save(template);
 	}
 
-	public ContractTemplate findByProductId(Long productId){
-		return contractTemplateRepository.findByProductId(productId).orElseThrow();
+	public ContractTemplate findByProductIdWithProduct(Long productId){
+		return contractTemplateRepository.findByProductIdWithProduct(productId).orElseThrow();
 	}
 
 	public ContractTemplate findById(Long templateId){

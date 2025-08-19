@@ -10,6 +10,7 @@ import com.gulbi.Backend.domain.contract.contract.dto.ContractResponse;
 import com.gulbi.Backend.domain.contract.contract.dto.LenderApprovalCommand;
 import com.gulbi.Backend.domain.contract.contract.entity.Contract;
 import com.gulbi.Backend.domain.contract.contract.entity.ContractFactory;
+import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
 import com.gulbi.Backend.domain.contract.contract.exception.ContractException;
 import com.gulbi.Backend.domain.contract.contract.repository.ContractRepoService;
 import com.gulbi.Backend.domain.contract.application.entity.Application;
@@ -38,9 +39,9 @@ public class ContractService {
     private final S3Uploader s3Uploader;
 
     // 계약서 생성
-    public void createContractFromApplication(Application application) {
+    public void createContractFromApplication(Application application, ContractTemplate template) {
         // Contract 생성
-        Contract contract = ContractFactory.createContract(application);
+        Contract contract = ContractFactory.createContract(application,template);
         contractRepoService.save(contract);
     }
 

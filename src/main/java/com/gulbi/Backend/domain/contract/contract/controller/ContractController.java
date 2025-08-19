@@ -29,7 +29,7 @@ public class ContractController {
 
     private final ContractService contractService;
 
-    @GetMapping("/applications/{applicationId}")
+    @GetMapping("/{applicationId}/applications")
     public ResponseEntity<RestApiResponse> getContractByApplication(@PathVariable("applicationId")Long applicationId){
         ContractResponse data = contractService.getContractByApplicationId(applicationId);
         RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_FOUNDED_SUCCESS,data);

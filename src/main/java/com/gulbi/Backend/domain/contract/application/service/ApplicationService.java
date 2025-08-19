@@ -15,7 +15,9 @@ import com.gulbi.Backend.domain.contract.application.dto.ApplicationStatusRespon
 import com.gulbi.Backend.domain.contract.application.entity.Application;
 import com.gulbi.Backend.domain.contract.application.exception.ApplicationException;
 import com.gulbi.Backend.domain.contract.application.repository.ApplicationRepoService;
+import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
 import com.gulbi.Backend.domain.contract.contract.service.ContractService;
+import com.gulbi.Backend.domain.contract.contract.service.ContractTemplateRepoService;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.user.entity.User;
@@ -30,20 +32,24 @@ import org.springframework.stereotype.Service;
 public class ApplicationService {
     private final ApplicationRepoService applicationRepoService;
     private final ContractService contractService;
-    private final JwtUtil jwtUtil;
-    private final UserRepoService userRepoService;
     private final ProductRepoService productRepoService;
+    private final ContractTemplateRepoService contractTemplateRepoService;
     private final UserService userService;
 
-    public Application createApplication(Long productId, ApplicationCreateRequest dto) {
 
-        Long userId = jwtUtil.extractUserIdFromRequest();
-        User user = userRepoService.findById(userId);
-        Product product = productRepoService.findProductByIdWithTemplate(productId);
+    public void createApplication(Long productId, ApplicationCreateRequest dto) {
+        User user = userService.getAuthenticatedUser();
+
+        ContractTemplate template = contractTemplateRepoService.findByProductIdWithProduct(productId);
+        Product product = template.getProduct();
+
+        //예약 접수
         Application application = new Application(product, user, dto.getStartDate(), dto.getEndDate());
         applicationRepoService.save(application);
-        contractService.createContractFromApplication(application);
-        return application;
+
+        //계약서 초안생성
+        contractService.createContractFromApplication(application,template);
+
     }
 
     public ApplicationCalendarResponse getApplicationsByYearMonth(YearMonth yearMonth, Long productId){

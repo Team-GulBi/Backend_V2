@@ -33,11 +33,10 @@ public class ProductApplicationController {
         this.applicationService = applicationService;
     }
 
-    @PostMapping(path = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<RestApiResponse> createContract(
+    @PostMapping(path = "/{productId}/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RestApiResponse> createApplication(
         @PathVariable Long productId,
         @Parameter(description = "예약") @RequestPart ApplicationCreateRequest applicationCreateRequest) {
-
         applicationService.createApplication(productId,applicationCreateRequest);
         RestApiResponse response = new RestApiResponse(ContractSuccessCode.CONTRACT_CREATE_SUCCESS);
         return ResponseEntity.ok(response);
