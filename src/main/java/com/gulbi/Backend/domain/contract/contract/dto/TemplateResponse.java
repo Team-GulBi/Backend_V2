@@ -34,10 +34,15 @@ public class TemplateResponse {
 
 	private BigDecimal damageCompensationRate;
 
+	private String lenderName;
+
+	private String borrowerName;
+
+	private String productName;
 
 
 
-	public static TemplateResponse fromEntity(ContractTemplate template){
+	public static TemplateResponse fromEntity(ContractTemplate template, User lender, User borrower, Product product){
 		return TemplateResponse.builder()
 			.templateId(template.getId())
 			.specification(template.getSpecification())
@@ -48,6 +53,9 @@ public class TemplateResponse {
 			.lateInterestRate(template.getLateInterestRate())
 			.latePenaltyRate(template.getLatePenaltyRate())
 			.damageCompensationRate(template.getDamageCompensationRate())
+			.borrowerName(borrower.getNickname())
+			.lenderName(lender.getNickname())
+			.productName(product.getName())
 			.build();
 	}
 

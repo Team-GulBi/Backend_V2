@@ -8,11 +8,10 @@ import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.user.entity.User;
 
 public class ContractFactory {
-public static Contract createContract(Application application){
+public static Contract createContract(Application application, ContractTemplate template){
 	Product product = application.getProduct();
 	User borrower = application.getUser();
 	User lender = product.getUser();
-	ContractTemplate template = product.getContractTemplate();
 	return Contract.builder()
 		.lender(lender)
 		.borrower(borrower)

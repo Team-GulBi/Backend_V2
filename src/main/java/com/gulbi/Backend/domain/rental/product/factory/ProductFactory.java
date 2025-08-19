@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ProductFactory{
-    public static Product createWithRegisterRequestDto(User user, CategoryBundle categories, ContractTemplate template, ProductRegisterRequest productRegisterRequest) {
+    public static Product createWithRegisterRequestDto(User user, CategoryBundle categories, ProductRegisterRequest productRegisterRequest) {
         return Product.builder()
                 .user(user)
                 .title(productRegisterRequest.getTitle())
@@ -26,7 +26,6 @@ public class ProductFactory{
                 .bCategory(categories.getBCategory())
                 .mCategory(categories.getMCategory())
                 .sCategory(categories.getSCategory())
-                .template(template)
                 .build();
 
     }
