@@ -1,6 +1,7 @@
 package com.gulbi.Backend.domain.user.service;
 
 import com.gulbi.Backend.domain.user.entity.User;
+import com.gulbi.Backend.domain.user.exception.UserNotFoundException;
 import com.gulbi.Backend.domain.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new UserNotFoundException());
 
         // UserDetails 객체를 반환
         return org.springframework.security.core.userdetails.User.builder()
@@ -31,4 +32,3 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .build();
     }
 }
-
