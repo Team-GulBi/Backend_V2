@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TokenRefreshResponse {
     private String accessToken;
-    private String refreshToken;
+    private Long userId;
+    private String nickname;
 }

@@ -106,7 +106,8 @@ public class AuthService {
         
         return TokenRefreshResponse.builder()
                 .accessToken(newAccessToken)
-                .refreshToken(newRefreshToken)
+                .userId(user.getId())
+                .nickname(user.getNickname())
                 .build();
     }
 
