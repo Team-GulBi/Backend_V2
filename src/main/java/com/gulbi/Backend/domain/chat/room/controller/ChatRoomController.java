@@ -7,7 +7,6 @@ import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

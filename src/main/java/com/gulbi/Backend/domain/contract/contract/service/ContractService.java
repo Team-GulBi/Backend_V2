@@ -1,5 +1,6 @@
 package com.gulbi.Backend.domain.contract.contract.service;
 
+import com.gulbi.Backend.domain.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +17,13 @@ import com.gulbi.Backend.domain.contract.contract.repository.ContractRepoService
 import com.gulbi.Backend.domain.contract.application.entity.Application;
 import com.gulbi.Backend.domain.rental.product.vo.ImageUrl;
 import com.gulbi.Backend.domain.user.entity.User;
-import com.gulbi.Backend.domain.user.repository.UserRepoService;
+import com.gulbi.Backend.domain.user.exception.UserNotFoundException;
 import com.gulbi.Backend.global.error.ExceptionMetaDataFactory;
 import com.gulbi.Backend.global.error.InfraErrorCode;
 import com.gulbi.Backend.global.error.S3BucketException;
-import com.gulbi.Backend.global.util.JwtUtil;
 import com.gulbi.Backend.global.util.S3Uploader;
+import com.gulbi.Backend.global.util.SecurityUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +36,7 @@ public class ContractService {
 
     private final ApplicationRepoService applicationRepoService;
     private final ContractRepoService contractRepoService;
-    private final UserRepoService userRepoService;
-    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
 
     // 계약서 생성
@@ -99,12 +100,10 @@ public class ContractService {
         }
 	}
 
-
-
     private User getAuthenticatedUser() {
-        Long userId = jwtUtil.extractUserIdFromRequest();
-        return userRepoService.findById(userId);
-
+        Long userId = SecurityUtil.getCurrentUserId();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException());
     }
 
     // --------------------------- 예외 메서드 ----------------------------------------------

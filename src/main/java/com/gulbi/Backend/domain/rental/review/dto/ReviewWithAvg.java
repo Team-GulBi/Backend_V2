@@ -7,6 +7,4 @@ public interface ReviewWithAvg {
     String getContent();
     Float getAverageRating();
     String getNickName();
-    String getProfileImage();
-
 }

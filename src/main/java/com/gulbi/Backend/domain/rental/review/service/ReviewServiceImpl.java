@@ -9,8 +9,8 @@ import com.gulbi.Backend.domain.rental.review.entity.Review;
 import com.gulbi.Backend.domain.rental.review.exception.ReviewException;
 import com.gulbi.Backend.domain.rental.review.factory.ReviewFactory;
 import com.gulbi.Backend.domain.user.entity.User;
-import com.gulbi.Backend.domain.user.service.UserService;
 
+import com.gulbi.Backend.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

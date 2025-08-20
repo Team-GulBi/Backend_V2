@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.recommandation.service.query;
 
 import com.gulbi.Backend.domain.rental.recommandation.code.WebClientErrorCode;
-import com.gulbi.Backend.domain.rental.recommendation.exception.LokiException;
+import com.gulbi.Backend.domain.rental.recommandation.exception.LokiException;
 import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.service.UserService;
 import com.gulbi.Backend.global.error.ExceptionMetaData;

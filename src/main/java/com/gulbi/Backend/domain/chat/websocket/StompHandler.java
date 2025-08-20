@@ -1,6 +1,6 @@
 package com.gulbi.Backend.domain.chat.websocket;
 
-import com.gulbi.Backend.global.util.JwtUtil;
+import com.gulbi.Backend.domain.auth.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class StompHandler implements ChannelInterceptor {
 
-    private final JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final WebSocketEventHandler webSocketEventHandler;
     private final UserDetailsService userDetailsService; // 사용자 정보를 가져오기 위한 서비스 추가
 
@@ -32,15 +32,17 @@ public class StompHandler implements ChannelInterceptor {
 
         // WebSocket 연결 시 헤더의 jwt token 유효성 검증
         if (StompCommand.CONNECT == accessor.getCommand()) {
-            String authorization = jwtUtil.extractJwt(accessor.getFirstNativeHeader("Authorization"));
+            String authorization = accessor.getFirstNativeHeader("Authorization");
             if (authorization != null) {
                 try {
+                    // Bearer 제거
+                    String token = authorization.replace("Bearer ", "");
                     // JWT 유효성 검사
-                    String email = jwtUtil.extractEmail(authorization);
+                    String email = jwtTokenProvider.extractEmailFromAccessToken(token);
                     if (email != null) {
                         // JWT 토큰 유효성 검사 후 사용자 정보를 SecurityContext에 설정
                         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                        if (jwtUtil.validateToken(authorization, email)) {
+                        if (jwtTokenProvider.isAccessTokenValid(token)) {
                             UsernamePasswordAuthenticationToken authenticationToken =
                                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

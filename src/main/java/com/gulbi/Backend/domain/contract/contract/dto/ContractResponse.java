@@ -60,8 +60,8 @@ public class ContractResponse {
             .lenderApproval(contract.getLenderApproval())
             .borrowerApproval(contract.getBorrowerApproval())
             .url(contract.getUrl())
-            .lenderSignature(contract.getLender().getProfile().getSignature())
-            .borrowerSignature(contract.getBorrower().getProfile().getSignature())
+            .lenderSignature(contract.getLender().getSignature())
+            .borrowerSignature(contract.getBorrower().getSignature())
             .lenderName(contract.getLender().getNickname())
             .borrowerName(contract.getBorrower().getNickname())
             .build();

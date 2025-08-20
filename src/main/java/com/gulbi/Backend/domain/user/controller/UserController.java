@@ -29,7 +29,7 @@ public class UserController {
 
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateProfile(@RequestPart(value = "file", required = false) MultipartFile signature,
-                                              @RequestParam(value = "phoneNumber", required = false) String phoneNumber) throws IOException {
+                                              @RequestParam(required = false) String phoneNumber) throws IOException {
         userService.updateProfile(signature, phoneNumber);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
