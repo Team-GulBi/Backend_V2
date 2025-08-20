@@ -1,7 +1,6 @@
 package com.gulbi.Backend.domain.user.entity;
 
 import com.gulbi.Backend.domain.chat.room.entity.ChatRoom;
-import com.gulbi.Backend.domain.user.dto.RegisterRequest;
 import com.gulbi.Backend.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,14 +14,12 @@ import java.util.List;
 @NoArgsConstructor  // 기본 생성자
 @AllArgsConstructor  // 모든 필드를 사용하는 생성자
 @Builder
+@Setter
 public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Profile profile;
 
     @Column(nullable = false, unique = true)
     private String nickname;
@@ -36,6 +33,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(length = 2000)
+    private String signature;
+
     // 내가 만든 채팅방 (user1 역할)
     @OneToMany(mappedBy = "user1", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatRoom> createdChatRooms = new ArrayList<>();
@@ -43,15 +43,4 @@ public class User extends BaseEntity {
     // 내가 참여한 채팅방 (user2 역할)
     @OneToMany(mappedBy = "user2", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatRoom> joinedChatRooms = new ArrayList<>();
-
-    // 빌더 패턴을 사용해 DTO 기반 객체 생성
-    @Builder
-    public static User fromDto(RegisterRequest dto, String encodedPassword) {
-        return User.builder()
-                .nickname(dto.getNickname())
-                .email(dto.getEmail())
-                .password(encodedPassword)
-                .phoneNumber(dto.getPhoneNumber())
-                .build();
-    }
 }

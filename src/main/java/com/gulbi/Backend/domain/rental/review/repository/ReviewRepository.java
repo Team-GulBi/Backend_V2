@@ -1,6 +1,5 @@
 package com.gulbi.Backend.domain.rental.review.repository;
 
-import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvg;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
 import jakarta.transaction.Transactional;
@@ -23,7 +22,7 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
             "(SELECT AVG(r.rating) FROM Review r WHERE r.product.id =:productId) AS averageRating " +
             "FROM Review r " +
             "JOIN User u ON u.id = r.user.id " +
-            "JOIN Profile p ON u.id = p.user.id WHERE r.product.id =:productId")
+            "WHERE r.product.id =:productId")
     List<ReviewWithAvg> findAllByProductIdWithAvg(@Param("productId") Long productId);
 
 

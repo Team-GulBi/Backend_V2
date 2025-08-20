@@ -3,8 +3,9 @@ package com.gulbi.Backend.domain.chat.room.service;
 import com.gulbi.Backend.domain.chat.room.entity.ChatRoom;
 import com.gulbi.Backend.domain.chat.room.repository.ChatRoomRepository;
 import com.gulbi.Backend.domain.user.entity.User;
-import com.gulbi.Backend.domain.user.repository.UserRepoService;
+import com.gulbi.Backend.domain.user.repository.UserRepository;
 import com.gulbi.Backend.domain.user.service.UserService;
+import com.gulbi.Backend.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,8 @@ import java.util.Optional;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final UserService userService;
     private final RabbitTemplate rabbitTemplate;
-    private final UserRepoService userRepoService;
+    private final UserRepository userRepository;
 
     public List<ChatRoom> findChatRoomsByUserId(Long userId) {
         return chatRoomRepository.findByUser1IdOrUser2Id(userId, userId);
@@ -34,8 +34,10 @@ public class ChatRoomService {
     }
 
     public ChatRoom findOrCreateChatRoom(Long user1Id, Long user2Id) {
-        User user1 = userRepoService.findById(user1Id);
-        User user2 = userRepoService.findById(user2Id);
+        User user1 = userRepository.findById(user1Id)
+                .orElseThrow(() -> new UserNotFoundException());
+        User user2 = userRepository.findById(user2Id)
+                .orElseThrow(() -> new UserNotFoundException());
 
         // user1Id 또는 user2Id가 포함된 채팅방 가져오기
         List<ChatRoom> existingRooms = chatRoomRepository.findByUser1IdOrUser2Id(user1.getId(), user2.getId());

@@ -21,9 +21,7 @@ import com.gulbi.Backend.domain.contract.contract.service.ContractTemplateRepoSe
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.user.entity.User;
-import com.gulbi.Backend.domain.user.repository.UserRepoService;
 import com.gulbi.Backend.domain.user.service.UserService;
-import com.gulbi.Backend.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -76,17 +74,13 @@ public class ApplicationService {
     }
 
     public ApplicationDayResponse getApplicationsByDate(LocalDate date, Long productId){
-        try {
+
         User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
         Product product = productRepoService.findProductById(productId);
         User productOwner = product.getUser();
         List<ApplicationStatusDetailResponse> status = applicationRepoService.findByProductIdAndDate(productId, date);
         ApplicationDayResponse response = new ApplicationDayResponse(status,isOwner(authenticatedUser, productOwner));
         return response;
-        }catch (ApplicationException e){
-            return new ApplicationDayResponse(Collections.emptyList(),false);
-
-        }
     }
 
 

@@ -13,7 +13,6 @@ import com.gulbi.Backend.domain.rental.product.service.product.search.strategy.s
 import com.gulbi.Backend.domain.rental.product.vo.Images;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewsWithAvg;
 import com.gulbi.Backend.domain.rental.review.service.ReviewService;
-import com.gulbi.Backend.domain.user.service.ProfileService;
 import com.gulbi.Backend.global.error.ExceptionMetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

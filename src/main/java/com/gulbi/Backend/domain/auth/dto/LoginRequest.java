@@ -1,4 +1,4 @@
-package com.gulbi.Backend.domain.user.dto;
+package com.gulbi.Backend.domain.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

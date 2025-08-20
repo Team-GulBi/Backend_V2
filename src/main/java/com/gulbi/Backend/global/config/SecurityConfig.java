@@ -1,6 +1,8 @@
 package com.gulbi.Backend.global.config;
 
-import com.gulbi.Backend.global.filter.JwtAuthenticationFilter;
+import com.gulbi.Backend.domain.auth.jwt.JwtFilter;
+import com.gulbi.Backend.domain.auth.jwt.handler.JwtAccessDeniedHandler;
+import com.gulbi.Backend.domain.auth.jwt.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,12 +11,10 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -24,8 +24,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig implements WebMvcConfigurer {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final UserDetailsService userDetailsService;
+    private final JwtFilter jwtFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,7 +41,10 @@ public class SecurityConfig implements WebMvcConfigurer {
                         //.requestMatchers("/api-completedprofile").hasRole("COMPLETED_PROFILE")
                         .anyRequest().permitAll())
                         //.anyRequest().authenticated())  // 나머지는 인증 필요
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  // JWT 필터 추가
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)  // JWT 필터 추가
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler))
                 .build();
     }
 

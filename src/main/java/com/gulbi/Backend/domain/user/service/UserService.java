@@ -1,121 +1,88 @@
 package com.gulbi.Backend.domain.user.service;
 
-import com.gulbi.Backend.domain.user.dto.LoginRequest;
-import com.gulbi.Backend.domain.user.dto.ProfileCreateCommand;
-import com.gulbi.Backend.domain.user.dto.RegisterCommand;
-import com.gulbi.Backend.domain.user.dto.RegisterRequest;
-import com.gulbi.Backend.domain.user.entity.Profile;
-import com.gulbi.Backend.domain.user.repository.ProfileRepoService;
-import com.gulbi.Backend.domain.user.repository.UserRepoService;
-import com.gulbi.Backend.global.util.JwtUtil;
+import com.gulbi.Backend.domain.user.dto.SignupRequest;
+import com.gulbi.Backend.domain.user.dto.UserProfileResponse;
 import com.gulbi.Backend.domain.user.entity.User;
-
-import org.springframework.transaction.annotation.Transactional;
+import com.gulbi.Backend.domain.user.exception.UserAlreadyExistsEmail;
+import com.gulbi.Backend.domain.user.exception.UserAlreadyExistsName;
+import com.gulbi.Backend.domain.user.exception.UserNotFoundException;
+import com.gulbi.Backend.domain.user.repository.UserRepository;
+import com.gulbi.Backend.global.util.S3Uploader;
+import com.gulbi.Backend.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepoService userRepoService;
-    private final ProfileRepoService profileRepoService;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
-    private final ProfileService profileService;
+    private final S3Uploader s3Uploader;
 
     @Transactional
-    public void register(RegisterCommand command) throws IOException {
-        RegisterRequest request = command.getRegisterRequest();
-        String encodedPassword = passwordEncoder.encode(request.getPassword()); // 객체 생성 전 인코딩 처리
+    public void signup(SignupRequest request, MultipartFile signature) throws IOException {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsEmail();
+        }
+
+        if (userRepository.existsByNickname(request.getNickname())) {
+            throw new UserAlreadyExistsName();
+        }
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
                 .nickname(request.getNickname())
                 .email(request.getEmail())
-                .password(encodedPassword) // 인코딩된 비번 넣기
+                .password(encodedPassword)
                 .phoneNumber(request.getPhoneNumber())
                 .build();
-        userRepoService.save(user);
+        
+        if (signature != null && !signature.isEmpty()) {
+            String signatureUrl = updateProfileSignatureToS3(signature);
+            user.setSignature(signatureUrl);
+        }
+        
+        userRepository.save(user);
+    }
 
-        ProfileCreateCommand profileCreateCommand = new ProfileCreateCommand(user, command.getSignature());
-        profileService.createProfile(profileCreateCommand);
+    private String updateProfileSignatureToS3(MultipartFile file) throws IOException {
+        return s3Uploader.uploadFile(file, "signatures");
+    }
+
+    @Transactional
+    public void updateProfile(MultipartFile signature, String phoneNumber) throws IOException {
+        User currentUser = getAuthenticatedUser();
+        
+        if (phoneNumber != null) {
+            currentUser.setPhoneNumber(phoneNumber);
+        }
+        
+        if (signature != null && !signature.isEmpty()) {
+            String signatureUrl = updateProfileSignatureToS3(signature);
+            currentUser.setSignature(signatureUrl);
+        }
+        
+        userRepository.save(currentUser);
     }
 
     @Transactional(readOnly = true)
-    public Map<String, String> login(LoginRequest request) {
-        User user = findByEmail(request.getEmail());
-        Profile profile = findProfileByUser(user);
-        String role = determineUserRole(profile);
-
-        String token = jwtUtil.generateToken(user.getEmail(), user.getId(), role);
-
-        // ID와 토큰을 함께 반환
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        response.put("id", String.valueOf(user.getId()));  // ID를 문자열로 변환하여 저장
-
-
-        return response;
+    public UserProfileResponse getProfile() {
+        User currentUser = getAuthenticatedUser();
+        return UserProfileResponse.from(currentUser);
     }
 
-    // public boolean isProfileComplete(Profile profile) {
-    //     return profile.getImage() != null && profile.getIntro() != null && profile.getPhone() != null &&
-    //             profile.getSignature() != null && profile.getSido() != null && profile.getSigungu() != null &&
-    //             profile.getBname() != null; //협의해야할듯 어떤필드 여부를 따질지
-    // }
-
+    @Transactional(readOnly = true)
     public User getAuthenticatedUser() {
-        String email = getAuthenticatedEmail();
-        return userRepoService.findByEmail(email);
+        Long userId = SecurityUtil.getCurrentUserId();
+        return userRepository.findById(userId).orElseThrow(() -> 
+            new UserNotFoundException());
     }
-
-
-    private String getAuthenticatedEmail() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            throw new RuntimeException("No authenticated user");
-        }
-    }
-    public User findByEmail(String email) {
-        return userRepoService.findByEmail(email);
-
-    }
-    public User getUserById(Long id) {
-        return userRepoService.findById(id);
-
-    }
-    // 닉네임 반환 메서드 (ID 기반)
-    public String getNicknameById(Long userId) {
-        User user = userRepoService.findById(userId);
-
-        return user.getNickname();
-    }
-    //Spring Security 인증 처리
-    private void authenticateUser(String email, String password) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-    }
-    //프로필 조회
-    private Profile findProfileByUser(User user) {
-        return profileRepoService.findByUser(user);
-    }
-
-    private String determineUserRole(Profile profile) {
-        return "ROLE_COMPLETED_USER";
-    }
-
-
-
 }

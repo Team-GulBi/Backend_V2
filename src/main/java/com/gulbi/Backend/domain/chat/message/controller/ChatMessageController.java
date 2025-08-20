@@ -1,5 +1,6 @@
 package com.gulbi.Backend.domain.chat.message.controller;
 
+import com.gulbi.Backend.domain.auth.jwt.JwtTokenProvider;
 import com.gulbi.Backend.domain.chat.message.dto.MessageReceiveRequest;
 import com.gulbi.Backend.domain.chat.message.dto.MessageSaveCommand;
 import com.gulbi.Backend.domain.chat.message.dto.MessageSendResponse;
@@ -8,8 +9,8 @@ import com.gulbi.Backend.domain.chat.message.service.ChatMessageService;
 import com.gulbi.Backend.domain.chat.room.entity.ChatRoom;
 import com.gulbi.Backend.domain.chat.room.repository.ChatRoomRepository;
 import com.gulbi.Backend.domain.user.entity.User;
-import com.gulbi.Backend.domain.user.repository.UserRepoService;
-import com.gulbi.Backend.global.util.JwtUtil;
+import com.gulbi.Backend.domain.user.exception.UserNotFoundException;
+import com.gulbi.Backend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +31,8 @@ public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
     private final SimpMessageSendingOperations messagingTemplate;
-    private final JwtUtil jwtUtil;
-    private final UserRepoService userRepoService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
 
     // 채팅방 메시지 목록 조회
@@ -58,9 +59,10 @@ public class ChatMessageController {
     ){
 
             // JWT에서 Sender User 추출
-            String token = jwtUtil.extractJwt(authorization); // JWT 추출
-            Long senderId = Long.valueOf(jwtUtil.extractClaims(token).get("id").toString()); // claims에서 userId 추출
-            User sender = userRepoService.findById(senderId);
+            String token = authorization.replace("Bearer ", "");
+            Long senderId = jwtTokenProvider.extractMemberIdFromAccessToken(token);
+            User sender = userRepository.findById(senderId)
+                    .orElseThrow(() -> new UserNotFoundException());
 
             // Receiver User 추출
             ChatRoom room = chatRoomRepository.findById(roomId).orElseThrow();
