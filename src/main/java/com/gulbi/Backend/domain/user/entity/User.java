@@ -38,9 +38,11 @@ public class User extends BaseEntity {
 
     // 내가 만든 채팅방 (user1 역할)
     @OneToMany(mappedBy = "user1", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
     private List<ChatRoom> createdChatRooms = new ArrayList<>();
 
     // 내가 참여한 채팅방 (user2 역할)
     @OneToMany(mappedBy = "user2", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
     private List<ChatRoom> joinedChatRooms = new ArrayList<>();
 }
