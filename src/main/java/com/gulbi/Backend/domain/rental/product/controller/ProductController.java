@@ -38,6 +38,8 @@ public class ProductController {
 
     private final ProductService productService;
 
+
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "상품등록",
@@ -48,14 +50,18 @@ public class ProductController {
             @RequestPart("product") ProductRegisterRequest productInfo,
             @Parameter(description = "계약서 템플릿", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart("template") TemplateCreateRequest template,
-            @Parameter(description = "상품 이미지 파일", required = false)
-            @RequestPart("images") List<MultipartFile> productImages,
-            @Parameter(description = "메인 이미지 파일", required = true)
-            @RequestPart("mainImage") List<MultipartFile> productMainImage)
-    {       //request를 조합하여 command객체 생성
-            ProductImageFiles imageFiles = ProductImageFiles.of(productImages);
+            @Parameter(description = "메인 이미지 파일",content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE), required = true)
+            @RequestPart(value = "mainImage", required = true) List<MultipartFile> productMainImage,
+            @Parameter(description = "상품 이미지 파일", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE), required = false)
+            @RequestPart(value = "images", required = false) List<MultipartFile> productImages)
+
+    {
+            //request를 조합하여 command객체 생성
+                //이미지는 필수값이 아니므로 널체크
+            ProductImageFiles imageFiles = (productImages == null || productImages.isEmpty()) ? null : ProductImageFiles.of(productImages);
+                //메인 이미지 및 그 외 정보는 필숫값
             ProductImageFiles mainImageFile = ProductImageFiles.of(productMainImage);
-            ProductRegisterCommand command = new ProductRegisterCommand(productInfo, template,mainImageFile,imageFiles);
+            ProductRegisterCommand command = new ProductRegisterCommand(productInfo, template,imageFiles,mainImageFile);
             //서비스 요청
             Long savedProductId= productService.registrationProduct(command);
             RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_REGISTER_SUCCESS,savedProductId);

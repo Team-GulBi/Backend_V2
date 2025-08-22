@@ -1,5 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.service.product.register;
 
+import java.util.logging.Logger;
+
 import com.gulbi.Backend.domain.contract.contract.dto.TemplateCreateRequest;
 import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
 import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplateFactory;
@@ -22,8 +24,11 @@ import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductRegistrationServiceImpl implements ProductRegistrationService{
@@ -35,39 +40,61 @@ public class ProductRegistrationServiceImpl implements ProductRegistrationServic
     private final ContractTemplateRepoService contractTemplateRepoService;
 
     @Override
-    public Long registerProduct(ProductRegisterCommand command){
+    public Long registerProduct(ProductRegisterCommand command) {
         ProductRegisterRequest request = command.getProductRegisterRequest();
         ProductImageFiles imageFiles = command.getImageFiles();
         ProductImageFiles mainImageFile = command.getMainImageFiles();
+        log.info("메인 이미지 {}" , 3);
+        log.info("메인 이미지 {}" , mainImageFile);
+        log.info("이미지 {}" , imageFiles);
 
-        //상품 이미지 S3 업로드
-        ImageUrls imageUrls = uploadImages(mainImageFile);
-        //상품 메인 이미지 S3 업로드
-        ImageUrl mainImageUrl = uploadImages(imageFiles).getMainImageUrl();
+        ImageUrls imageUrls = null;
+        ImageUrl mainImageUrl = null;
 
-        //현제 상품 등록 요청 유저 추출
+        // 현재 상품 등록 요청 유저 추출
         User user = userService.getAuthenticatedUser();
 
-        //카테고리 추출 및 카테고리 유효성 검사.
-        CategoryBundle categories = categoryService.resolveCategories(request.getBcategoryId(), request.getMcategoryId(), request.getScategoryId());
+        // 카테고리 추출 및 유효성 검사
+        CategoryBundle categories = categoryService.resolveCategories(
+            request.getBcategoryId(), request.getMcategoryId(), request.getScategoryId()
+        );
 
-        //상품 생성, 영속성 컨텍스트를 위해 미리 저장
-        Product product = ProductFactory.createWithRegisterRequestDto(user, categories,request);
-        product.updateMainImage(mainImageUrl);
+        // 상품 생성
+        Product product = ProductFactory.createWithRegisterRequestDto(user, categories, request);
+
+
+        // 상품 이미지 S3 업로드 (옵션)
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            imageUrls = uploadImages(imageFiles);
+        }
+
+        // 메인 이미지 S3 업로드 (옵션)
+        if (mainImageFile != null && !mainImageFile.isEmpty()) {
+            mainImageUrl = uploadImages(mainImageFile).getMainImageUrl();
+        }
+
+        if (mainImageUrl != null) {
+            product.updateMainImage(mainImageUrl);
+        }
+
         productRepoService.save(product);
 
-        //상품 이미지들 생성
-        Images productImages = imageService.createImages(imageUrls, product);
-        //메인 이미지 생성
-        Image productMainImage = imageService.createMainImage(mainImageUrl, product);
-        //이미지 저장 후 메인이미지 저장
-        imageRepoService.saveAll(productImages.getImages());
-        imageRepoService.save(productMainImage);
+        // 상품 이미지 저장
+        if (imageUrls != null) {
+            Images productImages = imageService.createImages(imageUrls, product);
+            imageRepoService.saveAll(productImages.getImages());
+        }
 
-        //계약서 템플릿 생성
+
+        // 메인 이미지 저장
+        if (mainImageUrl != null) {
+            Image productMainImage = imageService.createMainImage(mainImageUrl, product);
+            imageRepoService.save(productMainImage);
+        }
+
+        // 계약서 템플릿 생성 및 저장
         TemplateCreateRequest templateCreateRequest = command.getTemplateCreateRequest();
         ContractTemplate template = ContractTemplateFactory.createTemplate(templateCreateRequest, product);
-        //계약서 템플릿 저장
         contractTemplateRepoService.save(template);
 
         return product.getId();
