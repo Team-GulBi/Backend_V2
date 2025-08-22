@@ -1,5 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.dto;
 
+import org.springframework.lang.Nullable;
+
 import com.gulbi.Backend.domain.contract.contract.dto.TemplateCreateRequest;
 import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
 

@@ -100,7 +100,6 @@ public class Product extends BaseEntity {
     }
 
     public void updateTextInfo(ProductTextUpdateRequest dto) {
-        if (dto.getTag() != null) this.tag = dto.getTag();
         if (dto.getTitle() != null) this.title = dto.getTitle();
         if (dto.getName() != null) this.name = dto.getName();
         if (dto.getPrice() != null) this.price = dto.getPrice();

@@ -5,8 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class ProductTextUpdateRequest {
-    @Schema(example = "수정1,수정2")
-    private final String tag;
     @Schema(example = "제목수정")
     private final String title;
     @Schema(example = "이름수정")
@@ -23,8 +21,7 @@ public class ProductTextUpdateRequest {
     private final String description;
 
 
-    private ProductTextUpdateRequest(String tag, String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
-        this.tag = tag;
+    private ProductTextUpdateRequest(String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
         this.title = title;
         this.name = productName;
         this.price = price;
@@ -34,11 +31,8 @@ public class ProductTextUpdateRequest {
         this.description = description;
     }
 
-    public static ProductTextUpdateRequest of(String tag, String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
-        return new ProductTextUpdateRequest(tag, title, productName, price, sido, sigungu, bname, description);
+    public static ProductTextUpdateRequest of(String title, String productName, Integer price, String sido, String sigungu, String bname, String description) {
+        return new ProductTextUpdateRequest(title, productName, price, sido, sigungu, bname, description);
     }
 
-    public static ProductTextUpdateRequest of(){
-        return new ProductTextUpdateRequest(null, null, null, null, null, null, null, null);
-    }
 }

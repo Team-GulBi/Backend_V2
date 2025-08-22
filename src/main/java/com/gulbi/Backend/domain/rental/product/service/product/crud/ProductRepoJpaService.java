@@ -124,6 +124,6 @@ public class ProductRepoJpaService implements ProductRepoService {
 
     @Override
     public void delete(Long productId) {
-        productRepository.deleteAllbyId(productId);
+        productRepository.deleteAllById(productId);
     }
 }
