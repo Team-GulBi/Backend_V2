@@ -48,8 +48,9 @@ public class ProductController {
             @RequestPart("product") ProductRegisterRequest productInfo,
             @Parameter(description = "계약서 템플릿", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart("template") TemplateCreateRequest template,
-            @Parameter(description = "상품 이미지 파일", required = true)
+            @Parameter(description = "상품 이미지 파일", required = false)
             @RequestPart("images") List<MultipartFile> productImages,
+            @Parameter(description = "메인 이미지 파일", required = true)
             @RequestPart("mainImage") List<MultipartFile> productMainImage)
     {       //request를 조합하여 command객체 생성
             ProductImageFiles imageFiles = ProductImageFiles.of(productImages);
