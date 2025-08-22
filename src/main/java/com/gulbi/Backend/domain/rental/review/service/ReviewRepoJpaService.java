@@ -75,11 +75,11 @@ public class ReviewRepoJpaService implements ReviewRepoService {
     }
 
     @Override
-    public void deleteAllByProductId(Long productId) {
+    public void deleteAllByProduct(Product product) {
         try {
-            reviewRepository.deleteAllByProduct(productId);
+            reviewRepository.deleteAllByProduct(product);
         }catch (DataIntegrityViolationException | JpaSystemException | PersistenceException e) {
-            throw new DatabaseException(ExceptionMetaDataFactory.of(productId, className, e, InfraErrorCode.DB_EXCEPTION));
+            throw new DatabaseException(ExceptionMetaDataFactory.of(product, className, e, InfraErrorCode.DB_EXCEPTION));
         }
 
     }

@@ -1,5 +1,6 @@
 package com.gulbi.Backend.domain.rental.review.service;
 
+import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewWithAvg;
 import com.gulbi.Backend.domain.rental.review.entity.Review;
 
@@ -10,5 +11,5 @@ public interface ReviewRepoService {
     void save(Review review);
     List<ReviewWithAvg> findAllByProductIdWithAvg(Long productId);
     void delete(Long reviewId);
-    void deleteAllByProductId(Long productId);
+    void deleteAllByProduct(Product product);
 }

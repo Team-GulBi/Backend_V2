@@ -2,6 +2,7 @@ package com.gulbi.Backend.domain.rental.product.service.image;
 
 import com.gulbi.Backend.domain.rental.product.code.ImageErrorCode;
 import com.gulbi.Backend.domain.rental.product.entity.Image;
+import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ImageException;
 import com.gulbi.Backend.domain.rental.product.repository.ImageRepository;
 import com.gulbi.Backend.domain.rental.product.vo.Images;
@@ -71,6 +72,16 @@ public class ImageRepoJpaService implements ImageRepoService {
             imageRepository.deleteAllImagesByProductId(productId);
         }catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException | PersistenceException exception) {
             throw new DatabaseException(ExceptionMetaDataFactory.of(productId, className, exception, InfraErrorCode.DB_EXCEPTION));
+        }
+
+    }
+
+    @Override
+    public void deleteAllByProduct(Product product) {
+        try {
+            imageRepository.deleteAllByProduct(product);
+        }catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException | PersistenceException exception) {
+            throw new DatabaseException(ExceptionMetaDataFactory.of(product, className, exception, InfraErrorCode.DB_EXCEPTION));
         }
 
     }
