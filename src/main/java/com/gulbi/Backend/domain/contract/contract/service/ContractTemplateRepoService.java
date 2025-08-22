@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
 import com.gulbi.Backend.domain.contract.contract.repository.ContractTemplateRepository;
+import com.gulbi.Backend.domain.rental.product.entity.Product;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,10 @@ public class ContractTemplateRepoService {
 
 	public ContractTemplate findById(Long templateId){
 		return contractTemplateRepository.findById(templateId).orElseThrow();
+	}
+
+	public void deleteByProduct(Product product){
+		contractTemplateRepository.deleteAllByProduct(product);
 	}
 
 }
