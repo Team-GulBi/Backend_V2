@@ -37,7 +37,10 @@ public class ApplicationService {
 
     public void createApplication(Long productId, ApplicationCreateRequest dto) {
         User user = userService.getAuthenticatedUser();
-
+        System.out.println(user.getId());
+        System.out.println(user.getId());
+        System.out.println(user.getId());
+        System.out.println(user.getId());
         ContractTemplate template = contractTemplateRepoService.findByProductIdWithProduct(productId);
         Product product = template.getProduct();
 
@@ -74,13 +77,15 @@ public class ApplicationService {
     }
 
     public ApplicationDayResponse getApplicationsByDate(LocalDate date, Long productId){
-
+        try{
         User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
         Product product = productRepoService.findProductById(productId);
         User productOwner = product.getUser();
         List<ApplicationStatusDetailResponse> status = applicationRepoService.findByProductIdAndDate(productId, date);
         ApplicationDayResponse response = new ApplicationDayResponse(status,isOwner(authenticatedUser, productOwner));
-        return response;
+        return response;}catch (ApplicationException e){
+            return new ApplicationDayResponse(Collections.emptyList(), false);
+        }
     }
 
 
