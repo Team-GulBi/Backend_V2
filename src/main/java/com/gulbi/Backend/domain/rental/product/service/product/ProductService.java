@@ -12,9 +12,14 @@ import com.gulbi.Backend.global.CursorPageable;
 import java.util.List;
 
 public interface ProductService {
-    public ProductOverviewSlice searchProductOverview(ProductSearchRequest productSearchRequest, CursorPageable cursorPageable);
-    public Long registrationProduct(ProductRegisterCommand command);
-    public ProductDetailResponse getProductDetail(Long productId);
-    public void updateProduct(ProductContentUpdateCommand productContentUpdateCommand, ProductImageUpdateCommand productImageUpdateCommand);
-    public void deleteProduct(Long productId);
+    Long registrationProduct(ProductRegisterCommand command);
+
+    ProductOverviewSlice searchProductOverview(ProductSearchRequest productSearchRequest, CursorPageable cursorPageable);
+    ProductDetailResponse getProductDetail(Long productId);
+    ProductOverviewSlice getAllUserProducts(Long userId,CursorPageable cursorPageable);
+    ProductOverviewSlice getAllProducts(CursorPageable cursorPageable);
+
+
+    void updateProduct(ProductContentUpdateCommand productContentUpdateCommand, ProductImageUpdateCommand productImageUpdateCommand);
+    void deleteProduct(Long productId);
 }

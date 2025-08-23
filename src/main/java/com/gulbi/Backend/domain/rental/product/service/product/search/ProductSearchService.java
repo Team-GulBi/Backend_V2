@@ -11,4 +11,7 @@ import java.util.List;
 public interface ProductSearchService {
     public ProductOverviewSlice searchProductByQuery(ProductSearchRequest productSearchRequest, CursorPageable cursorPageable);
     public ProductDetailResponse getProductDetail(Long productId);
+    public ProductOverviewSlice getMyProducts(CursorPageable cursorPageable);
+    public ProductOverviewSlice getUserProducts(Long userId,CursorPageable cursorPageable);
+
 }
