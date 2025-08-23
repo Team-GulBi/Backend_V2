@@ -1,11 +1,10 @@
 package com.gulbi.Backend.domain.rental.product.service.product.search;
 
-import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
 import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
-import com.gulbi.Backend.domain.rental.product.exception.ProductException;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.logging.ProductLogHandler;
@@ -13,13 +12,13 @@ import com.gulbi.Backend.domain.rental.product.service.product.search.strategy.s
 import com.gulbi.Backend.domain.rental.product.vo.Images;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewsWithAvg;
 import com.gulbi.Backend.domain.rental.review.service.ReviewService;
-import com.gulbi.Backend.global.error.ExceptionMetaData;
+import com.gulbi.Backend.global.CursorPageable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductSearchServiceImpl implements ProductSearchService {
@@ -44,13 +43,13 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
 
     @Override
-    public List<ProductOverViewResponse> searchProductByQuery(ProductSearchRequest productSearchRequest) {
+    public ProductOverviewSlice searchProductByQuery(ProductSearchRequest productSearchRequest, CursorPageable cursorPageable) {
         String detail = productSearchRequest.getDetail().trim();
         String query = productSearchRequest.getQuery();
         loggingQuery(query,detail);
         //ToDo: 태그 보류, 추가 된다면 예외처리 부터
         ProductSearchStrategy productSearchStrategy = productSearchStrategies.get(detail);
-        return productSearchStrategy.search(query);
+        return productSearchStrategy.search(query,cursorPageable);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         loggingProductId(productId);
 
         //상품 조회(User와 FetchJoin)
-        Product product = productRepoService.findProductByIdWithUser(productId);
+        Product product = productRepoService.findByIdWithUser(productId);
 
         //상품 이미지 조회
         Images productImages = imageRepoService.findImagesByProductId(productId);

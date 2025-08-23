@@ -34,12 +34,12 @@ public class ProductRecommendFacadeImpl implements ProductRecommendFacade {
 
     @Override
     public List<ProductOverViewResponse> getRecentRegistrationProducts(Pageable pageable, LocalDateTime lastCreatedAt) {
-        return productRepoService.findProductOverViewByCreatedAtDesc(pageable,lastCreatedAt);
+        return productRepoService.findOverViewByCreatedAtDesc(pageable,lastCreatedAt);
     }
 
     @Override
     public List<ProductOverViewResponse> getRecentProductByCategory(Long bCategoryId, Long mCategoryId, Long sCategoryId, LocalDateTime lastCreatedAt, Pageable pageable) {
-        return productRepoService.findProductOverViewByCategories(bCategoryId, mCategoryId, sCategoryId,lastCreatedAt,pageable);
+        return productRepoService.findOverViewByCategories(bCategoryId, mCategoryId, sCategoryId,lastCreatedAt,pageable);
     }
 
     @Override
