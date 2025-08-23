@@ -48,6 +48,16 @@ public class ProductServiceImpl implements ProductService {
         return productSearchService.getProductDetail(productId);
     }
 
+    @Override
+    public ProductOverviewSlice getAllUserProducts(Long userId,CursorPageable cursorPageable) {
+        return productSearchService.getUserProducts(userId, cursorPageable);
+    }
+
+    @Override
+    public ProductOverviewSlice getAllProducts(CursorPageable cursorPageable) {
+        return productSearchService.getMyProducts(cursorPageable);
+    }
+
     // 상품 업데이트
     @Override
     public void updateProduct(ProductContentUpdateCommand productContentUpdateCommand, ProductImageUpdateCommand productImageUpdateCommand){

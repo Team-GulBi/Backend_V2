@@ -6,6 +6,7 @@ import com.gulbi.Backend.domain.rental.product.dto.ProductImageDeleteRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
 import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
 import com.gulbi.Backend.domain.rental.product.dto.MainImageUrlUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageUpdateCommand;
@@ -195,6 +196,40 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{userId}/user")
+    public ResponseEntity<RestApiResponse> findAllUserProducts(@PathVariable("userId")Long userId,
+        @Parameter(description = "마지막으로 본 상품 ID (커서)", required = false)
+        @RequestParam(value = "lastId", required = false) Long lastId,
+
+        @Parameter(description = "마지막으로 본 상품 생성일 (커서)", required = false)
+        @RequestParam(value = "lastTime", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastTime,
+
+        @ParameterObject Pageable pageable  // size, sort 등 자동 매핑
+        ){
+
+        CursorPageable cursorPageable = new CursorPageable(pageable, lastId, lastTime);
+        ProductOverviewSlice slice= productService.getAllUserProducts(userId, cursorPageable);
+        RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_FOUND_SUCCESS,slice);
+        return ResponseEntity.ok(response);
+    }
+
+
+
+    @GetMapping("/user")
+    public ResponseEntity<RestApiResponse> findAllUserProducts(
+        @Parameter(description = "마지막으로 본 상품 ID (커서)", required = false)
+        @RequestParam(value = "lastId", required = false) Long lastId,
+
+        @Parameter(description = "마지막으로 본 상품 생성일 (커서)", required = false)
+        @RequestParam(value = "lastTime", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastTime,
+
+        @ParameterObject Pageable pageable  // size, sort 등 자동 매핑
+    ){
+        CursorPageable cursorPageable = new CursorPageable(pageable, lastId, lastTime);
+        ProductOverviewSlice slice = productService.getAllProducts(cursorPageable);
+        RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_FOUND_SUCCESS,slice);
+        return ResponseEntity.ok(response);
+    }
 
 }
 

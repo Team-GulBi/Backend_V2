@@ -2,6 +2,7 @@ package com.gulbi.Backend.domain.rental.product.service.product.search;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
 import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
@@ -12,6 +13,9 @@ import com.gulbi.Backend.domain.rental.product.service.product.search.strategy.s
 import com.gulbi.Backend.domain.rental.product.vo.Images;
 import com.gulbi.Backend.domain.rental.review.dto.ReviewsWithAvg;
 import com.gulbi.Backend.domain.rental.review.service.ReviewService;
+import com.gulbi.Backend.domain.user.entity.User;
+import com.gulbi.Backend.domain.user.repository.UserRepository;
+import com.gulbi.Backend.domain.user.service.UserService;
 import com.gulbi.Backend.global.CursorPageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +24,14 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ProductSearchServiceImpl implements ProductSearchService {
 
-
+    private final UserService userService;
+    private final UserRepository userRepository;
     private final ProductRepoService productRepoService;
     private final ImageRepoService imageRepoService;
     private final ReviewService reviewService;
@@ -33,21 +41,13 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private final String className = this.getClass().getName();
     private final ProductLogHandler productLogHandler;
 
-    @Autowired
-    public ProductSearchServiceImpl(ProductLogHandler productLogHandler, ProductRepoService productRepoService, ImageRepoService imageRepoService, ReviewService reviewService, Map<String, ProductSearchStrategy> productSearchStrategies) {
-        this.productLogHandler = productLogHandler;
-        this.productRepoService = productRepoService;
-        this.imageRepoService = imageRepoService;
-        this.reviewService = reviewService;
-        this.productSearchStrategies = productSearchStrategies;
-    }
 
+    // 단순 조회가 아닌 검색기반에만 전략 사용
     @Override
     public ProductOverviewSlice searchProductByQuery(ProductSearchRequest productSearchRequest, CursorPageable cursorPageable) {
         String detail = productSearchRequest.getDetail().trim();
         String query = productSearchRequest.getQuery();
         loggingQuery(query,detail);
-        //ToDo: 태그 보류, 추가 된다면 예외처리 부터
         ProductSearchStrategy productSearchStrategy = productSearchStrategies.get(detail);
         return productSearchStrategy.search(query,cursorPageable);
     }
@@ -71,7 +71,19 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         return ProductDetailResponse.of(product, productImages, reviewsWithAvg);
     }
 
+    @Override
+    public ProductOverviewSlice getMyProducts(CursorPageable cursorPageable) {
+        User user = userService.getAuthenticatedUser();
+        ProductSearchCondition condition = ProductSearchCondition.builder().user(user).build();
+        return productRepoService.findOverViewByUser(condition, cursorPageable);
+    }
 
+    @Override
+    public ProductOverviewSlice getUserProducts(Long userId,CursorPageable cursorPageable) {
+        User user = userRepository.findById(userId).orElseThrow();
+        ProductSearchCondition condition = ProductSearchCondition.builder().user(user).build();
+        return productRepoService.findOverViewByUser(condition, cursorPageable);
+    }
 
     // 로깅 서비스 호출 메서드 부분(시작)
     private void loggingProductId(Long productId){

@@ -2,6 +2,7 @@ package com.gulbi.Backend.domain.rental.product.service.product.crud;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.global.CursorPageable;
 
@@ -15,7 +16,8 @@ public interface ProductRepoService {
     Product findById(Long productId);
     Product findByIdWithUser(Long productId);
     List<ProductOverViewResponse> findOverViewByTag(String tag, String tag2, String tag3);
-    ProductOverviewSlice findOverViewByTitle(String title, CursorPageable pageable);
+    ProductOverviewSlice findOverViewByTitle(ProductSearchCondition title, CursorPageable pageable);
+    ProductOverviewSlice findOverViewByUser(ProductSearchCondition user, CursorPageable pageable);
     List<ProductOverViewResponse> findOverViewByproductIds(List<Long> productIds);
     List<ProductOverViewResponse> findOverViewByCreatedAtDesc(Pageable pageable, LocalDateTime lastCreatedAt);
     List<ProductOverViewResponse> findOverViewByCategories(Long bCategoryId, Long mCategoryId, Long sCategoryId, LocalDateTime lastCreatedAt, Pageable pageable);

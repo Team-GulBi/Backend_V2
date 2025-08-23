@@ -3,6 +3,7 @@ package com.gulbi.Backend.domain.rental.product.service.product.crud;
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
 import com.gulbi.Backend.domain.rental.product.repository.ProductCustomRepository;
@@ -70,9 +71,9 @@ public class ProductRepoJpaService implements ProductRepoService {
 
     //조회 성능을 위해 단순조회는 Projection 사용
     @Override
-    public ProductOverviewSlice findOverViewByTitle(String title, CursorPageable cursorPageable) {
+    public ProductOverviewSlice findOverViewByTitle(ProductSearchCondition title, CursorPageable cursorPageable) {
         try {
-            ProductOverviewSlice overViewResponses = productCustomRepository.findAllByCursor(cursorPageable);
+            ProductOverviewSlice overViewResponses = productCustomRepository.findAllByCursor(cursorPageable,title);
             if (overViewResponses.getProducts().isEmpty()) {
                 throw new ProductException(
                     ExceptionMetaDataFactory.of(title, className, null, ProductErrorCode.PRODUCT_NOT_FOUND_BY_TITLE));
@@ -81,6 +82,20 @@ public class ProductRepoJpaService implements ProductRepoService {
         }catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException | PersistenceException exception) {
             throw new DatabaseException(ExceptionMetaDataFactory.of(title, className, exception, InfraErrorCode.DB_EXCEPTION));
         }
+    }
+
+    @Override
+    public ProductOverviewSlice findOverViewByUser(ProductSearchCondition user, CursorPageable pageable) {
+        try {
+            ProductOverviewSlice overViewResponses = productCustomRepository.findAllByCursor(pageable, user);
+            if (overViewResponses.getProducts().isEmpty()) {
+                throw new ProductException(
+                    ExceptionMetaDataFactory.of(user, className, null, ProductErrorCode.PRODUCT_NOT_FOUND_BY_TITLE));
+            }
+            return overViewResponses;
+        }catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException | PersistenceException exception) {
+            throw new DatabaseException(ExceptionMetaDataFactory.of(user, className, exception, InfraErrorCode.DB_EXCEPTION));
+    }
     }
 
     @Override

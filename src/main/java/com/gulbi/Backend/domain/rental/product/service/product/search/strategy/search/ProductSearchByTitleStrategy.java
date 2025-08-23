@@ -2,6 +2,7 @@ package com.gulbi.Backend.domain.rental.product.service.product.search.strategy.
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
 import com.gulbi.Backend.domain.rental.product.repository.ProductRepository;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.global.CursorPageable;
@@ -17,6 +18,7 @@ public class ProductSearchByTitleStrategy implements ProductSearchStrategy {
 
 	@Override
 	public ProductOverviewSlice search(String query, CursorPageable cursorPageable) {
-		return productRepoService.findOverViewByTitle(query, cursorPageable);
+		ProductSearchCondition condition = ProductSearchCondition.builder().title(query).build();
+		return productRepoService.findOverViewByTitle(condition, cursorPageable);
 	}
 }
