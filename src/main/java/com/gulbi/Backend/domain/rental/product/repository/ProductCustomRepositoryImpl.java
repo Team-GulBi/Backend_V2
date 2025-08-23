@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.entity.QProduct;
+import com.gulbi.Backend.domain.user.entity.User;
 import com.gulbi.Backend.global.CursorPageable;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -22,21 +22,22 @@ import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+
 @RequiredArgsConstructor
 @Component
 public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
 
+	// WHERE절에 조건들을 동적으로 받아 쓰기위해 ProductSearchCondition객체를 받음, 대신 호출자에서는 어떤걸로 호출하는지 명확한 메서드로 호출하게 할거임
+	//
 	@Override
-	public ProductOverviewSlice findAllByCursor(CursorPageable cursorPageable) {
-		// pageable 캔따기
+	public ProductOverviewSlice findAllByCursor(CursorPageable cursorPageable, ProductSearchCondition condition) {
 		Pageable pageable = cursorPageable.getPageable();
 		Long lastId = cursorPageable.getLastId();
 		LocalDateTime lastTime = cursorPageable.getLastCreatedAt();
-		//Q클래스 선언
+
 		QProduct product = QProduct.product;
-		// 요청사이즈 출력
 		int limit = pageable.getPageSize();
 
 		List<ProductOverViewResponse> results = queryFactory
@@ -49,43 +50,49 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 				product.createdAt.as("createdAt")
 			))
 			.from(product)
-			.where(cursorCondition(product, lastId, lastTime))
+			.where( //제목에 부합, 특정 유저 아이디, 대신 null이면 동작 안함
+				cursorCondition(product, lastId, lastTime),
+				titleContains(condition.getTitle()),
+				userEq(condition.getUser())
+			)
 			.orderBy(toOrderSpecifiers(pageable.getSort()))
-			.limit(limit + 1) // hasNext 체크
+			.limit(limit + 1)
 			.fetch();
-		//뒤에 있는지 함 보고
+
 		boolean hasNext = results.size() > limit;
-		//limit + 1로 확인 했으니까 보낼때는 맨 뒤 요소 하나 지워서
 		if (hasNext) results.remove(limit);
 
 		return new ProductOverviewSlice(hasNext, results);
 	}
 
-	// 커서 조건
+	// WHERE절에 조건들을 동적으로 받아 쓰도록 만든것들
+
+		// Where절 필터 메서드들
 	private BooleanExpression cursorCondition(QProduct product, Long lastId, LocalDateTime lastTime) {
 		if (lastId == null || lastTime == null) return null;
 		return product.createdAt.lt(lastTime)
 			.or(product.createdAt.eq(lastTime).and(product.id.lt(lastId)));
 	}
 
-	// Sort -> QueryDSL OrderSpecifier 변환
-	// 정렬 조건을 나타내는 객체
+	private BooleanExpression titleContains(String title) {
+		return (title == null || title.isBlank()) ? null : QProduct.product.title.containsIgnoreCase(title);
+	}
+
+	private BooleanExpression userEq(User user) {
+		return (user == null) ? null : QProduct.product.user.id.eq(user.getId());
+	}
+
+		// 정렬기준
 	private OrderSpecifier<?>[] toOrderSpecifiers(Sort sort) {
 		return sort.stream()
 			.map(order -> {
-				// Product 엔티티를 기반으로 PathBuilder 생성
 				PathBuilder<Product> path = new PathBuilder<>(Product.class, "product");
-
-				// 정렬 방향 설정
 				Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-
-				return new OrderSpecifier(
+				return new OrderSpecifier<>(
 					direction,
-					path.get(order.getProperty())
+					path.getComparable(order.getProperty(), Comparable.class)
 				);
-			}).toArray(OrderSpecifier[]::new);
+			})
+			.toArray(OrderSpecifier[]::new);
 	}
-
 }
-
-

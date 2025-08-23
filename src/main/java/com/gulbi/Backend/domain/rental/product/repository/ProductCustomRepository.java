@@ -8,8 +8,10 @@ import org.springframework.data.domain.Slice;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
+import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
 import com.gulbi.Backend.global.CursorPageable;
 
 public interface ProductCustomRepository {
-	ProductOverviewSlice findAllByCursor(CursorPageable cursorPageable);
+	ProductOverviewSlice findAllByCursor(CursorPageable cursorPageable, ProductSearchCondition condition);
+
 }
