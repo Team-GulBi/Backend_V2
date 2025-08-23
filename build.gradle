@@ -50,12 +50,20 @@ dependencies {
 
 	// MySQL JDBC 드라이버의 버전을 명시합니다.
 	runtimeOnly 'mysql:mysql-connector-java:8.0.33'  // 여기서 8.0.33은 예시입니다.
-  //s3
+
+    //s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.600'
 
-
+    //query dsl
+    implementation 'com.querydsl:querydsl-core:5.0.0'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    implementation 'com.querydsl:querydsl-apt:5.0.0'
+    implementation 'com.querydsl:querydsl-sql:5.0.0'
+    implementation 'com.querydsl:querydsl-sql-spring:5.0.0'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 
     implementation "org.apache.tika:tika-core:2.9.1"
     implementation "org.apache.tika:tika-parsers-standard-package:2.9.1"

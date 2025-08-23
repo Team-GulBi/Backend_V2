@@ -1,6 +1,5 @@
 package com.gulbi.Backend.domain.rental.product.service.product.delete;
 
-import com.gulbi.Backend.domain.contract.contract.entity.ContractTemplate;
 import com.gulbi.Backend.domain.contract.contract.service.ContractTemplateRepoService;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.service.image.ImageRepoService;
@@ -21,7 +20,7 @@ public class ProductDeleteServiceImpl implements ProductDeleteService{
     @Override
     public void deleteProductInfo(Long productId) {
         // 해당 상품이 존재하는지 검증
-        Product product = productRepoService.findProductById(productId);
+        Product product = productRepoService.findById(productId);
         //soft delete
         product.markAsDeleted();
 

@@ -64,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     private Product getProduct(Long productId){
-        return productRepoService.findProductById(productId);
+        return productRepoService.findById(productId);
     }
 
 }

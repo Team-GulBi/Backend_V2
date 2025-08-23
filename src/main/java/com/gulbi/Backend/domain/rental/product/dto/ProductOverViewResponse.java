@@ -1,12 +1,20 @@
 package com.gulbi.Backend.domain.rental.product.dto;
 
-public interface ProductOverViewResponse {
+import java.time.LocalDateTime;
 
-   Long getId();
-   String getMainImage();
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-   String getTitle();
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductOverViewResponse {
 
-   String getPrice();
+	private Long id;
+	private String mainImage;
+	private String title;
+	private int price;
+	private LocalDateTime createdAt;
 
 }

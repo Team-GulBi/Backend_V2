@@ -1,6 +1,7 @@
 package com.gulbi.Backend.domain.rental.product.service.product;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
 import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
 import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
@@ -10,6 +11,8 @@ import com.gulbi.Backend.domain.rental.product.service.product.delete.ProductDel
 import com.gulbi.Backend.domain.rental.product.service.product.register.ProductRegistrationService;
 import com.gulbi.Backend.domain.rental.product.service.product.search.ProductSearchService;
 import com.gulbi.Backend.domain.rental.product.service.product.update.ProductUpdatingService;
+import com.gulbi.Backend.global.CursorPageable;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +32,8 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품 대략 조회
     @Override
-    public List<ProductOverViewResponse> searchProductOverview(ProductSearchRequest productSearchRequest) {
-        return productSearchService.searchProductByQuery(productSearchRequest);
+    public ProductOverviewSlice searchProductOverview(ProductSearchRequest productSearchRequest, CursorPageable cursorPageable) {
+        return productSearchService.searchProductByQuery(productSearchRequest,cursorPageable);
     }
 
     // 상품 등록

@@ -22,6 +22,6 @@ public class PopularProductProviderService implements PopularProductProvider {
     public List<ProductOverViewResponse> getRealTimePopularProducts() {
         String response = productLogQueryService.getQueryOfPopularProductIds();
         List<Long> productIds = queryHandler.getListOfProductIds(response).getProductIds();
-        return productRepoService.findProductOverViewByproductIds(productIds);
+        return productRepoService.findOverViewByproductIds(productIds);
     }
 }

@@ -2,11 +2,13 @@ package com.gulbi.Backend.domain.rental.product.service.product.crud;
 
 import com.gulbi.Backend.domain.rental.product.code.ProductErrorCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
 import com.gulbi.Backend.domain.rental.product.entity.Product;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
+import com.gulbi.Backend.domain.rental.product.repository.ProductCustomRepository;
 import com.gulbi.Backend.domain.rental.product.repository.ProductRepository;
+import com.gulbi.Backend.global.CursorPageable;
 import com.gulbi.Backend.global.error.DatabaseException;
-import com.gulbi.Backend.global.error.ExceptionMetaData;
 import com.gulbi.Backend.global.error.ExceptionMetaDataFactory;
 import com.gulbi.Backend.global.error.InfraErrorCode;
 
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class ProductRepoJpaService implements ProductRepoService {
     private final String className = this.getClass().getName();
     private final ProductRepository productRepository;
+    private final ProductCustomRepository productCustomRepository;
 
     @Override
     public Product save(Product product) {
@@ -41,7 +44,7 @@ public class ProductRepoJpaService implements ProductRepoService {
     }
 
     @Override
-    public Product findProductById(Long productId) {
+    public Product findById(Long productId) {
         try {
             Optional<Product> productOptional = productRepository.findProductById(productId);
             if (!productOptional.isPresent()) {
@@ -54,7 +57,7 @@ public class ProductRepoJpaService implements ProductRepoService {
     }
 
     @Override
-    public Product findProductByIdWithUser(Long productId) {
+    public Product findByIdWithUser(Long productId) {
         try {
             return productRepository.findByIdWithAll(productId)
                 .orElseThrow(() -> new ProductException(
@@ -67,10 +70,10 @@ public class ProductRepoJpaService implements ProductRepoService {
 
     //조회 성능을 위해 단순조회는 Projection 사용
     @Override
-    public List<ProductOverViewResponse> findProductOverViewByTitle(String title) {
+    public ProductOverviewSlice findOverViewByTitle(String title, CursorPageable cursorPageable) {
         try {
-            List<ProductOverViewResponse> overViewResponses = productRepository.findProductsByTitle(title);
-            if (overViewResponses.isEmpty()) {
+            ProductOverviewSlice overViewResponses = productCustomRepository.findAllByCursor(cursorPageable);
+            if (overViewResponses.getProducts().isEmpty()) {
                 throw new ProductException(
                     ExceptionMetaDataFactory.of(title, className, null, ProductErrorCode.PRODUCT_NOT_FOUND_BY_TITLE));
             }
@@ -81,9 +84,9 @@ public class ProductRepoJpaService implements ProductRepoService {
     }
 
     @Override
-    public List<ProductOverViewResponse> findProductOverViewByproductIds(List<Long> productIds) {
+    public List<ProductOverViewResponse> findOverViewByproductIds(List<Long> productIds) {
         try {
-            List<ProductOverViewResponse> overViewResponses = productRepository.findProductsByIds(productIds);
+            List<ProductOverViewResponse> overViewResponses = productRepository.findAllOverViewByIdIn(productIds);
             if (overViewResponses.isEmpty()) {
             throw new ProductException(ExceptionMetaDataFactory
                 .of(productIds, className, null,ProductErrorCode.PRODUCT_NOT_FOUND));
@@ -95,8 +98,8 @@ public class ProductRepoJpaService implements ProductRepoService {
     }
 
     @Override
-    public List<ProductOverViewResponse> findProductOverViewByCreatedAtDesc(Pageable pageable, LocalDateTime lastCreatedAt) {
-        List<ProductOverViewResponse> overViewResponses =productRepository.findAllProductOverviewsByCreatedAtDesc(lastCreatedAt,pageable);
+    public List<ProductOverViewResponse> findOverViewByCreatedAtDesc(Pageable pageable, LocalDateTime lastCreatedAt) {
+        List<ProductOverViewResponse> overViewResponses =productRepository.findAllOverviewByCreatedAtDesc(lastCreatedAt,pageable);
         //ToDo: 연동 시작 하면사 바뀔 수 있으므로 일단 패스.
         // if (overViewResponses.isEmpty()) {
         //     createNoProductFoundForTitleException(null);
@@ -105,16 +108,16 @@ public class ProductRepoJpaService implements ProductRepoService {
     }
 
     @Override
-    public List<ProductOverViewResponse> findProductOverViewByCategories(Long bCategoryId, Long mCategoryId, Long sCategoryId, LocalDateTime lastCreatedAt, Pageable pageable) {
+    public List<ProductOverViewResponse> findOverViewByCategories(Long bCategoryId, Long mCategoryId, Long sCategoryId, LocalDateTime lastCreatedAt, Pageable pageable) {
         //ToDo: 연동 시작 하면사 바뀔 수 있으므로 일단 패스.
-        return productRepository.findAllProductByCategoryIds(bCategoryId, mCategoryId, sCategoryId,lastCreatedAt,pageable);
+        return productRepository.findAllByCategoryIds(bCategoryId, mCategoryId, sCategoryId,lastCreatedAt,pageable);
     }
 
 
     @Override
     //ToDo: 태그 검색은 보류(사용 안함.
-    public List<ProductOverViewResponse> findProductOverViewByTag(String tag, String tag2, String tag3) {
-        List<ProductOverViewResponse> overViewResponses = productRepository.findProductsByTag(tag, tag2, tag3);
+    public List<ProductOverViewResponse> findOverViewByTag(String tag, String tag2, String tag3) {
+        List<ProductOverViewResponse> overViewResponses = productRepository.findAllByTag(tag, tag2, tag3);
         // if (overViewResponses.isEmpty()) {
         //     createNoProductFoundForTagsException(tag, tag2, tag3);
         // }

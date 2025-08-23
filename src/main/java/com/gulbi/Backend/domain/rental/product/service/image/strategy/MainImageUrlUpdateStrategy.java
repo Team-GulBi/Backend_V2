@@ -32,7 +32,7 @@ public class MainImageUrlUpdateStrategy extends AbstractImageUpdateStrategy{
 		ImageUrl mainImageUrl = command.getToBeUpdatedMainImageWithUrl().getMainImageUrl();
 		Long productId = command.getProductId();
 		//업데이트를 위한 상품 조회
-		Product product = productRepoService.findProductById(productId);
+		Product product = productRepoService.findById(productId);
 		//업데이트
 		product.updateMainImage(mainImageUrl);
 		productRepoService.save(product);

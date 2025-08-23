@@ -26,7 +26,7 @@ public class ProductTextInfoUpdateStrategy implements ProductUpdateStrategy{
 		// 상품 아이디 조회
 		Long productId = command.getProductId();
 		// 상품 조회
-		Product product = productRepoService.findProductById(productId);
+		Product product = productRepoService.findById(productId);
 		// 클라이언트로 부터 받은 request 추출
 		ProductTextUpdateRequest request = command.getProductTextUpdateRequest();
 		// 상품 엔티티에서 업데이트를 하도록 책임 전가
