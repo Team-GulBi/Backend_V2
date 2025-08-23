@@ -32,7 +32,7 @@ public class ProductCategoryUpdateStrategy implements ProductUpdateStrategy{
 		CategoryBundle bundle = validateCategories(request);
 		// 상품 유효성 검사
 		Long productId = command.getProductId();
-		Product product = productRepoService.findProductById(productId);
+		Product product = productRepoService.findById(productId);
 		// 업데이트
 		product.updateCategories(bundle);
 		productRepoService.save(product);

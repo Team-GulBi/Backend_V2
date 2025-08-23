@@ -41,7 +41,7 @@ public class MainImageFileUpdateStrategy extends AbstractImageUpdateStrategy{
 		ProductImageFiles productImageFiles = request.getProductImageFiles();
 		Long productId = command.getProductId();
 		//업데이트를 위한 상품 조회
-		Product product = productRepoService.findProductById(productId);
+		Product product = productRepoService.findById(productId);
 		//S3버킷 업로드
 		ImageUrls imageUrls = imageService.uploadProductImagesToS3(productImageFiles);
 		//추출된 url중 메인 이미지 추출

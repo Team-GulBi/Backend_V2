@@ -38,7 +38,7 @@ public class ImageUploadStrategy extends AbstractImageUpdateStrategy{
 		//파일 => url =
 		Long productId = command.getProductId();
 		ImageUrls imageUrls = imageService.uploadProductImagesToS3(newFiles);//파일 집어넣고
-		Product product = productRepoService.findProductById(productId);
+		Product product = productRepoService.findById(productId);
 		Images images = imageService.createImages(imageUrls, product);
 		imageRepoJpaService.saveAll(images.getImages());
 
