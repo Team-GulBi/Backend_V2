@@ -3,6 +3,7 @@ package com.gulbi.Backend.domain.rental.product.controller;
 import com.gulbi.Backend.domain.contract.contract.dto.TemplateCreateRequest;
 import com.gulbi.Backend.domain.rental.product.code.ProductSuccessCode;
 import com.gulbi.Backend.domain.rental.product.dto.ProductImageDeleteRequest;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterCommand;
 import com.gulbi.Backend.domain.rental.product.dto.ProductRegisterRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductSearchRequest;
@@ -16,6 +17,7 @@ import com.gulbi.Backend.domain.rental.product.dto.ProductTextUpdateRequest;
 import com.gulbi.Backend.domain.rental.product.dto.ProductDetailResponse;
 import com.gulbi.Backend.domain.rental.product.service.product.ProductService;
 import com.gulbi.Backend.domain.rental.product.vo.ProductImageFiles;
+import com.gulbi.Backend.global.CursorPageable;
 import com.gulbi.Backend.global.response.RestApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,14 +25,21 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.data.domain.Pageable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -81,15 +90,31 @@ public class ProductController {
 
     @GetMapping("/search")
     @Operation(
-            summary = "조건에 맞는 상품 검색",
-            description = "query는 검색어, detail은 필터(태그별,제목별,위치별 등등)"
+        summary = "조건에 맞는 상품 검색 (커서 기반 페이지네이션 포함)",
+        description = "query는 검색어, detail은 필터(태그별, 제목별, 위치별 등등), " +
+            "커서 기반 페이지네이션(lastId, lastTime)과 페이지 사이즈/정렬 가능"
     )
     public ResponseEntity<RestApiResponse> searchProduct(
-            @Parameter(description = "검색어", required = true) @RequestParam("query") String query,
-            @Parameter(description = "필터", required = true) @RequestParam("detail") String detail){
+        @Parameter(description = "검색어", required = true)
+        @RequestParam("query") String query,
+
+        @Parameter(description = "필터", required = true)
+        @RequestParam("detail") String detail,
+
+        @Parameter(description = "마지막으로 본 상품 ID (커서)", required = false)
+        @RequestParam(value = "lastId", required = false) Long lastId,
+
+        @Parameter(description = "마지막으로 본 상품 생성일 (커서)", required = false)
+        @RequestParam(value = "lastTime", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastTime,
+
+        @ParameterObject Pageable pageable  // size, sort 등 자동 매핑
+    ) {
         ProductSearchRequest productSearchRequest = ProductSearchRequest.of(detail, query);
-        List<ProductOverViewResponse> data = productService.searchProductOverview(productSearchRequest);
-        RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_FOUND_SUCCESS,data);
+        CursorPageable cursorPageable = new CursorPageable(pageable, lastId, lastTime);
+
+        ProductOverviewSlice dataSlice = productService.searchProductOverview(productSearchRequest, cursorPageable);
+
+        RestApiResponse response = new RestApiResponse(ProductSuccessCode.PRODUCT_FOUND_SUCCESS,dataSlice);
         return ResponseEntity.ok(response);
     }
 
