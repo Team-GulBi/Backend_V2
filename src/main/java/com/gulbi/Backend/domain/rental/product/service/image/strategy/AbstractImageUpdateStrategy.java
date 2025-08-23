@@ -10,7 +10,7 @@ public abstract class AbstractImageUpdateStrategy implements ImageUpdateStrategy
 		this.productRepoService = productRepoService;
 	}
 	protected void resolveProduct(Long productId) {
-		productRepoService.findProductById(productId);
+		productRepoService.findById(productId);
 	}
 
 	@Override
