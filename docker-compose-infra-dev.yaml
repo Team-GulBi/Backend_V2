@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:latest
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldb-data:/var/lib/mysql
+    networks:
+      - infra-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "61613:61613"
+      - "15672:15672"
+    networks:
+      - infra-net
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - infra-net
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./lokiconfig.yml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - infra-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - infra-net
+
+volumes:
+  mysqldb-data:
+    driver: local
+  prometheus_data:
+    driver: local
+
+networks:
+  infra-net:
+    driver: bridge
