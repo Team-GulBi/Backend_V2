@@ -10,17 +10,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
-public class LokiProductLogQueryService implements ProductLogQueryService {
+public class LokiQueryService implements LogQueryService {
     private static final String LOKI_GET_REQUEST_ENDPOINT = "/loki/api/v1/query";
     private final WebClient webClient = WebClient.create("http://localhost:3100");
     private final UserService userService;
 
-    public LokiProductLogQueryService(UserService userService) {
+    public LokiQueryService(UserService userService) {
         this.userService = userService;
     }
-
+    //인기상품 조회, 반환결과 Json
     @Override
     public String getQueryOfPopularProductIds() {
+        //인기상품 쿼리문 추출
+        // 최근 600분동안 로그에 집계된 많이 조회된 20개의 상품 아이디 반환
         String query = LokiQuery.REALTIME_POPULAR_PRODUCT_IDS.getQuery();
         return requestQueryToLoki(query);
     }
@@ -33,6 +35,7 @@ public class LokiProductLogQueryService implements ProductLogQueryService {
     }
 
 
+    //실제로 쿼리를 날리는 부분
     private String requestQueryToLoki(String query){
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(LOKI_GET_REQUEST_ENDPOINT)

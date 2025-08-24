@@ -1,7 +1,7 @@
 package com.gulbi.Backend.domain.rental.recommandation.service.query;
 
 public enum LokiQuery {
-
+    // 최근 600분동안 로그에 집계된 많이 조회된 20개의 상품 아이디 반환
     REALTIME_POPULAR_PRODUCT_IDS("topk(20, sum(count_over_time({job=\"popularProduct\"} | json | line_format \"{{.productId}}\" [600m])) by (productId))"),
 
     MOST_VIEWED_THIRD_CATEGORIES_BY_USER("topk(3, sum(count_over_time({job=\"personalRecommandationProduct\"} \n" +

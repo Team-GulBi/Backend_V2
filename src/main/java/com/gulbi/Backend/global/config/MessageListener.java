@@ -1,8 +1,6 @@
 package com.gulbi.Backend.global.config;
 
-import com.gulbi.Backend.domain.chat.message.dto.MessageReceiveRequest;
 import com.gulbi.Backend.domain.chat.message.dto.MessageSendResponse;
-import com.gulbi.Backend.domain.chat.message.entity.ChatMessage;
 import com.gulbi.Backend.domain.chat.room.entity.ChatRoom;
 import com.gulbi.Backend.domain.chat.room.service.ChatRoomService;
 import com.gulbi.Backend.domain.chat.websocket.WebSocketEventHandler;

@@ -7,16 +7,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ExtractedProductIds {
+public class PopularProductIds {
     final private List<Long> productIds;
 
-    private ExtractedProductIds(List<String> productIds) {
+    private PopularProductIds(List<Long> productIds) {
+        this.productIds = productIds;
+    }
+
+    private PopularProductIds(List<String> productIds, boolean fromString) {
         this.productIds = parseStringListToLongList(productIds);
     }
 
-    public static ExtractedProductIds of(List<String> productIds){
-        return new ExtractedProductIds(productIds);
+    public static PopularProductIds fromStrings(List<String> productIds){
+        return new PopularProductIds(productIds, true);
     }
+
+    public static PopularProductIds fromLongs(List<Long> productIds){
+        return new PopularProductIds(productIds);
+    }
+
 
     public List<Long> getProductIds(){
         if (!productIds.isEmpty()) {

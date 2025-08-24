@@ -19,10 +19,9 @@ public class LokiLoggingHandler implements ProductLogHandler{
 
     @Override
     public void loggingQueryData(String query, String detail) {
-//        MDC.put("query", query);
-//        MDC.put("detail", detail);
-//        loggingQueryData.info("Queried Product Information For RealTime Queries");
-//        MDC.clear();
+       MDC.put("query", query);
+       MDC.put("detail", detail);
+       MDC.clear();
     }
 
     @Override
@@ -33,12 +32,12 @@ public class LokiLoggingHandler implements ProductLogHandler{
     }
 
     @Override
-    public void loggingReturnedProductData(Product productDto) {
-        User user = getAuthenticationUser();
+    public void loggingReturnedProductData(Product product) {
+        User user = userService.getAuthenticatedUser();
         MDC.put("userId", String.valueOf(user.getId()));
-        MDC.put("bCategoryId", String.valueOf(productDto.getBCategory().getId()));
-        MDC.put("mCategoryId", String.valueOf(productDto.getMCategory().getId()));
-        MDC.put("sCategoryId", String.valueOf(productDto.getSCategory().getId()));
+        MDC.put("bCategoryId", String.valueOf(product.getBCategory().getId()));
+        MDC.put("mCategoryId", String.valueOf(product.getMCategory().getId()));
+        MDC.put("sCategoryId", String.valueOf(product.getSCategory().getId()));
         loggingReturnedProductData.info("Categories Information Queried by the User for Product Recommendation");
         MDC.clear();
     }
