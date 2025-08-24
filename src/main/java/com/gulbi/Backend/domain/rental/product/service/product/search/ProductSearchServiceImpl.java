@@ -75,14 +75,16 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     public ProductOverviewSlice getMyProducts(CursorPageable cursorPageable) {
         User user = userService.getAuthenticatedUser();
         ProductSearchCondition condition = ProductSearchCondition.builder().user(user).build();
-        return productRepoService.findOverViewByUser(condition, cursorPageable);
+        ProductOverviewSlice productOverviewSlice = productRepoService.findOverViewByUser(condition, cursorPageable);
+        return new ProductOverviewSlice(user.getNickname(),productOverviewSlice.isHasNext(),productOverviewSlice.getProducts());
     }
 
     @Override
     public ProductOverviewSlice getUserProducts(Long userId,CursorPageable cursorPageable) {
         User user = userRepository.findById(userId).orElseThrow();
         ProductSearchCondition condition = ProductSearchCondition.builder().user(user).build();
-        return productRepoService.findOverViewByUser(condition, cursorPageable);
+        ProductOverviewSlice productOverviewSlice = productRepoService.findOverViewByUser(condition, cursorPageable);
+        return new ProductOverviewSlice(user.getNickname(),productOverviewSlice.isHasNext(),productOverviewSlice.getProducts());
     }
 
     // 로깅 서비스 호출 메서드 부분(시작)
