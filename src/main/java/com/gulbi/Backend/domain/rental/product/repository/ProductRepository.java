@@ -17,23 +17,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // 제목 검색
-    @Query("SELECT new com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse(" +
-        "p.id, p.mainImage, p.title, p.price, p.createdAt) " +
-        "FROM Product p " +
-        "WHERE p.title LIKE CONCAT('%', :query, '%')")
-    List<ProductOverViewResponse> findAllByTitle(@Param("query") String query);
-
-    // 태그 검색
-    @Query("SELECT new com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse(" +
-        "p.id, p.mainImage, p.title, p.price, p.createdAt) " +
-        "FROM Product p " +
-        "WHERE (:tag1 IS NULL OR p.tag LIKE CONCAT('%', :tag1, '%')) " +
-        "AND (:tag2 IS NULL OR p.tag LIKE CONCAT('%', :tag2, '%')) " +
-        "AND (:tag3 IS NULL OR p.tag LIKE CONCAT('%', :tag3, '%'))")
-    List<ProductOverViewResponse> findAllByTag(@Param("tag1") String tagQuery1,
-        @Param("tag2") String tagQuery2,
-        @Param("tag3") String tagQuery3);
 
     // ID 리스트 조회
     @Query("SELECT new com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse(" +
@@ -43,6 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<ProductOverViewResponse> findAllOverViewByIdIn(@Param("productIds") List<Long> productIds);
 
     // 생성일 기준 조회
+    // ToDo: QueryDSL로 변경예정, 삭제예정
     @Query("SELECT new com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse(" +
         "p.id, p.mainImage, p.title, p.price, p.createdAt) " +
         "FROM Product p " +
@@ -51,7 +35,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<ProductOverViewResponse> findAllOverviewByCreatedAtDesc(@Param("lastCreatedAt") LocalDateTime lastCreatedAt,
         Pageable pageable);
 
-    // 카테고리 조회
+    // ToDo: QueryDSL로 변경예정, 삭제예정
     @Query("SELECT new com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse(" +
         "p.id, p.mainImage, p.title, p.price, p.createdAt) " +
         "FROM Product p " +
@@ -65,14 +49,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
         Pageable pageable);
 
-    Optional<Product> findProductById(@Param("id") Long id);
+    @Query("SELECT p FROM Product p WHERE p.deletedAt IS NULL AND p.id= :id")
+    Optional<Product> findById(@Param("id") Long id);
 
     @Query("SELECT p FROM Product p " +
         "LEFT JOIN FETCH p.user " +
         "JOIN FETCH p.bCategory " +
         "JOIN FETCH p.mCategory " +
         "JOIN FETCH p.sCategory " +
-        "WHERE p.id = :id")
+        "WHERE p.id = :id AND p.deletedAt IS NULL")
     Optional<Product> findByIdWithAll(@Param("id") Long id);
 
     @Transactional

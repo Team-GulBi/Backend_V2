@@ -54,6 +54,13 @@ public class ApplicationService {
     }
 
     public ApplicationCalendarResponse getApplicationsByYearMonth(YearMonth yearMonth, Long productId){
+        // 소유자(User)와 패치조인
+        Product product = productRepoService.findByIdWithUser(productId);
+        // 요청 유저 신원 조회
+        User authenticatedUser = userService.getAuthenticatedUser();
+        // 상품 소유자
+        User productOwner = product.getUser();
+        boolean owner = isOwner(authenticatedUser, productOwner);
         try {
         //년월에서 해당 월에 첫번째일 즉 1일을 넣어서
         LocalDateTime startOfMonth = yearMonth.atDay(1).atStartOfDay();
@@ -64,27 +71,27 @@ public class ApplicationService {
         List<ApplicationStatusResponse> status = ApplicationStatusResponse.from(applicationRepoService.findReservationStatusByMonth(productId, startOfMonth, endOfMonth));
         status.stream().forEach(item -> System.out.println(item.toString()));
 
-        //productId를 기반으로 상품을 조회하고 거기에 있는 유저 정보를 뽑아냄. JWT 유저와 비교했을때 같으면 오너 아니면 게스트
-        User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
-        Product product = productRepoService.findById(productId);
-        User productOwner = product.getUser(); // 상품 등록자
-
-        ApplicationCalendarResponse response = new ApplicationCalendarResponse(status,isOwner(authenticatedUser, productOwner));
+        ApplicationCalendarResponse response = new ApplicationCalendarResponse(status,owner);
         return response;
         }catch (ApplicationException e){
-            return new ApplicationCalendarResponse(Collections.emptyList(), false);
+            return new ApplicationCalendarResponse(Collections.emptyList(), owner);
         }
     }
 
     public ApplicationDayResponse getApplicationsByDate(LocalDate date, Long productId){
-        try{
-        User authenticatedUser = userService.getAuthenticatedUser(); // 로그인한 유저
-        Product product = productRepoService.findById(productId);
+        // 소유자(User)와 패치조인
+        Product product = productRepoService.findByIdWithUser(productId);
+        // 요청 유저 신원 조회
+        User authenticatedUser = userService.getAuthenticatedUser();
+        // 상품 소유자
         User productOwner = product.getUser();
+        boolean owner = isOwner(authenticatedUser, productOwner);
+        try{
         List<ApplicationStatusDetailResponse> status = applicationRepoService.findByProductIdAndDate(productId, date);
-        ApplicationDayResponse response = new ApplicationDayResponse(status,isOwner(authenticatedUser, productOwner));
-        return response;}catch (ApplicationException e){
-            return new ApplicationDayResponse(Collections.emptyList(), false);
+        ApplicationDayResponse response = new ApplicationDayResponse(status, owner);
+        return response;
+        }catch (ApplicationException e){
+            return new ApplicationDayResponse(Collections.emptyList(), owner);
         }
     }
 

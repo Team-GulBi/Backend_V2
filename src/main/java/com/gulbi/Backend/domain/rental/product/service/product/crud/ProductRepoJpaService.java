@@ -47,7 +47,7 @@ public class ProductRepoJpaService implements ProductRepoService {
     @Override
     public Product findById(Long productId) {
         try {
-            Optional<Product> productOptional = productRepository.findProductById(productId);
+            Optional<Product> productOptional = productRepository.findById(productId);
             if (!productOptional.isPresent()) {
                 throw new ProductException(ExceptionMetaDataFactory.of(productId,className,null,ProductErrorCode.PRODUCT_NOT_FOUND));
             }
@@ -129,15 +129,6 @@ public class ProductRepoJpaService implements ProductRepoService {
     }
 
 
-    @Override
-    //ToDo: 태그 검색은 보류(사용 안함.
-    public List<ProductOverViewResponse> findOverViewByTag(String tag, String tag2, String tag3) {
-        List<ProductOverViewResponse> overViewResponses = productRepository.findAllByTag(tag, tag2, tag3);
-        // if (overViewResponses.isEmpty()) {
-        //     createNoProductFoundForTagsException(tag, tag2, tag3);
-        // }
-        return overViewResponses;
-    }
 
 
     @Override

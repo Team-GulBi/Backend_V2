@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.List;
+import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +60,15 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         //상품 조회(User와 FetchJoin)
         Product product = productRepoService.findByIdWithUser(productId);
 
+        //상품 소유자 조회
+        User productOwner = product.getUser();
+
+        //요청자 신원 조회
+        User requestUser = userService.getAuthenticatedUser();
+
+        //상품 소유자 인지 판단
+        boolean owner = Objects.equals(productOwner.getId(), requestUser.getId());
+
         //상품 이미지 조회
         Images productImages = imageRepoService.findImagesByProductId(productId);
         //상품 리뷰 조회(리뷰가 없을 수 있음)
@@ -68,7 +77,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         //맞춤상품을 위한 ? 로깅
         loggingReturnedProduct(product);
 
-        return ProductDetailResponse.of(product, productImages, reviewsWithAvg);
+        return ProductDetailResponse.of(product, productImages, reviewsWithAvg,owner);
     }
 
     @Override
