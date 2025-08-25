@@ -31,8 +31,10 @@ public class ProductDetailResponse {
     //우선 유저 이름만, 확장 시 별도 dto로 감싸기
     private final String userNickname;
 
+    private final boolean owner;
 
-    public static ProductDetailResponse of(Product product, Images images, ReviewsWithAvg reviews) {
+
+    public static ProductDetailResponse of(Product product, Images images, ReviewsWithAvg reviews, boolean isOwner) {
         CategoriesResponse categoriesResponse = CategoriesResponse.of(product);
         return ProductDetailResponse.builder()
                 .tag(product.getTag())
