@@ -15,7 +15,6 @@ public interface ProductRepoService {
     Product save(Product product);
     Product findById(Long productId);
     Product findByIdWithUser(Long productId);
-    List<ProductOverViewResponse> findOverViewByTag(String tag, String tag2, String tag3);
     ProductOverviewSlice findOverViewByTitle(ProductSearchCondition title, CursorPageable pageable);
     ProductOverviewSlice findOverViewByUser(ProductSearchCondition user, CursorPageable pageable);
     List<ProductOverViewResponse> findOverViewByproductIds(List<Long> productIds);
