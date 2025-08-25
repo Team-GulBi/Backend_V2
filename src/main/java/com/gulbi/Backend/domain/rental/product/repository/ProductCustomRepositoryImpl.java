@@ -53,7 +53,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			.where( //제목에 부합, 특정 유저 아이디, 대신 null이면 동작 안함
 				cursorCondition(product, lastId, lastTime),
 				titleContains(condition.getTitle()),
-				userEq(condition.getUser())
+				userEq(condition.getUser()),
+				deletedAtIsNull()
 			)
 			.orderBy(toOrderSpecifiers(pageable.getSort()))
 			.limit(limit + 1)
@@ -95,4 +96,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			})
 			.toArray(OrderSpecifier[]::new);
 	}
+	private BooleanExpression deletedAtIsNull() {
+		return QProduct.product.deletedAt.isNull();
+	}
+
 }
