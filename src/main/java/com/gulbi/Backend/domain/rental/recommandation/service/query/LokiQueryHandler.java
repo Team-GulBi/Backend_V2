@@ -2,19 +2,14 @@ package com.gulbi.Backend.domain.rental.recommandation.service.query;
 
 import static com.gulbi.Backend.domain.rental.recommandation.service.query.JsonPathQuery.*;
 
-import com.gulbi.Backend.domain.rental.recommandation.code.JsonPathErrorCode;
 import com.gulbi.Backend.domain.rental.recommandation.dto.CategoryPair;
-import com.gulbi.Backend.domain.rental.recommandation.dto.PriorityCategoriesMap;
-import com.gulbi.Backend.domain.rental.recommandation.exception.JsonPathException;
+import com.gulbi.Backend.domain.rental.recommandation.vo.PriorityCategoriesMap;
 import com.gulbi.Backend.domain.rental.recommandation.vo.PopularProductIds;
-import com.gulbi.Backend.domain.rental.recommandation.vo.ExtractedRecommendation;
-import com.gulbi.Backend.global.error.ExceptionMetaData;
+import com.gulbi.Backend.domain.rental.recommandation.vo.PriorityCategoriesQueue;
 import com.jayway.jsonpath.JsonPath;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,24 +27,24 @@ public class LokiQueryHandler implements QueryHandler{
 
 
     @Override
-    public PriorityCategoriesMap getPriorityCategoriesMap(String queryResult) {
+    public PriorityCategoriesQueue getPriorityCategoriesMap(String queryResult) {
         List<String> countList = JsonPath.read(queryResult, TESt_QUERY.getQuery());
         int count = countList.size() - 1; // 마지막 인덱스부터 시작
-        PriorityCategoriesMap map = new PriorityCategoriesMap();
+        PriorityCategoriesQueue priorityCategoriesQueue = new PriorityCategoriesQueue();
 
         for (; count >= 0; count--) { // 0까지 감소
-            String testQuery = String.format(JsonPathQuery.TEST_QUERY_2.getQuery(), count);
-            String testQuery2 = String.format(JsonPathQuery.TEST_QUERY_3.getQuery(), count);
-            String testQuery3 = String.format(JsonPathQuery.TEST_QUERY_4.getQuery(), count,1);
+            String testQuery = String.format(TEST_QUERY_2.getQuery(), count);
+            String testQuery2 = String.format(TEST_QUERY_3.getQuery(), count);
+            String testQuery3 = String.format(TEST_QUERY_4.getQuery(), count,1);
 
             String bigCategoryId = JsonPath.read(queryResult,testQuery);
             String midCategoryId = JsonPath.read(queryResult,testQuery2);
             String priority = JsonPath.read(queryResult,testQuery3);
 
-            CategoryPair categories = new CategoryPair(Long.parseLong(bigCategoryId),Long.parseLong(midCategoryId));
-            map.put(priority,categories);
+            PriorityCategoriesQueue.CategoryPair categoryPair = new PriorityCategoriesQueue.CategoryPair(bigCategoryId,midCategoryId,priority);
+            priorityCategoriesQueue.add(categoryPair);
         }
-        return map;
+        return priorityCategoriesQueue;
 
     }
 

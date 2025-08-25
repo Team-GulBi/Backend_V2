@@ -1,11 +1,11 @@
 package com.gulbi.Backend.domain.rental.recommandation.service.query;
 
-import com.gulbi.Backend.domain.rental.recommandation.dto.PriorityCategoriesMap;
+import com.gulbi.Backend.domain.rental.recommandation.vo.PriorityCategoriesMap;
 import com.gulbi.Backend.domain.rental.recommandation.vo.PopularProductIds;
-import com.gulbi.Backend.domain.rental.recommandation.vo.ExtractedRecommendation;
+import com.gulbi.Backend.domain.rental.recommandation.vo.PriorityCategoriesQueue;
 
 public interface QueryHandler {
 
     PopularProductIds extractProductIdsFromQueryResult(String queryResult);
-    PriorityCategoriesMap getPriorityCategoriesMap(String queryResult);
+    PriorityCategoriesQueue getPriorityCategoriesMap(String queryResult);
 }
