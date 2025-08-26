@@ -10,10 +10,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class PersonalCursorPageable {
-	private final List<CategoryCursor> categoryCursors;
+	private final List<PersonalCursorRequest> personalCursorRequests;
 	private final Pageable pageable;
 
-	public boolean isEmptyCursor(){
-		return categoryCursors.isEmpty();
+	public int size(){
+		return personalCursorRequests.size();
 	}
 }
