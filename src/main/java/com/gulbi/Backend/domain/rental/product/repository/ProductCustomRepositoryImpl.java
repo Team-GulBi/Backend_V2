@@ -57,6 +57,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 				bCategoryEq(condition.getBCategoryId()),
 				mCategoryEq(condition.getMCategoryId()),
 				sCategoryEq(condition.getSCategoryId())
+
 			)
 
 			.orderBy(toOrderSpecifiers(pageable.getSort()))
@@ -99,6 +100,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			})
 			.toArray(OrderSpecifier[]::new);
 	}
+
 	private BooleanExpression bCategoryEq(Long bCategoryId) {
 		return (bCategoryId == null) ? null : QProduct.product.bCategory.id.eq(bCategoryId);
 	}
