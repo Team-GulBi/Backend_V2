@@ -17,6 +17,7 @@ public interface ProductRepoService {
     Product findByIdWithUser(Long productId);
     ProductOverviewSlice findOverViewByTitle(ProductSearchCondition title, CursorPageable pageable);
     ProductOverviewSlice findOverViewByUser(ProductSearchCondition user, CursorPageable pageable);
+    ProductOverviewSlice findOverViewByCategoryPair(ProductSearchCondition categoryPair, CursorPageable pageable);
     List<ProductOverViewResponse> findOverViewByproductIds(List<Long> productIds);
     List<ProductOverViewResponse> findOverViewByCreatedAtDesc(Pageable pageable, LocalDateTime lastCreatedAt);
     List<ProductOverViewResponse> findOverViewByCategories(Long bCategoryId, Long mCategoryId, Long sCategoryId, LocalDateTime lastCreatedAt, Pageable pageable);
