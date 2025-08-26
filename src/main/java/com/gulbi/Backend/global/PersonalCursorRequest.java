@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class CategoryCursor {
-	private final Long bigCategoryId;
-	private final Long midCategoryId;
-	private final Long priority;
+public class PersonalCursorRequest {
+	private final Long bCategoryId;
+	private final Long mCategoryId;
 	private final Long lastProductId;
-	private final LocalDateTime createdAt;
+	private final LocalDateTime lastCreatedAt;
+	private final int priority;
 }

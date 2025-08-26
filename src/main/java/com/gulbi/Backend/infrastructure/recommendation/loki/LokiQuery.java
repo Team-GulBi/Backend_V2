@@ -1,4 +1,4 @@
-package com.gulbi.Backend.domain.rental.recommandation.service.query;
+package com.gulbi.Backend.infrastructure.recommendation.loki;
 
 public enum LokiQuery {
     // 최근 600분동안 로그에 집계된 많이 조회된 20개의 상품 아이디 반환

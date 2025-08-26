@@ -1,4 +1,4 @@
-package com.gulbi.Backend.domain.rental.recommandation.code;
+package com.gulbi.Backend.infrastructure.recommendation.jsonpath;
 
 import com.gulbi.Backend.global.response.ResponseApiCode;
 import org.springframework.http.HttpStatus;
