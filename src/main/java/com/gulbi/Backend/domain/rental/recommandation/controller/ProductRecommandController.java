@@ -1,11 +1,10 @@
 package com.gulbi.Backend.domain.rental.recommandation.controller;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewPrioritySlices;
 import com.gulbi.Backend.domain.rental.recommandation.code.RecommendationSuccessCode;
 import com.gulbi.Backend.domain.rental.recommandation.service.ProductRecommend;
-import com.gulbi.Backend.domain.rental.recommandation.service.query.LokiQueryService;
-import com.gulbi.Backend.domain.rental.recommandation.service.query.QueryHandler;
-import com.gulbi.Backend.global.CategoryCursor;
+import com.gulbi.Backend.global.PersonalCursorRequest;
 import com.gulbi.Backend.global.PersonalCursorPageable;
 import com.gulbi.Backend.global.response.RestApiResponse;
 
@@ -36,11 +35,11 @@ public class ProductRecommandController {
 
     @PostMapping("/personality")
     public ResponseEntity<RestApiResponse> postPersonalRecommendation(
-        @RequestBody List<CategoryCursor> request,
+        @RequestBody(required = false) List<PersonalCursorRequest> request,
         @ParameterObject Pageable pageable) {
         PersonalCursorPageable cursor = new PersonalCursorPageable(request, pageable);
-        productRecommend.getPersonalizedRecommendationProducts(cursor);
-        RestApiResponse response = new RestApiResponse(RecommendationSuccessCode.PERSONAL_RECOMMENDATION_PRODUCTS_FOUND_SUCCESS);
+		ProductOverviewPrioritySlices data =productRecommend.getPersonalizedRecommendationProducts(cursor);
+        RestApiResponse response = new RestApiResponse(RecommendationSuccessCode.PERSONAL_RECOMMENDATION_PRODUCTS_FOUND_SUCCESS,data);
         return ResponseEntity.ok(response);
     }
 

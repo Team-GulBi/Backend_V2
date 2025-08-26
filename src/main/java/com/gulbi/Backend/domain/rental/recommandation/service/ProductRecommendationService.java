@@ -1,10 +1,9 @@
 package com.gulbi.Backend.domain.rental.recommandation.service;
 
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverViewResponse;
+import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewPrioritySlices;
 import com.gulbi.Backend.domain.rental.recommandation.service.personal.PersonalProductProvider;
 import com.gulbi.Backend.domain.rental.recommandation.service.realtime.PopularProductProvider;
-import com.gulbi.Backend.domain.rental.recommandation.dto.PersonalRecommendationRequestDto;
-import com.gulbi.Backend.domain.rental.recommandation.dto.PersonalRecommendationResponseDto;
 import com.gulbi.Backend.global.PersonalCursorPageable;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class ProductRecommendationService implements ProductRecommend {
 
 
     @Override
-    public PersonalRecommendationResponseDto getPersonalizedRecommendationProducts(PersonalCursorPageable request) {
+    public ProductOverviewPrioritySlices getPersonalizedRecommendationProducts(PersonalCursorPageable request) {
         return personalProductProvider.getPersonalizedRecommendationProducts(request);
     }
 }
