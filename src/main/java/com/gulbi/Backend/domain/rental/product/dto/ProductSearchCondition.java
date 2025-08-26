@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+// 상품검색시 QueryDSL의 where절에 들어갈 조건들
 public class ProductSearchCondition {
 	private String title;
 	private User user;

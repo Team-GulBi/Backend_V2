@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    image: openjdk:17-jdk
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ./gradlew bootRun
+    ports:
+      - "8080:8080"
+    networks:
+      - app-net
+      - infra-net  # 인프라 서비스와 통신 필요
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    networks:
+      - app-net
+
+  promtail:
+    image: grafana/promtail:latest
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./promtail.yml:/etc/promtail/config.yml
+      - ./log/app:/var/log/app
+      - ./log/system:/var/log/system
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - app-net
+      - infra-net  # Loki로 로그 전송 가능
+
+networks:
+  app-net:
+    driver: bridge
+
+  infra-net:
+    external: true  # infra-core에서 만든 네트워크 재사용

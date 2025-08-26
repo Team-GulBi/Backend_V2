@@ -79,7 +79,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
 
         return ProductDetailResponse.of(product, productImages, reviewsWithAvg,owner);
     }
-
+    //ToDo: 유저닉네임 리턴해주기
     @Override
     public ProductOverviewSlice getMyProducts(CursorPageable cursorPageable) {
         User user = userService.getAuthenticatedUser();

@@ -99,6 +99,20 @@ public class ProductRepoJpaService implements ProductRepoService {
     }
 
     @Override
+    public ProductOverviewSlice findOverViewByCategoryPair(ProductSearchCondition categoryPair, CursorPageable pageable) {
+        try {
+            ProductOverviewSlice overViewResponses = productCustomRepository.findAllByCursor(pageable, categoryPair);
+            if (overViewResponses.getProducts().isEmpty()) {
+                throw new ProductException(
+                    ExceptionMetaDataFactory.of(categoryPair, className, null, ProductErrorCode.PRODUCT_NOT_FOUND_BY_TITLE));
+            }
+            return overViewResponses;
+        }catch (EmptyResultDataAccessException | DataIntegrityViolationException | JpaSystemException | PersistenceException exception) {
+            throw new DatabaseException(ExceptionMetaDataFactory.of(categoryPair, className, exception, InfraErrorCode.DB_EXCEPTION));
+        }
+    }
+
+    @Override
     public List<ProductOverViewResponse> findOverViewByproductIds(List<Long> productIds) {
         try {
             List<ProductOverViewResponse> overViewResponses = productRepository.findAllOverViewByIdIn(productIds);
