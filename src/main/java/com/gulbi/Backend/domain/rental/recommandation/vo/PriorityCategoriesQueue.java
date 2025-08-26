@@ -12,10 +12,10 @@ public class PriorityCategoriesQueue {
 
 		private final Long bCategoryId;
 		private final Long mCategoryId;
-		private final Long count;
+		private final int count;
 		private final String uuid;
 
-		public CategoryPair(Long bCategoryId, Long mCategoryId, Long count) {
+		public CategoryPair(Long bCategoryId, Long mCategoryId, int count) {
 			this.bCategoryId = bCategoryId;
 			this.mCategoryId = mCategoryId;
 			this.count = count;
@@ -24,9 +24,11 @@ public class PriorityCategoriesQueue {
 		public CategoryPair(String bCategoryId, String mCategoryId, String count) {
 			this.bCategoryId = Long.parseLong(bCategoryId);
 			this.mCategoryId = Long.parseLong(mCategoryId);
-			this.count = Long.parseLong(count);
+			this.count = Integer.parseInt(count);
 			this.uuid = UUID.randomUUID().toString();
 		}
+
+
 
 	}
 
@@ -45,8 +47,8 @@ public class PriorityCategoriesQueue {
 		categoryPairPriorityQueue.add(categoryPair);
 	}
 
-	public void poll(){
-		categoryPairPriorityQueue.poll();
+	public CategoryPair poll(){
+		return categoryPairPriorityQueue.poll();
 	}
 
 	public int size(){
