@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class LokiQueryService implements LogQueryService {
