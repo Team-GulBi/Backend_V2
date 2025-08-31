@@ -50,6 +50,7 @@ public class ProductDetailResponse {
                 .created_at(LocalDateTime.now())
                 .productImages(ProductImagesResponse.of(images))
                 .reviews(reviews)
+                .owner(isOwner)
                 .userNickname(product.getUser().getNickname())
                 .build();
     }
