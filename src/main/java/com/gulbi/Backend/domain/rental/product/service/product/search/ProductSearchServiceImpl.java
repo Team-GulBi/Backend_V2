@@ -25,9 +25,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductSearchServiceImpl implements ProductSearchService {
 
     private final UserService userService;
@@ -66,8 +68,10 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         //요청자 신원 조회
         User requestUser = userService.getAuthenticatedUser();
 
+        Long ownerUserId = productOwner.getId();
+        Long requesterUserId = requestUser.getId();
         //상품 소유자 인지 판단
-        boolean owner = Objects.equals(productOwner.getId(), requestUser.getId());
+        boolean owner = Objects.equals(ownerUserId, requesterUserId);
 
         //상품 이미지 조회
         Images productImages = imageRepoService.findImagesByProductId(productId);
