@@ -16,19 +16,14 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class LokiQueryService implements LogQueryService {
 
-    @Value("${loki.base-url}") // application.properties에서 URL 가져오기
-    private String lokiBaseUrl;
+    // @Value("${loki.base-url}") // application.properties에서 URL 가져오기
+    // private String lokiBaseUrl;
 
     private static final String LOKI_GET_REQUEST_ENDPOINT = "/loki/api/v1/query";
 
     private final UserService userService;
-    private WebClient webClient;
+    private final WebClient webClient =WebClient.create("http://loki:3100");
 
-    // PostConstruct에서 WebClient 초기화
-    @PostConstruct
-    private void init() {
-        this.webClient = WebClient.create(lokiBaseUrl);
-    }
 
     public LokiQueryService(UserService userService) {
         this.userService = userService;
