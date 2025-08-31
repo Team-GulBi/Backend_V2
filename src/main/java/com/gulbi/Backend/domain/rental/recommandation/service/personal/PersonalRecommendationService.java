@@ -7,7 +7,9 @@ import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewPrioritySlice;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewPrioritySlices;
 import com.gulbi.Backend.domain.rental.product.dto.ProductOverviewSlice;
 import com.gulbi.Backend.domain.rental.product.dto.ProductSearchCondition;
+import com.gulbi.Backend.domain.rental.product.entity.Category;
 import com.gulbi.Backend.domain.rental.product.exception.ProductException;
+import com.gulbi.Backend.domain.rental.product.service.category.CategoryRepoService;
 import com.gulbi.Backend.domain.rental.product.service.product.crud.ProductRepoService;
 import com.gulbi.Backend.domain.rental.recommandation.service.query.LogQueryService;
 import com.gulbi.Backend.domain.rental.recommandation.service.query.QueryHandler;
@@ -29,14 +31,17 @@ public class PersonalRecommendationService implements PersonalProductProvider {
     private final LogQueryService logQueryService;
     private final QueryHandler queryHandler;
 	private final ProductRepoService productRepoService;
+	private final CategoryRepoService categoryRepoService;
+
 
 	public PersonalRecommendationService(LogQueryService logQueryService, QueryHandler queryHandler,
-		ProductRepoService productRepoService) {
+		ProductRepoService productRepoService, CategoryRepoService categoryRepoService) {
 		this.logQueryService = logQueryService;
 		this.queryHandler = queryHandler;
 		this.productRepoService = productRepoService;
+		this.categoryRepoService = categoryRepoService;
 	}
-
+	//ToDo: 카테고리 이름 추가 요구사항 추가.
 	@Override
     public ProductOverviewPrioritySlices getPersonalizedRecommendationProducts(PersonalCursorPageable personalCursorPageable) {
 		// 클라이언트가 요청한 Pageable 객체
@@ -60,11 +65,18 @@ public class PersonalRecommendationService implements PersonalProductProvider {
 			//시작
 			int count = priorityCategoriesQueue.size();
 			for (int i=0; i<count; i++) {
+
 				//우선순위 높은 CategoryPair를 순서대로 추출.(N번)
 				PriorityCategoriesQueue.CategoryPair categoryPair =  priorityCategoriesQueue.poll();
+
 				// condition객체에 필요한 정보 추출
 				Long bCategoryId = categoryPair.getBCategoryId();
 				Long mCategoryId = categoryPair.getMCategoryId();
+
+				// 카테고리 이름 추출
+				String bCategoryName = findCategoryNameById(bCategoryId);
+				String mCategoryName = findCategoryNameById(mCategoryId);
+
 				// count(loki에서 쿼리가 된 횟수) == 우선순위, 추출
 				int priority = categoryPair.getCount();
 				// 몇개의 상품을 쿼리해야하는지(N번)(위에서 계산한값)
@@ -85,6 +97,8 @@ public class PersonalRecommendationService implements PersonalProductProvider {
 					.priority(priority)
 					.bCategoryId(bCategoryId)
 					.mCategoryId(mCategoryId)
+					.bigCategoryName(bCategoryName)
+					.midCategoryName(mCategoryName)
 					.hasNext(response.isHasNext())
 					.nickname(response.getNickname())
 					.products(response.getProducts()).build();
@@ -103,6 +117,11 @@ public class PersonalRecommendationService implements PersonalProductProvider {
 
 			Long bCategoryId = personalCursorRequest.getBCategoryId();
 			Long mCategoryId = personalCursorRequest.getMCategoryId();
+
+			// 카테고리 이름 추출
+			String bCategoryName = findCategoryNameById(bCategoryId);
+			String mCategoryName = findCategoryNameById(mCategoryId);
+
 			// First요청때 념겨준 Priority 다시 회수
 			int priority = personalCursorRequest.getPriority();
 			//N번째 커서의 LastId, LastCreatedAt 추출
@@ -127,6 +146,8 @@ public class PersonalRecommendationService implements PersonalProductProvider {
 				.priority(priority)
 				.bCategoryId(bCategoryId)
 				.mCategoryId(mCategoryId)
+				.bigCategoryName(bCategoryName)
+				.midCategoryName(mCategoryName)
 				.hasNext(productOverviewSlice.isHasNext())
 				.nickname(productOverviewSlice.getNickname())
 				.products(productOverviewSlice.getProducts()).build();
@@ -189,5 +210,10 @@ public class PersonalRecommendationService implements PersonalProductProvider {
 		}
 
 	}
+
+	private String findCategoryNameById(Long categoryId){
+		return categoryRepoService.findById(categoryId).getName();
+	}
+
 
 }
